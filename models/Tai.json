@@ -1,0 +1,1 @@
+{"properties":{"nid":{"pattern":"^[A-Fa-f0-9]{11}$","type":"string"},"plmnId":{"properties":{"mcc":{"pattern":"^\\d{3}$","type":"string"},"mnc":{"pattern":"^\\d{2,3}$","type":"string"}},"required":["mcc","mnc"],"type":"object"},"tac":{"pattern":"(^[A-Fa-f0-9]{4}$)|(^[A-Fa-f0-9]{6}$)","type":"string"}},"required":["plmnId","tac"],"type":"object"}

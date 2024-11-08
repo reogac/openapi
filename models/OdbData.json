@@ -1,0 +1,1 @@
+{"properties":{"roamingOdb":{"anyOf":[{"enum":["OUTSIDE_HOME_PLMN","OUTSIDE_HOME_PLMN_COUNTRY"],"type":"string"},{"type":"string"}]}},"type":"object"}

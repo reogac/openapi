@@ -1,0 +1,1 @@
+{"anyOf":[{"anyOf":[{"enum":["5GC","EPC"],"type":"string"},{"type":"string"}]},{"enum":[null]}]}

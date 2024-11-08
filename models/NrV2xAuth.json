@@ -1,0 +1,1 @@
+{"properties":{"pedestrianUeAuth":{"anyOf":[{"enum":["AUTHORIZED","NOT_AUTHORIZED"],"type":"string"},{"type":"string"}]},"vehicleUeAuth":{"anyOf":[{"enum":["AUTHORIZED","NOT_AUTHORIZED"],"type":"string"},{"type":"string"}]}},"type":"object"}

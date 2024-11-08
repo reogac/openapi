@@ -1,0 +1,1 @@
+{"properties":{"from":{"type":"string"},"op":{"anyOf":[{"enum":["add","copy","move","remove","replace","test"],"type":"string"},{"type":"string"}]},"path":{"type":"string"},"value":{}},"required":["op","path"],"type":"object"}

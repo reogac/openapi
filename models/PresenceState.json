@@ -1,0 +1,1 @@
+{"anyOf":[{"enum":["IN_AREA","OUT_OF_AREA","UNKNOWN","INACTIVE"],"type":"string"},{"type":"string"}]}

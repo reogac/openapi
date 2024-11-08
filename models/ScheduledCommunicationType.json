@@ -1,0 +1,1 @@
+{"anyOf":[{"enum":["DOWNLINK_ONLY","UPLINK_ONLY","BIDIRECTIONAL"],"type":"string"},{"type":"string"}]}

@@ -1,0 +1,1 @@
+{"properties":{"areaCodeB":{"type":"string"},"areaCodeC":{"type":"string"},"globalLineIds":{"items":{"format":"byte","type":"string"},"minItems":1,"type":"array"},"hfcNIds":{"items":{"maxLength":6,"type":"string"},"minItems":1,"type":"array"}},"type":"object"}

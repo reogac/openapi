@@ -1,0 +1,1 @@
+{"anyOf":[{"properties":{"bssId":{"type":"string"},"civicAddress":{"format":"byte","type":"string"},"ssId":{"type":"string"}},"required":["ssId"],"type":"object"},{"enum":[null]}]}

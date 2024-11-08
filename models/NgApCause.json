@@ -1,0 +1,1 @@
+{"properties":{"group":{"minimum":0,"type":"integer"},"value":{"minimum":0,"type":"integer"}},"required":["group","value"],"type":"object"}

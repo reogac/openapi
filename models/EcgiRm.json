@@ -1,0 +1,1 @@
+{"anyOf":[{"properties":{"eutraCellId":{"pattern":"^[A-Fa-f0-9]{7}$","type":"string"},"nid":{"pattern":"^[A-Fa-f0-9]{11}$","type":"string"},"plmnId":{"properties":{"mcc":{"pattern":"^\\d{3}$","type":"string"},"mnc":{"pattern":"^\\d{2,3}$","type":"string"}},"required":["mcc","mnc"],"type":"object"}},"required":["plmnId","eutraCellId"],"type":"object"},{"enum":[null]}]}

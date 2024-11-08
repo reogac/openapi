@@ -1,0 +1,1 @@
+{"anyOf":[{"enum":["3GPP_ACCESS","NON_3GPP_ACCESS"],"type":"string"},{"enum":[null]}]}

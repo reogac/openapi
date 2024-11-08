@@ -1,0 +1,1 @@
+{"properties":{"bssId":{"type":"string"},"civicAddress":{"format":"byte","type":"string"},"ssId":{"type":"string"}},"type":"object"}

@@ -1,0 +1,1 @@
+{"properties":{"lac":{"pattern":"^[A-Fa-f0-9]{4}$","type":"string"},"plmnId":{"properties":{"mcc":{"pattern":"^\\d{3}$","type":"string"},"mnc":{"pattern":"^\\d{2,3}$","type":"string"}},"required":["mcc","mnc"],"type":"object"}},"required":["plmnId","lac"],"type":"object"}

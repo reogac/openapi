@@ -1,0 +1,1 @@
+{"anyOf":[{"enum":["REQUIRED","PREFERRED","NOT_NEEDED"],"type":"string"},{"type":"string"}]}

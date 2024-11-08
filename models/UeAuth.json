@@ -1,0 +1,1 @@
+{"anyOf":[{"enum":["AUTHORIZED","NOT_AUTHORIZED"],"type":"string"},{"type":"string"}]}

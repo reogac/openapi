@@ -1,0 +1,1 @@
+{"properties":{"counter":{"type":"integer"},"timeStamp":{"format":"date-time","type":"string"}},"required":["counter"],"type":"object"}

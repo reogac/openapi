@@ -1,0 +1,1 @@
+{"anyOf":[{"properties":{"hfcNId":{"maxLength":6,"type":"string"}},"required":["hfcNId"],"type":"object"},{"enum":[null]}]}

@@ -1,0 +1,1 @@
+{"properties":{"remainExReportsDl":{"minimum":0,"type":"integer"},"remainExReportsUl":{"minimum":0,"type":"integer"},"remainPacketsDl":{"minimum":0,"type":"integer"},"remainPacketsUl":{"minimum":0,"type":"integer"},"validityTime":{"format":"date-time","type":"string"}},"type":"object"}

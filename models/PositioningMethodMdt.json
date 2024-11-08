@@ -1,0 +1,1 @@
+{"anyOf":[{"enum":["GNSS","E_CELL_ID"],"type":"string"},{"type":"string"}]}

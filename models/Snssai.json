@@ -1,0 +1,1 @@
+{"properties":{"sd":{"pattern":"^[A-Fa-f0-9]{6}$","type":"string"},"sst":{"maximum":255,"minimum":0,"type":"integer"}},"required":["sst"],"type":"object"}

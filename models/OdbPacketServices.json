@@ -1,0 +1,1 @@
+{"anyOf":[{"anyOf":[{"enum":["ALL_PACKET_SERVICES","ROAMER_ACCESS_HPLMN_AP","ROAMER_ACCESS_VPLMN_AP"],"type":"string"},{"type":"string"}]},{"enum":[null]}]}

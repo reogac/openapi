@@ -1,0 +1,1 @@
+{"anyOf":[{"enum":["BAROMETRIC_PRESSURE","UE_SPEED","UE_ORIENTATION"],"type":"string"},{"type":"string"}]}

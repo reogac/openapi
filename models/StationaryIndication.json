@@ -1,0 +1,1 @@
+{"anyOf":[{"enum":["STATIONARY","MOBILE"],"type":"string"},{"description":"This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n","type":"string"}],"description":"Possible values are - STATIONARY: Identifies the UE is stationary - MOBILE: Identifies the UE is mobile\n"}

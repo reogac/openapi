@@ -1,0 +1,1 @@
+{"anyOf":[{"properties":{"mcc":{"pattern":"^\\d{3}$","type":"string"},"mnc":{"pattern":"^\\d{2,3}$","type":"string"}},"required":["mcc","mnc"],"type":"object"},{"enum":[null]}]}

@@ -1,0 +1,1 @@
+{"anyOf":[{"properties":{"downlink":{"pattern":"^\\d+(\\.\\d+)? (bps|Kbps|Mbps|Gbps|Tbps)$","type":"string"},"uplink":{"pattern":"^\\d+(\\.\\d+)? (bps|Kbps|Mbps|Gbps|Tbps)$","type":"string"}},"required":["uplink","downlink"],"type":"object"},{"enum":[null]}]}

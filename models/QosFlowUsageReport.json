@@ -1,0 +1,1 @@
+{"properties":{"downlinkVolume":{"format":"int64","type":"integer"},"endTimeStamp":{"format":"date-time","type":"string"},"qfi":{"maximum":63,"minimum":0,"type":"integer"},"startTimeStamp":{"format":"date-time","type":"string"},"uplinkVolume":{"format":"int64","type":"integer"}},"required":["qfi","startTimeStamp","endTimeStamp","downlinkVolume","uplinkVolume"],"type":"object"}

@@ -1,0 +1,1 @@
+{"anyOf":[{"enum":["OUT_OF_COVERAG","A2_EVENT"],"type":"string"},{"type":"string"}]}

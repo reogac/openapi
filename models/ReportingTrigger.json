@@ -1,0 +1,1 @@
+{"anyOf":[{"enum":["PERIODICAL","EVENT_A2","EVENT_A2_PERIODIC","ALL_RRM_EVENT_TRIGGERS"],"type":"string"},{"type":"string"}]}

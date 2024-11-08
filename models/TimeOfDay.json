@@ -1,0 +1,1 @@
+{"description":"String with format partial-time or full-time as defined in clause 5.6 of IETF RFC 3339. Examples, 20:15:00, 20:15:00-08:00 (for 8 hours behind UTC).","type":"string"}
