@@ -1,1 +1,0 @@
-{"properties":{"cellIdList":{"items":{"maximum":1007,"minimum":0,"type":"integer"},"maxItems":32,"minItems":1,"type":"array"},"dlCarrierFreq":{"maximum":3279165,"minimum":0,"type":"integer"}},"required":["dlCarrierFreq"],"type":"object"}

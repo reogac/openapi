@@ -1,1 +1,0 @@
-{"anyOf":[{"enum":["PERIODICAL","EVENT_TRIGGED"],"type":"string"},{"type":"string"}]}

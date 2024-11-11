@@ -1,1 +1,0 @@
-{"properties":{"cnfUnit":{"items":{"properties":{"attr":{"type":"string"},"negative":{"type":"boolean"},"value":{}},"required":["attr","value"],"type":"object"},"minItems":1,"type":"array"}},"required":["cnfUnit"],"type":"object"}

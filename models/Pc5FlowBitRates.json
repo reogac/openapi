@@ -1,1 +1,0 @@
-{"properties":{"guaFbr":{"pattern":"^\\d+(\\.\\d+)? (bps|Kbps|Mbps|Gbps|Tbps)$","type":"string"},"maxFbr":{"pattern":"^\\d+(\\.\\d+)? (bps|Kbps|Mbps|Gbps|Tbps)$","type":"string"}},"type":"object"}

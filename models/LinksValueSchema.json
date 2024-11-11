@@ -1,1 +1,0 @@
-{"oneOf":[{"items":{"properties":{"href":{"type":"string"}},"type":"object"},"minItems":1,"type":"array"},{"properties":{"href":{"type":"string"}},"type":"object"}]}

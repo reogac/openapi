@@ -1,1 +1,0 @@
-{"properties":{"tacList":{"items":{"pattern":"(^[A-Fa-f0-9]{4}$)|(^[A-Fa-f0-9]{6}$)","type":"string"},"minItems":1,"type":"array"}},"required":["tacList"],"type":"object"}

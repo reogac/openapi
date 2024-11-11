@@ -1,1 +1,0 @@
-{"anyOf":[{"enum":["GET","POST","PUT","DELETE","PATCH","OPTIONS","HEAD","CONNECT","TRACE"],"type":"string"},{"type":"string"}]}

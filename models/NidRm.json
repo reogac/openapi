@@ -1,1 +1,0 @@
-{"nullable":true,"pattern":"^[A-Fa-f0-9]{11}$","type":"string"}

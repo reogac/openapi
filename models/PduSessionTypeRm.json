@@ -1,1 +1,0 @@
-{"anyOf":[{"anyOf":[{"enum":["IPV4","IPV6","IPV4V6","UNSTRUCTURED","ETHERNET"],"type":"string"},{"type":"string"}]},{"enum":[null]}]}

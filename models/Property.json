@@ -1,1 +1,0 @@
-{"properties":{"name":{"type":"string"},"regex":{"type":"string"},"required":{"type":"boolean"},"value":{"type":"string"}},"required":["name"],"type":"object"}

@@ -1,1 +1,0 @@
-{"anyOf":[{"enum":["SSC_MODE_1","SSC_MODE_2","SSC_MODE_3"],"type":"string"},{"type":"string"}]}

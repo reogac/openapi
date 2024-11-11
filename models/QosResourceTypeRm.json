@@ -1,1 +1,0 @@
-{"anyOf":[{"anyOf":[{"enum":["NON_GBR","NON_CRITICAL_GBR","CRITICAL_GBR"],"type":"string"},{"type":"string"}]},{"enum":[null]}]}

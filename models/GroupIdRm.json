@@ -1,1 +1,0 @@
-{"nullable":true,"pattern":"^[A-Fa-f0-9]{8}-[0-9]{3}-[0-9]{2,3}-([A-Fa-f0-9][A-Fa-f0-9]){1,10}$","type":"string"}

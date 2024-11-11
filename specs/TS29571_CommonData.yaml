@@ -297,6 +297,8 @@ components:
           $ref: 'TS29510_Nnrf_AccessToken.yaml#/components/schemas/AccessTokenReq'
         nrfId:
           type: string
+      required:
+        - status
     Link:
       type: object
       properties:

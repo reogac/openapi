@@ -1,1 +1,0 @@
-{"anyOf":[{"enum":["add","copy","move","remove","replace","test"],"type":"string"},{"type":"string"}]}

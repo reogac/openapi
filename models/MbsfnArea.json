@@ -1,1 +1,0 @@
-{"properties":{"carrierFrequency":{"maximum":262143,"minimum":0,"type":"integer"},"mbsfnAreaId":{"maximum":255,"minimum":0,"type":"integer"}},"type":"object"}

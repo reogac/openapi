@@ -1,1 +1,0 @@
-{"anyOf":[{"anyOf":[{"enum":["NOT_PREEMPT","MAY_PREEMPT"],"type":"string"},{"type":"string"}]},{"enum":[null]}]}

@@ -1,1 +1,0 @@
-{"description":"A range of SDs (Slice Differentiators)","properties":{"end":{"pattern":"^[A-Fa-f0-9]{6}$","type":"string"},"start":{"pattern":"^[A-Fa-f0-9]{6}$","type":"string"}},"type":"object"}

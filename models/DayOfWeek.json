@@ -1,1 +1,0 @@
-{"description":"integer between and including 1 and 7 denoting a weekday. 1 shall indicate Monday, and the subsequent weekdays shall be indicated with the next higher numbers. 7 shall indicate Sunday.","maximum":7,"minimum":1,"type":"integer"}

@@ -1,1 +1,0 @@
-{"anyOf":[{"properties":{"batteryInd":{"type":"boolean"},"rechargeableInd":{"type":"boolean"},"replaceableInd":{"type":"boolean"}},"type":"object"},{"enum":[null]}]}

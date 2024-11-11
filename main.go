@@ -1,17 +1,53 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"os"
-
 	"github.com/pb33f/libopenapi"
 	"github.com/pb33f/libopenapi/datamodel"
 	"github.com/pb33f/libopenapi/datamodel/high/base"
 	"github.com/pb33f/libopenapi/datamodel/high/v3"
 	"github.com/pb33f/libopenapi/orderedmap"
+	"os"
+	"strings"
 )
+
+type DataModel struct {
+	id          string
+	goType      string
+	isPrimitive bool
+	isArray     bool
+	properties  map[string]Property
+	schema      *base.Schema
+}
+
+type Property struct {
+	id       string
+	required bool
+	goType   string
+	isArray  bool
+}
+
+func (p *Property) isNullable() bool {
+	if p.isArray {
+		return true
+	}
+
+	if p.goType == "string" {
+		return true
+	}
+
+	return false
+}
+
+func (p *Property) writeTag() string {
+	if p.required {
+		return fmt.Sprintf("`json:\"%s\"`", p.id)
+	} else {
+		return fmt.Sprintf("`json:\"%s,omitempty\"`", p.id)
+	}
+}
+
+var models map[string]DataModel
 
 func main() {
 	readSpec()
@@ -24,8 +60,8 @@ func readSpec() {
 		BasePath:              "specs",
 	}
 	// load an OpenAPI 3 specification from bytes
-	//specApis, _ := os.ReadFile("specs/TS29502_Nsmf_PDUSession.yaml")
-	specApis, _ := os.ReadFile("specs/TS29571_CommonData.yaml")
+	specApis, _ := os.ReadFile("specs/TS29502_Nsmf_PDUSession.yaml")
+	//specApis, _ := os.ReadFile("specs/TS29571_CommonData.yaml")
 	//specApis, _ := os.ReadFile("specs/TS29518_Namf_Communication.yaml")
 
 	// create a new document from specification bytes
@@ -55,7 +91,42 @@ func readSpec() {
 
 	fmt.Printf("There are %d paths and %d schemas in the document", paths.Len(), schemas.Len())
 	//showPaths(paths)
-	showSchemas(schemas)
+	createModels(schemas)
+	for _, m := range models {
+		writeModel(&m)
+	}
+
+}
+
+func writeModel(m *DataModel) {
+	if m.isPrimitive {
+		return
+	}
+	if len(m.properties) == 0 {
+		return
+	}
+
+	prefix := "models/"
+	f, _ := os.Create(prefix + m.id + ".go")
+	defer f.Close()
+	fmt.Fprintf(f, "type %s struct {\n", m.id)
+
+	for _, p := range m.properties {
+		goType := p.goType
+		if len(goType) == 0 {
+			fmt.Printf("model %s has untype attribute %s\n", m.id, p.id)
+			continue
+		}
+		if p.isArray {
+			goType = "[]" + goType
+		}
+		if p.required || p.isNullable() {
+			fmt.Fprintf(f, "\t %s\t%s\t%s\n", strings.Title(p.id), goType, p.writeTag())
+		} else {
+			fmt.Fprintf(f, "\t %s\t*%s\t%s\n", strings.Title(p.id), goType, p.writeTag())
+		}
+	}
+	fmt.Fprintf(f, "}\n")
 }
 
 func showPaths(paths *orderedmap.Map[string, *v3.PathItem]) {
@@ -157,8 +228,9 @@ func showCallback(path string, callback *v3.Callback) {
 	}
 }
 
-func showSchemas(schemas *orderedmap.Map[string, *base.SchemaProxy]) {
+func createModels(schemas *orderedmap.Map[string, *base.SchemaProxy]) {
 	// print the number of paths and schemas in the document
+	models = make(map[string]DataModel)
 
 	for schemaPairs := schemas.First(); schemaPairs != nil; schemaPairs = schemaPairs.Next() {
 		// get the name of the schema
@@ -170,45 +242,201 @@ func showSchemas(schemas *orderedmap.Map[string, *base.SchemaProxy]) {
 		// build the schema
 		schema := schemaValue.Schema()
 
-		// if the schema has properties, print the number of
-		// properties
 		if schema == nil {
 			fmt.Printf("EMPTY SCHEMA '%s'\n", schemaName)
 		} else {
-			printSchema(schemaName, schema)
-
+			analyzeSchema(schemaValue)
 		}
 	}
 }
+func getSchemaIdFromRef(ref string) string {
+	tokens := strings.Split(ref, "/")
+	if l := len(tokens); l > 0 {
+		return tokens[l-1]
+	}
+	return ""
+}
 
-func getSchemaType(schemaName string, schema *base.Schema) string {
-	if schema.Properties != nil {
-		return schema.SchemaTypeRef
+func analyzeAllOf(id string, allOf []*base.SchemaProxy) *DataModel {
+	out := &DataModel{
+		id:         id,
+		goType:     id,
+		properties: make(map[string]Property),
 	}
+
+	for _, s := range allOf {
+		if m := analyzeSchema(s); m != nil {
+			for pId, p := range m.properties {
+				out.properties[pId] = p
+			}
+		}
+	}
+	return out
+}
+
+func analyzeOneOf(id string, oneOf []*base.SchemaProxy) *DataModel {
+	return analyzeAnyOf(id, oneOf)
+}
+func analyzeAnyOf(id string, anyOf []*base.SchemaProxy) *DataModel {
+	isArray := false
+	goTypes := make(map[string]bool)
+	for _, s := range anyOf {
+		if m := analyzeSchema(s); m != nil {
+			if m.isArray {
+				isArray = true
+			}
+			if len(m.goType) > 0 {
+				goTypes[m.goType] = true
+			}
+		}
+	}
+	if len(goTypes) == 0 {
+		return nil
+	} else if len(goTypes) > 1 {
+		fmt.Printf("ANYOF %s has more than one types\n", id)
+		return nil
+	} else {
+		m := &DataModel{
+			isArray: isArray,
+			id:      id,
+		}
+		for t, _ := range goTypes {
+			m.goType = t
+			break
+		}
+		return m
+	}
+	return nil
+}
+func getSchemaId(schemaP *base.SchemaProxy) string {
+	if schemaP.IsReference() {
+		return getSchemaIdFromRef(schemaP.GetReference())
+	} else if keyNode := schemaP.GetSchemaKeyNode(); keyNode != nil {
+		return keyNode.Value
+	}
+
+	return ""
+}
+
+func analyzeSchema(schemaP *base.SchemaProxy) *DataModel {
+	id := getSchemaId(schemaP)
+	if len(id) > 0 {
+		if m, ok := models[id]; ok {
+			return &m
+		}
+	}
+	schema := schemaP.Schema()
+
+	if schema == nil {
+		return nil
+	}
+
+	if len(schema.Type) > 1 {
+		fmt.Printf("Schema with multiple types not supported\n")
+		return nil
+	}
+	var m *DataModel
 	if len(schema.Type) == 0 {
-		return "Unknown"
-	}
-	switch schema.Type[0] {
-	case "array":
-		if schema.Items.IsA() {
-			itemSchema := schema.Items.A.Schema()
-			json, _ := itemSchema.MarshalJSONInline()
-			fmt.Printf("%s\n", string(json))
-			if len(itemSchema.Type) > 0 {
-				if len(itemSchema.SchemaTypeRef) > 0 {
-					return "[]" + itemSchema.SchemaTypeRef
+		if len(schema.AllOf) > 0 {
+			m = analyzeAllOf(id, schema.AllOf)
+		} else if len(schema.AnyOf) > 0 {
+			m = analyzeAnyOf(id, schema.AnyOf)
+		} else if len(schema.OneOf) > 0 {
+			m = analyzeOneOf(id, schema.OneOf)
+		} else {
+			fmt.Printf("UNTYPE %s\n", id)
+			return nil
+		}
+	} else {
+		m = &DataModel{
+			id:         id,
+			schema:     schema,
+			properties: make(map[string]Property),
+		}
+		switch schema.Type[0] {
+		case "object":
+			m.goType = id
+			for pair := schema.Properties.First(); pair != nil; pair = pair.Next() {
+				propName := pair.Key()
+				propSchemaProxy := pair.Value()
+				propSchema := propSchemaProxy.Schema()
+				if propSchema == nil {
+					fmt.Printf("%s has empty attribute %s\n", id, propName)
 				} else {
-					return "[]" + itemSchema.Type[0]
+					p := Property{
+						id:       propName,
+						required: inList(propName, schema.Required),
+					}
+
+					if refModel := analyzeSchema(propSchemaProxy); refModel != nil {
+						p.goType = refModel.goType
+						p.isArray = refModel.isArray
+
+					}
+					m.properties[p.id] = p
+				}
+			}
+			var extra *DataModel
+			if l := len(schema.AllOf); l > 0 {
+				extra = analyzeAllOf("", schema.AllOf)
+			} else if l = len(schema.AnyOf); l > 0 {
+				extra = analyzeAnyOf("", schema.AnyOf)
+			} else if l = len(schema.OneOf); l > 0 {
+				extra = analyzeAnyOf("", schema.OneOf)
+			}
+			if extra != nil {
+				for key, value := range extra.properties {
+					m.properties[key] = value
+				}
+			}
+		case "string":
+			m.goType = "string"
+			m.isPrimitive = true
+		case "integer":
+			m.isPrimitive = true
+			switch schema.Format {
+			case "int32":
+				m.goType = "int32"
+			case "int64":
+				m.goType = "int64"
+			default:
+				m.goType = "int"
+			}
+		case "number":
+			m.isPrimitive = true
+			switch schema.Format {
+			case "double":
+				m.goType = "float64"
+			default:
+				m.goType = "float"
+			}
+		case "boolean":
+			m.goType = "bool"
+			m.isPrimitive = true
+
+		case "array":
+			m.isPrimitive = false
+			m.isArray = true
+			if schema.Items.IsA() {
+				if itemModel := analyzeSchema(schema.Items.A); itemModel != nil {
+					m.goType = itemModel.goType
+				} else {
+					m.goType = "[]Unknown"
 				}
 			} else {
-				return "[]" + itemSchema.SchemaTypeRef
+				m.goType = "bool"
 			}
-		} else {
-			return "[]bool"
+
+		default:
+			fmt.Printf("Not supported type: %s\n", schema.Type[0])
+			return nil
 		}
-	default:
-		return schema.Type[0]
+		fmt.Printf("%s: %s\n", id, m.goType)
 	}
+	if m != nil && len(m.id) > 0 {
+		models[m.id] = *m
+	}
+	return m
 }
 
 func inList(item string, list []string) bool {
@@ -218,78 +446,4 @@ func inList(item string, list []string) bool {
 		}
 	}
 	return false
-}
-func prettyJson(input []byte) []byte {
-	var buf bytes.Buffer
-	enc := json.NewEncoder(&buf)
-	enc.SetIndent("", "    ")
-	if err := enc.Encode(input); err != nil {
-		panic(err)
-	}
-	return buf.Bytes()
-}
-func printSchema(schemaName string, schema *base.Schema) {
-	prefix := "models/"
-
-	f, _ := os.Create(prefix + schemaName + ".json")
-	defer f.Close()
-	json, _ := schema.MarshalJSONInline()
-	fmt.Fprintf(f, "%s", json)
-	return
-
-	if schema.Nullable != nil {
-		fmt.Printf("SCHEMA NULLABLE'%s'\n", schemaName)
-	}
-
-	if numTypes := len(schema.Type); numTypes == 0 {
-		fmt.Printf("SCHEMA NO-TYPE'%s'\n", schemaName)
-		if len(schema.AnyOf) > 0 {
-			fmt.Printf("SCHEMA ANYOF'%s'\n", schemaName)
-			for _, anyOf := range schema.AnyOf {
-				subSchema := anyOf.Schema()
-				//fmt.Printf("SUBSCHEMA='%s'\n", subSchema.Type[0])
-				if len(subSchema.Enum) > 0 {
-					for _, v := range subSchema.Enum {
-						fmt.Printf("ENUM'%s':%s\n", schemaName, v.Value)
-					}
-				}
-			}
-		}
-
-		if len(schema.OneOf) > 0 {
-			fmt.Printf("SCHEMA ONEOF'%s':%v\n", schemaName, schema.OneOf)
-		}
-		if len(schema.AllOf) > 0 {
-			fmt.Printf("SCHEMA ALLOF'%s':%v\n", schemaName, schema.AllOf)
-		}
-
-	} else if numTypes == 1 {
-		//fmt.Printf("SCHEMA '%s' has type:'%s'[%d]\n", schemaName, schema.Type[0], len(schema.Type))
-		if schema.Properties != nil { //object type
-
-			f, _ := os.Create(prefix + schemaName + ".go")
-			defer f.Close()
-
-			//fmt.Printf("Schema '%s' has %d properties\n", schemaName, schema.Properties.Len())
-			//fmt.Printf("%v\n", schema)
-			fmt.Fprintf(f, "type %s struct {\n", schemaName)
-			for pair := schema.Properties.First(); pair != nil; pair = pair.Next() {
-				probName := pair.Key()
-				probSchema := pair.Value().Schema()
-				if probSchema == nil {
-					fmt.Printf("%s has empty attribute %s\n", schemaName, probName)
-				} else {
-					if inList(probName, schema.Required) {
-						fmt.Fprintf(f, "\t%s\t%s\n", probName, getSchemaType(schemaName, probSchema))
-					} else {
-						fmt.Fprintf(f, "\t%s\t*%s\n", probName, getSchemaType(schemaName, probSchema))
-					}
-				}
-			}
-			fmt.Fprintf(f, "}\n")
-		}
-	} else {
-		fmt.Printf("SCHEMA '%s' has multiple types[%d]\n", schemaName, numTypes)
-	}
-
 }

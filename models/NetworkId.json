@@ -1,1 +1,0 @@
-{"properties":{"mcc":{"pattern":"^\\d{3}$","type":"string"},"mnc":{"pattern":"^\\d{2,3}$","type":"string"}},"type":"object"}

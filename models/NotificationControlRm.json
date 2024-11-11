@@ -1,1 +1,0 @@
-{"anyOf":[{"anyOf":[{"enum":["REQUESTED","NOT_REQUESTED"],"type":"string"},{"type":"string"}]},{"enum":[null]}]}

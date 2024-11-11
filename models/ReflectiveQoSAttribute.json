@@ -1,1 +1,0 @@
-{"anyOf":[{"enum":["RQOS","NO_RQOS"],"type":"string"},{"type":"string"}]}

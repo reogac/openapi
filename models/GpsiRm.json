@@ -1,1 +1,0 @@
-{"nullable":true,"pattern":"^(msisdn-[0-9]{5,15}|extid-[^@]+@[^@]+|.+)$","type":"string"}

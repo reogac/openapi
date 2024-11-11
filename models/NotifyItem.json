@@ -1,1 +1,0 @@
-{"properties":{"changes":{"items":{"properties":{"from":{"type":"string"},"newValue":{},"op":{"anyOf":[{"enum":["ADD","MOVE","REMOVE","REPLACE"],"type":"string"},{"type":"string"}]},"origValue":{},"path":{"type":"string"}},"required":["op","path"],"type":"object"},"minItems":1,"type":"array"},"resourceId":{"type":"string"}},"required":["resourceId","changes"],"type":"object"}

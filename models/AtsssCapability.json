@@ -1,1 +1,0 @@
-{"properties":{"atsssLL":{"default":false,"type":"boolean"},"mptcp":{"default":false,"type":"boolean"},"rttWithoutPmf":{"default":false,"type":"boolean"}},"type":"object"}

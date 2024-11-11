@@ -1,1 +1,0 @@
-{"anyOf":[{"anyOf":[{"enum":["DSL","PON"],"type":"string"},{"description":"This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.\n","type":"string"}],"description":"Possible values are - DSL: Identifies a DSL line - PON: Identifies a PON line\n"},{"enum":[null]}]}

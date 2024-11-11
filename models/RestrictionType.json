@@ -1,1 +1,0 @@
-{"anyOf":[{"enum":["ALLOWED_AREAS","NOT_ALLOWED_AREAS"],"type":"string"},{"type":"string"}]}

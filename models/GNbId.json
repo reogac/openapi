@@ -1,1 +1,0 @@
-{"properties":{"bitLength":{"maximum":32,"minimum":22,"type":"integer"},"gNBValue":{"pattern":"^[A-Fa-f0-9]{6,8}$","type":"string"}},"required":["bitLength","gNBValue"],"type":"object"}
