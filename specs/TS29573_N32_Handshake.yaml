@@ -1,10 +1,10 @@
 openapi: 3.0.0
 
 info:
-  version: '1.1.3'
+  version: '1.2.1'
   title: 'N32 Handshake API'
   description: |
-   N32-c Handshake Service.  
+    N32-c Handshake Service.  
     © 2022, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).  
     All rights reserved.
 servers:
@@ -14,7 +14,7 @@ servers:
         default: https://example.com
         description:  apiRoot as defined in clause 4.4 of 3GPP TS 29.501.
 externalDocs:
-  description: 3GPP TS 29.573 V16.9.0; 5G System; Public Land Mobile Network (PLMN) Interconnection; Stage 3
+  description: 3GPP TS 29.573 V17.6.0; 5G System; Public Land Mobile Network (PLMN) Interconnection; Stage 3
   url: https://www.3gpp.org/ftp/Specs/archive/29_series/29.573/
 
 paths:
@@ -40,6 +40,8 @@ paths:
                 $ref: '#/components/schemas/SecNegotiateRspData'
         '400':
           $ref: 'TS29571_CommonData.yaml#/components/responses/400'
+        '403':
+          $ref: 'TS29571_CommonData.yaml#/components/responses/403'
         '411':
           $ref: 'TS29571_CommonData.yaml#/components/responses/411'
         '413':
@@ -163,17 +165,21 @@ paths:
 components:
   schemas:
     SecurityCapability:
+      description: Enumeration of security capabilities
       anyOf:
         - type: string
           enum:
             - TLS
             - PRINS
+            - NONE
         - type: string
     ApiSignature:
+      description: API URI of the service operation
       oneOf:
         - $ref: 'TS29571_CommonData.yaml#/components/schemas/Uri'
         - $ref: '#/components/schemas/CallbackName'
     HttpMethod:
+      description: Enumeration of HTTP methods
       anyOf:
         - type: string
           enum:
@@ -189,6 +195,7 @@ components:
         - type: string
 
     IeType:
+      description: Enumeration of types of IEs (i.e kind of IE) to specify the protection policy
       anyOf:
         - type: string
           enum:
@@ -202,6 +209,7 @@ components:
         - type: string
 
     IeLocation:
+      description: Location of the IE in a HTTP message
       anyOf:
         - type: string
           enum:
@@ -212,6 +220,7 @@ components:
         - type: string
 
     IeInfo:
+      description: Protection and modification policy for the IE
       type: object
       required:
         - ieLoc
@@ -234,6 +243,7 @@ components:
           minProperties: 1
 
     ApiIeMapping:
+      description: API URI to IE mapping on which the protection policy needs to be applied
       type: object
       required:
         - apiSignature
@@ -249,8 +259,10 @@ components:
           items:
             $ref: '#/components/schemas/IeInfo'
           minItems: 1
+# The attribute name does not follow the naming conventions specified in 3GPP TS 29.501. The attribute name is kept though as defined in the current specification for backward compatibility reason.
 
     ProtectionPolicy:
+      description: The protection policy to be negotiated between the SEPPs
       type: object
       required:
         - apiIeMappingList
@@ -267,13 +279,14 @@ components:
           minItems: 1
 
     SecNegotiateReqData:
+      description: Defines the security capabilities of a SEPP sent to a receiving SEPP
       type: object
       required:
         - sender
         - supportedSecCapabilityList
       properties:
         sender:
-          $ref: 'TS29510_Nnrf_NFManagement.yaml#/components/schemas/Fqdn'
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Fqdn'
         supportedSecCapabilityList:
           type: array
           items:
@@ -282,34 +295,69 @@ components:
         3GppSbiTargetApiRootSupported:
           type: boolean
           default: false
+# The attribute name does not follow the naming conventions specified in 3GPP TS 29.501. The attribute name is kept though as defined in the current specification for backward compatibility reason.
         plmnIdList:
           type: array
           items:
             $ref: 'TS29571_CommonData.yaml#/components/schemas/PlmnId'
           minItems: 1
+        snpnIdList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/PlmnIdNid'
+          minItems: 1
         targetPlmnId:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/PlmnId'
+        targetSnpnId:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/PlmnIdNid'
+        intendedUsagePurpose:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntendedN32Purpose'
+          minItems: 1
+        supportedFeatures:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/SupportedFeatures'
 
     SecNegotiateRspData:
+      description: Defines the selected security capabilities by a SEPP
       type: object
       required:
         - sender
         - selectedSecCapability
       properties:
         sender:
-          $ref: 'TS29510_Nnrf_NFManagement.yaml#/components/schemas/Fqdn'
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Fqdn'
         selectedSecCapability:
           $ref: '#/components/schemas/SecurityCapability'
         3GppSbiTargetApiRootSupported:
           type: boolean
           default: false
+# The attribute name does not follow the naming conventions specified in 3GPP TS 29.501. The attribute name is kept though as defined in the current specification for backward compatibility reason.
         plmnIdList:
           type: array
           items:
             $ref: 'TS29571_CommonData.yaml#/components/schemas/PlmnId'
           minItems: 1
+        snpnIdList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/PlmnIdNid'
+          minItems: 1
+        allowedUsagePurpose:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntendedN32Purpose'
+          minItems: 1
+        rejectedUsagePurpose:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntendedN32Purpose'
+          minItems: 1
+        supportedFeatures:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/SupportedFeatures'
 
     SecParamExchReqData:
+      description: Request data structure for parameter exchange
       type: object
       required:
         - n32fContextId
@@ -335,9 +383,10 @@ components:
             $ref: '#/components/schemas/IpxProviderSecInfo'
           minItems: 1
         sender:
-          $ref: 'TS29510_Nnrf_NFManagement.yaml#/components/schemas/Fqdn'
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Fqdn'
 
     SecParamExchRspData:
+      description: Response data structure for parameter exchange
       type: object
       required:
         - n32fContextId
@@ -357,9 +406,10 @@ components:
             $ref: '#/components/schemas/IpxProviderSecInfo'
           minItems: 1
         sender:
-          $ref: 'TS29510_Nnrf_NFManagement.yaml#/components/schemas/Fqdn'
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Fqdn'
 
     N32fContextInfo:
+      description: N32-f context information
       type: object
       required:
         - n32fContextId
@@ -368,6 +418,7 @@ components:
           type: string
           pattern: '^[A-Fa-f0-9]{16}$'
     CallbackName:
+      description: Callback Name
       type: object
       required:
         - callbackType
@@ -375,6 +426,7 @@ components:
         callbackType:
           type: string
     N32fErrorInfo:
+      description: N32-f error information
       type: object
       required:
         - n32fMessageId
@@ -384,6 +436,9 @@ components:
           type: string
         n32fErrorType:
           $ref: '#/components/schemas/N32fErrorType'
+        n32fContextId:
+          type: string
+          pattern: '^[A-Fa-f0-9]{16}$'
         failedModificationList:
           type: array
           items:
@@ -395,16 +450,18 @@ components:
             $ref: '#/components/schemas/N32fErrorDetail'
           minItems: 1
     FailedModificationInfo:
+      description: Information on N32-f modifications block that failed to process
       type: object
       required:
         - ipxId
         - n32fErrorType
       properties:
         ipxId:
-          $ref: 'TS29510_Nnrf_NFManagement.yaml#/components/schemas/Fqdn'
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Fqdn'
         n32fErrorType:
           $ref: '#/components/schemas/N32fErrorType'
     N32fErrorDetail:
+      description: Details about the N32f error
       type: object
       required:
         - attribute
@@ -415,12 +472,13 @@ components:
         msgReconstructFailReason:
           $ref: '#/components/schemas/FailureReason'
     IpxProviderSecInfo:
+      description: Defines the security information list of an IPX
       type: object
       required:
         - ipxProviderId
       properties:
         ipxProviderId:
-          $ref: 'TS29510_Nnrf_NFManagement.yaml#/components/schemas/Fqdn'
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Fqdn'
         rawPublicKeyList:
           type: array
           items:
@@ -431,7 +489,22 @@ components:
           items:
             type: string
           minItems: 1
+
+    IntendedN32Purpose:
+      description: Indicates the intended N32 establishment purpose
+      type: object
+      required:
+        - usagePurpose
+      properties:
+        usagePurpose:
+          $ref: '#/components/schemas/N32Purpose'
+        additionalInfo:
+          type: string
+        cause:
+          type: string
+
     N32fErrorType:
+      description: Type of error while processing N32-f message
       anyOf:
         - type: string
           enum:
@@ -446,10 +519,28 @@ components:
             - POLICY_MISMATCH
         - type: string
     FailureReason:
+      description: Reason for failure to reconstruct a HTTP/2 message from N32-f message
       anyOf:
         - type: string
           enum:
             - INVALID_JSON_POINTER
             - INVALID_INDEX_TO_ENCRYPTED_BLOCK
             - INVALID_HTTP_HEADER
+        - type: string
+
+    N32Purpose:
+      description: Usage purpose of establishing N32 connectivity
+      anyOf:
+        - type: string
+          enum:
+            - ROAMING
+            - INTER_PLMN_MOBILITY
+            - SMS_INTERCONNECT
+            - ROAMING_TEST
+            - INTER_PLMN_MOBILITY_TEST
+            - SMS_INTERCONNECT_TEST
+            - SNPN_INTERCONNECT
+            - SNPN_INTERCONNECT_TEST
+            - DISASTER_ROAMING
+            - DISASTER_ROAMING_TEST
         - type: string

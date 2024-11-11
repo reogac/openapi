@@ -5,4 +5,5 @@ type AssignedEbiData struct {
 	AssignedEbiList []EbiArpMapping `json:"assignedEbiList"`
 	FailedArpList   []Arp           `json:"failedArpList,omitempty"`
 	ReleasedEbiList []int           `json:"releasedEbiList,omitempty"`
+	ModifiedEbiList []EbiArpMapping `json:"modifiedEbiList,omitempty"`
 }

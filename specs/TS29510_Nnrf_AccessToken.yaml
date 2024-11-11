@@ -1,7 +1,7 @@
 openapi: 3.0.0
 
 info:
-  version: '1.1.5'
+  version: '1.2.1'
   title: 'NRF OAuth2'
   description: |
     NRF OAuth2 Authorization.  
@@ -9,7 +9,7 @@ info:
     All rights reserved.
 
 externalDocs:
-  description: 3GPP TS 29.510 V16.11.0; 5G System; Network Function Repository Services; Stage 3
+  description: 3GPP TS 29.510 V17.7.0; 5G System; Network Function Repository Services; Stage 3
   url: 'https://www.3gpp.org/ftp/Specs/archive/29_series/29.510/'
 
 paths:
@@ -46,6 +46,8 @@ paths:
                 contentType: application/json
               targetPlmn:
                 contentType: application/json
+              targetSnpn:
+                contentType: application/json
               targetSnssaiList:
                 contentType: application/json
               targetNsiList:
@@ -80,7 +82,7 @@ paths:
                 $ref: 'TS29571_CommonData.yaml#/components/schemas/RedirectResponse'
           headers:
             Location:
-              description: 'The URI pointing to the resource located on the redirect target NRF'
+              description: The URI pointing to the resource located on the redirect target NRF
               required: true
               schema:
                 type: string
@@ -92,7 +94,7 @@ paths:
                 $ref: 'TS29571_CommonData.yaml#/components/schemas/RedirectResponse'
           headers:
             Location:
-              description: 'The URI pointing to the resource located on the redirect target NRF'
+              description: The URI pointing to the resource located on the redirect target NRF
               required: true
               schema:
                 type: string
@@ -185,7 +187,7 @@ components:
             $ref: 'TS29571_CommonData.yaml#/components/schemas/Snssai'
           minItems: 1
         requesterFqdn:
-          $ref: 'TS29510_Nnrf_NFManagement.yaml#/components/schemas/Fqdn'
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Fqdn'
         requesterSnpnList:
           type: array
           items:
@@ -193,6 +195,8 @@ components:
           minItems: 1
         targetPlmn:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/PlmnId'
+        targetSnpn:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/PlmnIdNid'
         targetSnssaiList:
           type: array
           items:
@@ -207,6 +211,10 @@ components:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/NfSetId'
         targetNfServiceSetId:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/NfServiceSetId'
+        hnrfAccessTokenUri:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Uri'
+        sourceNfInstanceId:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/NfInstanceId'
 
     AccessTokenRsp:
       description: Contains information related to the access token response
@@ -217,7 +225,8 @@ components:
       properties:
         access_token:
           type: string
-          description: JWS Compact Serialized representation of JWS signed JSON object (AccessTokenClaims)
+          description: >
+            JWS Compact Serialized representation of JWS signed JSON object (AccessTokenClaims)
         token_type:
           type: string
           enum:
@@ -256,8 +265,12 @@ components:
           type: integer
         consumerPlmnId:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/PlmnId'
+        consumerSnpnId:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/PlmnIdNid'
         producerPlmnId:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/PlmnId'
+        producerSnpnId:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/PlmnIdNid'
         producerSnssaiList:
           type: array
           items:
@@ -270,6 +283,10 @@ components:
           minItems: 1
         producerNfSetId:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/NfSetId'
+        producerNfServiceSetId:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/NfServiceSetId'
+        sourceNfInstanceId:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/NfInstanceId'
 
     AccessTokenErr:
       description: Error returned in the access token response message

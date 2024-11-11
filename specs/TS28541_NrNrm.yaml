@@ -1,10 +1,10 @@
 openapi: 3.0.1
 info:
   title: NR NRM
-  version: 16.11.0
+  version: 17.13.0
   description: >-
     OAS 3.0.1 specification of the NR NRM
-    © 2020, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
+    © 2023, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
     All rights reserved.
 externalDocs:
   description: 3GPP TS 28.541; 5G NRM, NR NRM
@@ -16,7 +16,9 @@ components:
 #-------- Definition of types-----------------------------------------------------
 
     GnbId:
-      type: string
+      type: integer
+      minimum: 0
+      maximum: 4294967295
     GnbIdLength:
       type: integer
       minimum: 22
@@ -25,16 +27,17 @@ components:
       type: string
       maxLength: 150
     GnbDuId:
-      type: number
+      type: integer
       minimum: 0
       maximum: 68719476735
     GnbCuUpId:
-      type: number
+      type: integer
       minimum: 0
       maximum: 68719476735
 
     Sst:
       type: integer
+      minimum: 0
       maximum: 255
     Snssai:
       type: object
@@ -43,32 +46,51 @@ components:
           $ref: '#/components/schemas/Sst'
         sd:
           type: string
+          pattern: '^[A-Fa-f0-9]{6}$'
 
-    Mnc:
-      type: string
-      pattern: '[0-9]{3}|[0-9]{2}'
-    PlmnId:
-      type: object
-      properties:
-        mcc:
-          $ref: 'TS28623_ComDefs.yaml#/components/schemas/Mcc'
-        mnc:
-          $ref: '#/components/schemas/Mnc'
     PlmnIdList:
       type: array
       items:
-        $ref: '#/components/schemas/PlmnId'
+        $ref: 'TS28623_ComDefs.yaml#/components/schemas/PlmnId'
     PlmnInfo:
       type: object
       properties:
         plmnId:
-          $ref: '#/components/schemas/PlmnId'
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/PlmnId'
         snssai:
           $ref: '#/components/schemas/Snssai'
     PlmnInfoList:
       type: array
       items:
         $ref: '#/components/schemas/PlmnInfo'
+    cagId:
+      type: string
+    nid:
+      type: string
+    NpnIdentity:
+      type: object
+      oneOf:
+        - required: [ plmnId, cagidList ]
+        - required: [ plmnId, nidList ]
+      properties:
+        plmnId:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/PlmnId'
+        cagidList:
+          type: array
+          items:
+            $ref: '#/components/schemas/cagId'
+          minItems: 1
+          maxItems: 12
+        nidList:
+          type: array
+          items:
+            $ref: '#/components/schemas/nid'
+          minItems: 1
+          maxItems: 12
+    NpnIdentityList:
+      type: array
+      items:
+        $ref: '#/components/schemas/NpnIdentity'
     GGnbId:
         type: string
         pattern: '^[0-9]{3}[0-9]{2,3}-(22|23|24|25|26|27|28|29|30|31|32)-[0-9]{1,10}'
@@ -90,23 +112,22 @@ components:
       type: integer
       maximum: 503
     NrTac:
-      type: integer
-      maximum: 16777215
-    Tai:
-      type: object
-      properties:
-        plmnId:
-          $ref: '#/components/schemas/PlmnId'
-        nrTac:
-          $ref: '#/components/schemas/NrTac'
-
+      $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Tac'
+    NrTacList:
+      type: array
+      items:
+        $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Tac'
+    TaiList:
+      type: array
+      items:
+        $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Tai' 
     BackhaulAddress:
       type: object
       properties:
         gnbId:
           $ref: '#/components/schemas/GnbId'
         tai:
-          $ref: "#/components/schemas/Tai"
+          $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Tai'
     MappingSetIDBackhaulAddress:
       type: object
       properties:
@@ -168,7 +189,7 @@ components:
         timeDuration:
           type: integer
 
-    UeAccProbilityDist:
+    UeAccProbabilityDist:
       type: object
       properties:
         targetProbability:
@@ -176,7 +197,7 @@ components:
         numberofpreamblessent:
           type: integer
 
-    UeAccDelayProbilityDist:
+    UeAccDelayProbabilityDist:
       type: object
       properties:
         targetProbability:
@@ -185,18 +206,30 @@ components:
           type: integer
 
     NRPciList:
-      type: object
-      properties:
-        NRPci:
-          type: integer
+      type: array
+      items:
+        $ref: '#/components/schemas/NrPci'
+      minItems: 0
+      maxItems: 1007
 
     CSonPciList:
-      type: object
-      properties:
-        NRPci:
-          type: integer
+      type: array
+      items:
+        $ref: '#/components/schemas/NrPci'
+      minItems: 1
+      maxItems: 100
 
     MaximumDeviationHoTrigger:
+      type: integer
+      minimum: -20
+      maximum: 20
+
+    MaximumDeviationHoTriggerLow:
+      type: integer
+      minimum: -20
+      maximum: 20
+
+    MaximumDeviationHoTriggerHigh:
       type: integer
       minimum: -20
       maximum: 20
@@ -229,7 +262,7 @@ components:
       enum:
         - DL
         - UL
-        - DL and UL
+        - DL_AND_UL
     BwpContext:
       type: string
       enum:
@@ -253,7 +286,7 @@ components:
       type: object
       properties:
         plmnId:
-          $ref: '#/components/schemas/PlmnId'
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/PlmnId'
         snssai:
           $ref: '#/components/schemas/Snssai'
     RrmPolicyMemberList:
@@ -522,8 +555,8 @@ components:
           enum:
             - RS1
             - RS2
-            - RS1forEnoughMitigation
-            - RS1forNotEnoughMitigation          
+            - RS1_FOR_ENOUGH_MITIGATION
+            - RS1_FOR_NOT_ENOUGH_MITIGATION         
 
     RimRSReportConf:
       type: object
@@ -553,20 +586,33 @@ components:
         TceID:
           type: integer
         PlmnTarget:
-          $ref: '#/components/schemas/PlmnId'
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/PlmnId'
     TceMappingInfoList:
       type: array
       items:
         $ref: '#/components/schemas/TceMappingInfo'
-
-
+    ResourceType:
+      type: string
+      enum:
+        - PRB
+        - PRB_UL
+        - PRB_DL
+        - RRC_CONNECTED_USERS
+        - DRB    
+    ParameterRange:
+      type: object
+      properties:
+          maxValue:
+            type: integer
+          minValue:
+            type: integer
 #-------- Definition of abstract IOCs --------------------------------------------
 
     RrmPolicy_-Attr:
       type: object
       properties:
         resourceType:
-          type: string
+          $ref: '#/components/schemas/ResourceType'        
         rRMPolicyMemberList:
           $ref: '#/components/schemas/RrmPolicyMemberList'
 
@@ -612,6 +658,8 @@ components:
               $ref: '#/components/schemas/DRACHOptimizationFunction-Single'
             DMROFunction:
               $ref: '#/components/schemas/DMROFunction-Single'
+            DLBOFunction:
+              $ref: '#/components/schemas/DLBOFunction-Single'
             DPCIConfigurationFunction:
               $ref: '#/components/schemas/DPCIConfigurationFunction-Single'
             CPCIConfigurationFunction:
@@ -624,7 +672,8 @@ components:
               $ref: '#/components/schemas/RimRSGlobal-Single'
             Dynamic5QISet:
               $ref: 'TS28541_5GcNrm.yaml#/components/schemas/Dynamic5QISet-Multiple'
-
+            CCOFunction:
+              $ref: '#/components/schemas/CCOFunction-Single'
     ManagedElement-Single:
       allOf:
         - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
@@ -647,6 +696,8 @@ components:
               $ref: '#/components/schemas/DRACHOptimizationFunction-Single'
             DMROFunction:
               $ref: '#/components/schemas/DMROFunction-Single'
+            DLBOFunction:
+              $ref: '#/components/schemas/DLBOFunction-Single'
             DPCIConfigurationFunction:
               $ref: '#/components/schemas/DPCIConfigurationFunction-Single'
             CPCIConfigurationFunction:
@@ -695,6 +746,27 @@ components:
               $ref: '#/components/schemas/EP_F1U-Multiple'
             DRACHOptimizationFunction:
               $ref: '#/components/schemas/DRACHOptimizationFunction-Single'
+            OperatorDU:
+              $ref: '#/components/schemas/OperatorDu-Multiple'   
+
+    OperatorDu-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            gnbId:
+              $ref: '#/components/schemas/GnbId'
+            gnbIdLength:
+              $ref: '#/components/schemas/GnbIdLength'
+        - type: object
+          properties:
+            EP_F1C:
+              $ref: '#/components/schemas/EP_F1C-Single'
+            EP_F1U:
+              $ref: '#/components/schemas/EP_F1U-Multiple'
+            NrOperatorCellDu:
+              $ref: '#/components/schemas/NrOperatorCellDu-Multiple'              
+
     GnbCuUpFunction-Single:
       allOf:
         - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
@@ -751,17 +823,19 @@ components:
                     gnbCuName:
                       $ref: '#/components/schemas/GnbName'
                     plmnId:
-                      $ref: '#/components/schemas/PlmnId'
-                    x2BlackList:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/PlmnId'
+                    x2BlockList:
                       $ref: '#/components/schemas/GGnbIdList'
-                    xnBlackList:
+                    xnBlockList:
                       $ref: '#/components/schemas/GGnbIdList'
-                    x2WhiteList:
+                    x2AllowList:
                       $ref: '#/components/schemas/GGnbIdList'
-                    xnWhiteList:
+                    xnAllowList:
                       $ref: '#/components/schemas/GGnbIdList'
-                    x2XnHOBlackList:
+                    x2HOBlackList:
                       $ref: '#/components/schemas/GEnbIdList'
+                    xnHOBlackList:
+                      $ref: '#/components/schemas/GGnbIdList'
                     mappingSetIDBackhaulAddress:
                       $ref: '#/components/schemas/MappingSetIDBackhaulAddress'
                     tceMappingInfoList:
@@ -770,6 +844,10 @@ components:
                       $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
                     dynamic5QISetRef:
                       $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+                    dCHOControl:
+                      type: boolean
+                    dDAPSHOControl:
+                      type: boolean
         - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/ManagedFunction-ncO'
         - type: object
           properties:
@@ -793,6 +871,8 @@ components:
               $ref: '#/components/schemas/DESManagementFunction-Single'
             DMROFunction:
               $ref: '#/components/schemas/DMROFunction-Single'
+            DLBOFunction:
+              $ref: '#/components/schemas/DLBOFunction-Single'
 
     NrCellCu-Single:
       allOf:
@@ -827,6 +907,8 @@ components:
               $ref: '#/components/schemas/DESManagementFunction-Single'
             DMROFunction:
               $ref: '#/components/schemas/DMROFunction-Single'
+            DLBOFunction:
+              $ref: '#/components/schemas/DLBOFunction-Single'
             CESManagementFunction:
               $ref: '#/components/schemas/CESManagementFunction-Single'
             DPCIConfigurationFunction:
@@ -852,10 +934,12 @@ components:
                       $ref: '#/components/schemas/CellState'
                     plmnInfoList:
                       $ref: '#/components/schemas/PlmnInfoList'
+                    npnIdentityList:
+                      $ref: '#/components/schemas/NpnIdentityList'
                     nrPci:
                       $ref: '#/components/schemas/NrPci'
                     nrTac:
-                      $ref: '#/components/schemas/NrTac'
+                      $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Tac'
                     arfcnDL:
                       type: integer
                     arfcnUL:
@@ -919,6 +1003,20 @@ components:
               $ref: '#/components/schemas/CPCIConfigurationFunction-Single'
             DRACHOptimizationFunction:
               $ref: '#/components/schemas/DRACHOptimizationFunction-Single'
+
+    NrOperatorCellDu-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            cellLocalId:
+              type: integer
+            administrativeState:
+              $ref: 'TS28623_ComDefs.yaml#/components/schemas/AdministrativeState'
+            plmnInfoList:
+              $ref: '#/components/schemas/PlmnInfoList'
+            nrTac:
+              $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Tac'
 
     NRFrequency-Single:
       allOf:
@@ -1040,7 +1138,7 @@ components:
                     beamType:
                       type: string
                       enum:
-                        - SSB-BEAM
+                        - SSB_BEAM
                     beamAzimuth:
                       type: integer
                       minimum: -1800
@@ -1069,10 +1167,19 @@ components:
                   properties:
                     rRMPolicyMaxRatio:
                       type: integer
+                      default: 100
+                      minimum: 0
+                      maximum: 100
                     rRMPolicyMinRatio:
                       type: integer
+                      default: 0
+                      minimum: 0
+                      maximum: 100
                     rRMPolicyDedicatedRatio:
                       type: integer
+                      default: 0
+                      minimum: 0
+                      maximum: 100
 
     NRCellRelation-Single:
       allOf:
@@ -1088,7 +1195,7 @@ components:
                       $ref: '#/components/schemas/CellIndividualOffset'
                     adjacentNRCellRef:
                       $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
-                    nRFrequencyRef:
+                    nRFreqRelationRef:
                       $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
                     isRemoveAllowed:
                       type: boolean
@@ -1097,6 +1204,8 @@ components:
                     isESCoveredBy:
                       $ref: '#/components/schemas/IsESCoveredBy'
                     isENDCAllowed:
+                      type: boolean
+                    isMLBAllowed:
                       type: boolean
     EUtranCellRelation-Single:
       allOf:
@@ -1121,13 +1230,13 @@ components:
                   properties:
                     offsetMO:
                       $ref: '#/components/schemas/QOffsetRangeList'
-                    blackListEntry:
+                    blockListEntry:
                       type: array
                       items:
                         type: integer
                         minimum: 0
                         maximum: 1007
-                    blackListEntryIdleMode:
+                    blockListEntryIdleMode:
                       type: integer
                     cellReselectionPriority:
                       type: integer
@@ -1277,13 +1386,13 @@ components:
                     isProbingCapable:
                       type: string
                       enum:
-                         - yes
-                         - no
+                         - YES
+                         - NO
                     energySavingState:
                       type: string
                       enum:
-                         - isNotEnergySaving
-                         - isEnergySaving
+                         - IS_NOT_ENERGY_SAVING
+                         - IS_ENERGY_SAVING
 
     DRACHOptimizationFunction-Single:
       allOf:
@@ -1295,11 +1404,10 @@ components:
                   properties:
                     drachOptimizationControl:
                       type: boolean
-                    ueAccProbilityDist:
-                      $ref: "#/components/schemas/UeAccProbilityDist"
-                    ueAccDelayProbilityDist:
-                      $ref: "#/components/schemas/UeAccDelayProbilityDist"
-        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/ManagedFunction-ncO'
+                    ueAccProbabilityDist:
+                      $ref: "#/components/schemas/UeAccProbabilityDist"
+                    ueAccDelayProbabilityDist:
+                      $ref: "#/components/schemas/UeAccDelayProbabilityDist"
 
     DMROFunction-Single:
       allOf:
@@ -1311,12 +1419,28 @@ components:
                   properties:
                     dmroControl:
                       type: boolean
-                    maximumDeviationHoTrigger:
-                      $ref: '#/components/schemas/MaximumDeviationHoTrigger'
+                    maximumDeviationHoTriggerLow:
+                      $ref: '#/components/schemas/MaximumDeviationHoTriggerLow'
+                    maximumDeviationHoTriggerHigh:
+                      $ref: '#/components/schemas/MaximumDeviationHoTriggerHigh'
                     minimumTimeBetweenHoTriggerChange:
                       $ref: '#/components/schemas/MinimumTimeBetweenHoTriggerChange'
                     tstoreUEcntxt:
                       $ref: '#/components/schemas/TstoreUEcntxt'
+    DLBOFunction-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes: 
+                  type: object
+                  properties:
+                    dlboControl:
+                      type: boolean
+                    maximumDeviationHoTrigger:
+                          $ref: '#/components/schemas/MaximumDeviationHoTrigger'
+                    minimumTimeBetweenHoTriggerChange:
+                          $ref: '#/components/schemas/MinimumTimeBetweenHoTriggerChange'
 
     DPCIConfigurationFunction-Single:
       allOf:
@@ -1371,13 +1495,13 @@ components:
                     energySavingControl:
                       type: string
                       enum:
-                         - toBeEnergySaving
-                         - toBeNotEnergySaving
+                         - TO_BE_ENERGY_SAVING
+                         - TO_BE_NOT_ENERGY_SAVING
                     energySavingState:
                       type: string
                       enum:
-                         - isNotEnergySaving
-                         - isEnergySaving
+                         - IS_NOT_ENERGY_SAVING
+                         - IS_ENERGY_SAVING
 
     RimRSGlobal-Single:
       allOf:
@@ -1471,7 +1595,7 @@ components:
                     gnbIdLength:
                       $ref: '#/components/schemas/GnbIdLength'
                     plmnId:
-                      $ref: '#/components/schemas/PlmnId'
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/PlmnId'
         - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/ManagedFunction-ncO'
         - type: object
           properties:
@@ -1631,6 +1755,9 @@ components:
                       $ref: '#/components/schemas/LocalAddress'
                     remoteAddress:
                       $ref: '#/components/schemas/RemoteAddress'
+                    epTransportRefs:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+
     EP_NgU-Single:
       allOf:
         - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
@@ -1676,6 +1803,57 @@ components:
                       $ref: '#/components/schemas/LocalAddress'
                     remoteAddress:
                       $ref: '#/components/schemas/RemoteAddress'
+    CCOFunction-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                cCOControl:
+                  type: boolean
+                cCOWeakCoverageParameters:
+                  $ref: '#/components/schemas/CCOWeakCoverageParameters-Single'
+                cCOPilotPollutionParameters:
+                  $ref: '#/components/schemas/CCOPilotPollutionParameters-Single'  
+                cCOOvershootCoverageParameters-Single:
+                  $ref: '#/components/schemas/CCOOvershootCoverageParameters-Single'  
+    CCOParameters-Attr:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                coverageShapeList:
+                  type: integer
+                downlinkTransmitPowerRange:
+                  $ref: '#/components/schemas/ParameterRange'
+                antennaTiltRange:
+                  $ref: '#/components/schemas/ParameterRange'
+                antennaAzimuthRange:
+                  $ref: '#/components/schemas/ParameterRange'
+                digitalTiltRange:
+                  $ref: '#/components/schemas/ParameterRange'
+                digitalAzimuthRange:
+                  $ref: '#/components/schemas/ParameterRange'
+
+    CCOWeakCoverageParameters-Single:
+      allOf:
+        - $ref: '#/components/schemas/CCOParameters-Attr'
+        - type: object
+
+    CCOPilotPollutionParameters-Single:
+      allOf:
+        - $ref: '#/components/schemas/CCOParameters-Attr'
+        - type: object
+    
+    CCOOvershootCoverageParameters-Single:
+      allOf:
+        - $ref: '#/components/schemas/CCOParameters-Attr'
+        - type: object
 
 #-------- Definition of JSON arrays for name-contained IOCs ----------------------
 
@@ -1691,6 +1869,10 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/GnbDuFunction-Single'
+    OperatorDu-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/OperatorDu-Single'    
     GnbCuUpFunction-Multiple:
       type: array
       items:
@@ -1704,6 +1886,12 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/NrCellDu-Single'
+    
+    NrOperatorCellDu-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/NrOperatorCellDu-Single'    
+        
     NrCellCu-Multiple:
       type: array
       items:
@@ -1831,16 +2019,18 @@ components:
     resources-nrNrm:
       oneOf:
         - $ref: '#/components/schemas/MnS'
-
+        
         - $ref: '#/components/schemas/SubNetwork-Single'
         - $ref: '#/components/schemas/ManagedElement-Single'
 
         - $ref: '#/components/schemas/GnbDuFunction-Single'
         - $ref: '#/components/schemas/GnbCuUpFunction-Single'
         - $ref: '#/components/schemas/GnbCuCpFunction-Single'
+        - $ref: '#/components/schemas/OperatorDu-Single'
 
         - $ref: '#/components/schemas/NrCellCu-Single'
         - $ref: '#/components/schemas/NrCellDu-Single'
+        - $ref: '#/components/schemas/NrOperatorCellDu-Single'
 
         - $ref: '#/components/schemas/NRFrequency-Single'
         - $ref: '#/components/schemas/EUtranFrequency-Single'
@@ -1860,6 +2050,7 @@ components:
         - $ref: '#/components/schemas/DESManagementFunction-Single'
         - $ref: '#/components/schemas/DRACHOptimizationFunction-Single'
         - $ref: '#/components/schemas/DMROFunction-Single'
+        - $ref: '#/components/schemas/DLBOFunction-Single'        
         - $ref: '#/components/schemas/DPCIConfigurationFunction-Single'
         - $ref: '#/components/schemas/CPCIConfigurationFunction-Single'
         - $ref: '#/components/schemas/CESManagementFunction-Single'
@@ -1884,3 +2075,7 @@ components:
         - $ref: '#/components/schemas/EP_NgU-Single'
         - $ref: '#/components/schemas/EP_X2U-Single'
         - $ref: '#/components/schemas/EP_S1U-Single'
+        - $ref: '#/components/schemas/CCOFunction-Single'
+        - $ref: '#/components/schemas/CCOWeakCoverageParameters-Single'
+        - $ref: '#/components/schemas/CCOPilotPollutionParameters-Single'
+        - $ref: '#/components/schemas/CCOOvershootCoverageParameters-Single'

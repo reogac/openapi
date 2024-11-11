@@ -1,19 +1,19 @@
 openapi: 3.0.0
 info:
   title: M5_NetworkAssistance
-  version: 1.0.0
+  version: 2.1.0
   description: |
     5GMS AF M5 Network Assistance API
-    © 2021, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
+    © 2023, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
     All rights reserved.
 tags:
   - name: M5_NetworkAssistance
     description: '5G Media Streaming: Media Session Handling (M5) APIs: Network Assistance'
 externalDocs:
-  description: 3GPP TS 26.512 V16.2.0; 5G Media Streaming (5GMS); Protocols.
-  url: 'http://www.3gpp.org/ftp/Specs/archive/29_series/26.512/'
+  description: 'TS 26.512 V17.6.0; 5G Media Streaming (5GMS); Protocols'
+  url: 'https://www.3gpp.org/ftp/Specs/archive/26_series/26.512/'
 servers:
-  - url: '{apiRoot}/3gpp-m5/v1'
+  - url: '{apiRoot}/3gpp-m5/v2'
     variables:
       apiRoot:
         default: https://example.com
@@ -23,6 +23,12 @@ paths:
     post:
       operationId: createNetworkAssistanceSession
       summary: 'Create a new Network Assistance Session.'
+      requestBody:
+        description: 'The initial parameters for the Network Assistance Session resource'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NetworkAssistanceSession'
       responses:
         '201':
           description: 'Created Network Assistance Session'
@@ -32,10 +38,10 @@ paths:
                 $ref: '#/components/schemas/NetworkAssistanceSession'
           headers:
             Location:
-              description: 'The URL of the nely created Network Assistance Session resource'
+              description: 'The URL of the newly created Network Assistance Session resource'
               required: true
               schema:
-                $ref: 'TS26512_CommonData.yaml#/components/schemas/Url'
+                $ref: 'TS26512_CommonData.yaml#/components/schemas/AbsoluteUrl'
         '400':
           description: 'Bad Request'
         '401':
@@ -147,7 +153,7 @@ paths:
           description: 'Unauthorized'
         '404':
           description: 'Not Found'
-  /network-assistance/{naSessionId}/boostRequest:
+  /network-assistance/{naSessionId}/boost-request:
     post:
       operationId: requestDeliveryBoost
       summary: 'Request a delivery boost'
@@ -174,17 +180,24 @@ paths:
 components:
   schemas:
     NetworkAssistanceSession:
+      description: "A representation of a Network Assistance Session resource."
       type: object
       required: 
         - naSessionId
+        - provisioningSessionId
+        - serviceDataFlowDescriptions
       properties:
         naSessionId:
           $ref: 'TS26512_CommonData.yaml#/components/schemas/ResourceId'
-        serviceDataFlowDescription:
+        provisioningSessionId:
+          $ref: 'TS26512_CommonData.yaml#/components/schemas/ResourceId'
+        serviceDataFlowDescriptions:
           type: array
           items: 
             $ref: 'TS26512_CommonData.yaml#/components/schemas/ServiceDataFlowDescription'
           minItems: 1
+        mediaType:
+          $ref: 'TS29514_Npcf_PolicyAuthorization.yaml#/components/schemas/MediaType'
         policyTemplateId:
           $ref: 'TS26512_CommonData.yaml#/components/schemas/ResourceId'
         requestedQoS:
@@ -192,4 +205,4 @@ components:
         recommendedQoS:
           $ref: 'TS26512_CommonData.yaml#/components/schemas/M5QoSSpecification'
         notficationURL:
-          $ref: 'TS26512_CommonData.yaml#/components/schemas/Url'
+          $ref: 'TS26512_CommonData.yaml#/components/schemas/AbsoluteUrl'

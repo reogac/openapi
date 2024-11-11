@@ -1,24 +1,29 @@
 openapi: 3.0.0
+
 info:
-  version: 1.1.8
+  version: 1.2.4
   title: Namf_Communication
   description: |
-    AMF Communication Service
-    © 2022, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
+    AMF Communication Service.  
+    © 2023, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).  
     All rights reserved.
+
 security:
   - {}
   - oAuth2ClientCredentials:
       - namf-comm
+
 externalDocs:
-  description: 3GPP TS 29.518 V16.12.0; 5G System; Access and Mobility Management Services
-  url: 'http://www.3gpp.org/ftp/Specs/archive/29_series/29.518/'
+  description: 3GPP TS 29.518 V17.12.0; 5G System; Access and Mobility Management Services
+  url: 'https://www.3gpp.org/ftp/Specs/archive/29_series/29.518/'
+
 servers:
   - url: '{apiRoot}/namf-comm/v1'
     variables:
       apiRoot:
         default: https://example.com
-        description: apiRoot as defined in clause clause 4.4 of 3GPP TS 29.501
+        description: apiRoot as defined in clause 4.4 of 3GPP TS 29.501
+
 paths:
   /ue-contexts/{ueContextId}:
     put:
@@ -91,6 +96,9 @@ paths:
                   type: string
                   format: binary
                 binaryDataN2InformationExt16:
+                  type: string
+                  format: binary
+                binaryDataN2InformationExt17:
                   type: string
                   format: binary
             encoding:
@@ -193,6 +201,12 @@ paths:
                     schema:
                       type: string
               binaryDataN2InformationExt16:
+                contentType:  application/vnd.3gpp.ngap
+                headers:
+                  Content-Id:
+                    schema:
+                      type: string
+              binaryDataN2InformationExt17:
                 contentType:  application/vnd.3gpp.ngap
                 headers:
                   Content-Id:
@@ -383,6 +397,8 @@ paths:
                   $ref: 'TS29571_CommonData.yaml#/components/responses/400'
                 '403':
                   $ref: 'TS29571_CommonData.yaml#/components/responses/403'
+                '404':
+                  $ref: 'TS29571_CommonData.yaml#/components/responses/404'
                 '411':
                   $ref: 'TS29571_CommonData.yaml#/components/responses/411'
                 '413':
@@ -400,8 +416,17 @@ paths:
           description: UE context successfully created.
           headers:
             Location:
-              description: 'Contains the URI of the newly created resource, according to the structure: {apiRoot}/namf-comm/<apiVersion>/ue-contexts/{ueContextId}'
+              description: > 
+                Contains the URI of the newly created resource, according to the structure: 
+                {apiRoot}/namf-comm/<apiVersion>/ue-contexts/{ueContextId}
               required: true
+              schema:
+                type: string
+            3gpp-Sbi-Producer-Id:
+              description: >
+                Indicating the AMF serving the UE Context. This header shall be included when the 
+                UE Context is created in a target AMF other than the initial AMF sending the 
+                response.
               schema:
                 type: string
           content:
@@ -799,6 +824,9 @@ paths:
                   binaryDataN2InformationExt1:
                     type: string
                     format: binary
+                  binaryDataN2InformationExt2:
+                    type: string
+                    format: binary
               encoding:
                 jsonData:
                   contentType:  application/json
@@ -809,6 +837,12 @@ paths:
                       schema:
                         type: string
                 binaryDataN2InformationExt1:
+                  contentType:  application/vnd.3gpp.ngap
+                  headers:
+                    Content-Id:
+                      schema:
+                        type: string
+                binaryDataN2InformationExt2:
                   contentType:  application/vnd.3gpp.ngap
                   headers:
                     Content-Id:
@@ -911,7 +945,7 @@ paths:
               properties: # Request parts
                 jsonData:
                   $ref: '#/components/schemas/UeContextRelocateData'
-                binaryDataGtpcMessage:
+                binaryDataForwardRelocationRequest:
                   type: string
                   format: binary
                 binaryDataN2Information:
@@ -968,7 +1002,7 @@ paths:
             encoding:
               jsonData:
                 contentType:  application/json
-              binaryDataGtpcMessage:
+              binaryDataForwardRelocationRequest:
                 contentType:  application/vnd.3gpp.gtpc
                 headers:
                   Content-Id:
@@ -1112,7 +1146,6 @@ paths:
           $ref: 'TS29571_CommonData.yaml#/components/responses/503'
         default:
           description: Unexpected error
-
   /ue-contexts/{ueContextId}/cancel-relocate:
     post:
       summary: Namf_Communication CancelRelocateUEContext service Operation
@@ -1179,7 +1212,7 @@ paths:
     post:
       summary: Namf_Communication N1N2 Message Transfer (UE Specific) service Operation
       tags:
-        - n1N2Message collection (Document)
+        - n1N2Message collection (Collection)
       operationId: N1N2MessageTransfer
       parameters:
         - name: ueContextId
@@ -1328,7 +1361,7 @@ paths:
     post:
       summary: Namf_Communication N1N2 Message Subscribe (UE Specific) service Operation
       tags:
-        - N1N2 Subscriptions Collection for Individual UE Contexts (Document)
+        - N1N2 Subscriptions Collection for Individual UE Contexts (Collection)
       operationId: N1N2MessageSubscribe
       parameters:
         - name: ueContextId
@@ -1349,7 +1382,7 @@ paths:
           description: N1N2 Message Subscription successfully created.
           headers:
             Location:
-              description: 'Contains the URI of the newly created resource, according to the structure: {apiRoot}/namf-comm/<apiVersion>/{ueContextId}/ue-contexts/n1-n2-messages/subscriptions/{subscriptionId}'
+              description: 'Contains the URI of the newly created resource, according to the structure: {apiRoot}/namf-comm/<apiVersion>/ue-contexts/{ueContextId}/n1-n2-messages/subscriptions/{subscriptionId}'
               required: true
               schema:
                 type: string
@@ -1531,7 +1564,7 @@ paths:
     post:
       summary: Namf_Communication Non UE N2 Message Transfer service Operation
       tags:
-        - Non UE N2Messages collection (Document)
+        - Non UE N2Messages collection (Collection)
       operationId: NonUeN2MessageTransfer
       requestBody:
         content:
@@ -1624,7 +1657,7 @@ paths:
     post:
       summary: Namf_Communication Non UE N2 Info Subscribe service Operation
       tags:
-        - Non UE N2Messages Subscriptions collection (Document)
+        - Non UE N2Messages Subscriptions collection (Collection)
       operationId: NonUeN2InfoSubscribe
       requestBody:
         content:
@@ -1742,6 +1775,8 @@ paths:
           $ref: 'TS29571_CommonData.yaml#/components/responses/308'
         '400':
           $ref: 'TS29571_CommonData.yaml#/components/responses/400'
+        '404':
+          $ref: 'TS29571_CommonData.yaml#/components/responses/404'
         '429':
           $ref: 'TS29571_CommonData.yaml#/components/responses/429'
         '500':
@@ -1752,7 +1787,7 @@ paths:
     post:
       summary: Namf_Communication AMF Status Change Subscribe service Operation
       tags:
-        - subscriptions collection (Document)
+        - subscriptions collection (Collection)
       operationId: AMFStatusChangeSubscribe
       requestBody:
         content:
@@ -1884,11 +1919,13 @@ paths:
         required: true
       responses:
         '200':
-          description: Subscription modified successfully.
+          description: Subscription modified successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SubscriptionData'
+        '204':
+          description: Events subscription modification is accepted entirely
         '307':
           $ref: 'TS29571_CommonData.yaml#/components/responses/307'
         '308':
@@ -1962,6 +1999,7 @@ components:
 # STRUCTURED DATA TYPES
 #
     SubscriptionData:
+      description: Data within an AMF Status Change Subscription request and response
       type: object
       properties:
         amfStatusUri:
@@ -1974,6 +2012,7 @@ components:
       required:
         - amfStatusUri
     AmfStatusChangeNotification:
+      description: Data within an AMF Status Change Notification request
       type: object
       properties:
         amfStatusInfoList:
@@ -1984,6 +2023,7 @@ components:
       required:
         - amfStatusInfoList
     AmfStatusInfo:
+      description: AMF Status Information
       type: object
       properties:
         guamiList:
@@ -2001,6 +2041,7 @@ components:
         - guamiList
         - statusChange
     AssignEbiData:
+      description: Data within an EBI assignment request
       type: object
       properties:
         pduSessionId:
@@ -2017,9 +2058,15 @@ components:
           minItems: 1
         oldGuami:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/Guami'
+        modifiedEbiList:
+          type: array
+          items:
+            $ref: 'TS29502_Nsmf_PDUSession.yaml#/components/schemas/EbiArpMapping'
+          minItems: 1
       required:
         - pduSessionId
     AssignedEbiData:
+      description: Data within a successful response to an EBI assignment request
       type: object
       properties:
         pduSessionId:
@@ -2039,10 +2086,16 @@ components:
           items:
             $ref: '#/components/schemas/EpsBearerId'
           minItems: 1
+        modifiedEbiList:
+          type: array
+          items:
+            $ref: '#/components/schemas/EpsBearerId'
+          minItems: 1
       required:
         - pduSessionId
         - assignedEbiList
     AssignEbiFailed:
+      description: Represents failed assignment of EBI(s)
       type: object
       properties:
         pduSessionId:
@@ -2055,6 +2108,7 @@ components:
       required:
         - pduSessionId
     UEContextRelease:
+      description: Data within a Release UE Context request
       type: object
       properties:
         supi:
@@ -2067,6 +2121,7 @@ components:
       required:
         - ngapCause
     N2InformationTransferReqData:
+      description: Data within a N2 Information Transfer request containing the N2 information requested to be transferred to 5G AN
       type: object
       properties:
         taiList:
@@ -2088,6 +2143,7 @@ components:
       required:
         - n2Information
     NonUeN2InfoSubscriptionCreateData:
+      description: Data within a create subscription request for non-UE specific N2 information notification
       type: object
       properties:
         globalRanNodeList:
@@ -2112,6 +2168,7 @@ components:
         - n2InformationClass
         - n2NotifyCallbackUri
     NonUeN2InfoSubscriptionCreatedData:
+      description: Data for the created subscription for non-UE specific N2 information notification
       type: object
       properties:
         n2NotifySubscriptionId:
@@ -2123,6 +2180,7 @@ components:
       required:
         - n2NotifySubscriptionId
     UeN1N2InfoSubscriptionCreateData:
+      description: Data within a create subscription request for UE specific N1 and/or N2 information notification
       type: object
       properties:
         n2InformationClass:
@@ -2140,6 +2198,7 @@ components:
         oldGuami:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/Guami'
     UeN1N2InfoSubscriptionCreatedData:
+      description: Data for the created subscription for UE specific N1 and/or N2 information notification
       type: object
       properties:
         n1n2NotifySubscriptionId:
@@ -2149,6 +2208,7 @@ components:
       required:
         - n1n2NotifySubscriptionId
     N2InformationNotification:
+      description: Data within a N2 information notification request
       type: object
       properties:
         n2NotifySubscriptionId:
@@ -2185,6 +2245,7 @@ components:
       required:
         - n2NotifySubscriptionId
     N2InfoContainer:
+      description: N2 information container
       type: object
       properties:
         n2InformationClass:
@@ -2199,9 +2260,12 @@ components:
           $ref: '#/components/schemas/PwsInformation'
         v2xInfo:
           $ref: '#/components/schemas/V2xInformation'
+        proseInfo:
+          $ref: '#/components/schemas/ProSeInformation'
       required:
         - n2InformationClass
     N1MessageNotification:
+      description: Data within a N1 message notification request
       type: object
       properties:
         n1NotifySubscriptionId:
@@ -2226,6 +2290,7 @@ components:
       required:
         - n1MessageContainer
     N1MessageContainer:
+      description: N1 Message container
       type: object
       properties:
         n1MessageClass:
@@ -2240,6 +2305,7 @@ components:
         - n1MessageClass
         - n1MessageContent
     N1N2MessageTransferReqData:
+      description: Data within a N1/N2 message transfer request
       type: object
       properties:
         n1MessageContainer:
@@ -2282,8 +2348,12 @@ components:
           default: false
         targetAccess:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/AccessType'
+        nfId:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/NfInstanceId'
+
 
     N1N2MessageTransferRspData:
+      description: Data within a N1/N2 message transfer response
       type: object
       properties:
         cause:
@@ -2293,6 +2363,7 @@ components:
       required:
         - cause
     RegistrationContextContainer:
+      description: Registration Context Container used to send the UE context information, N1 message from UE, AN address etc during Registration with AMF re-allocation procedure
       type: object
       properties:
         ueContext:
@@ -2314,7 +2385,7 @@ components:
           pattern: '^[0-9a-fA-F]+$'
         ueContextRequest:
           type: boolean
-          default:  false
+          default: false
         initialAmfN2ApId:
           type: integer
         anN2IPv4Addr:
@@ -2342,14 +2413,14 @@ components:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/PlmnId'
         iabNodeInd:
           type: boolean
-          default:  false
+          default: false
         ceModeBInd:
           $ref: '#/components/schemas/CeModeBInd'
         lteMInd:
           $ref: '#/components/schemas/LteMInd'
         authenticatedInd:
           type: boolean
-          default:  false
+          default: false
         npnAccessInfo:
           $ref: '#/components/schemas/NpnAccessInfo'
       required:
@@ -2360,6 +2431,7 @@ components:
         - initialAmfName
         - userLocation
     AreaOfValidity:
+      description: Area of validity information for N2 information transfer
       type: object
       properties:
         taiList:
@@ -2370,6 +2442,7 @@ components:
       required:
         - taiList
     UeContextTransferReqData:
+      description: Data within a UE Context Transfer Request to start transferring of an individual ueContext resource from old AMF to new AMF
       type: object
       properties:
         reason:
@@ -2386,11 +2459,14 @@ components:
         - reason
         - accessType
     UeContextTransferRspData:
+      description: Data within a successful response to the UE Context Transfer request
       type: object
       properties:
         ueContext:
           $ref: '#/components/schemas/UeContext'
         ueRadioCapability:
+          $ref: '#/components/schemas/N2InfoContent'
+        ueRadioCapabilityForPaging:
           $ref: '#/components/schemas/N2InfoContent'
         ueNbiotRadioCapability:
           $ref: '#/components/schemas/N2InfoContent'
@@ -2399,6 +2475,7 @@ components:
       required:
         - ueContext
     UeContext:
+      description: Represents an individual ueContext resource
       type: object
       properties:
         supi:
@@ -2420,6 +2497,8 @@ components:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/NfGroupId'
         routingIndicator:
           type: string
+        hNwPubKeyId:
+          type: integer
         groupList:
           type: array
           items:
@@ -2429,10 +2508,20 @@ components:
           $ref: '#/components/schemas/DrxParameter'
         subRfsp:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/RfspIndex'
+        pcfRfsp:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/RfspIndex'
         usedRfsp:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/RfspIndex'
         subUeAmbr:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/Ambr'
+        pcfUeAmbr:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Ambr'
+        subUeSliceMbrList:
+          type: object
+          additionalProperties:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/SliceMbr'
+          minProperties: 1
+          description: A map(list of key-value pairs) where Snssai serves as key.
         smsfId:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/NfInstanceId'
         seafData:
@@ -2500,6 +2589,8 @@ components:
           items:
             $ref: '#/components/schemas/PduSessionContext'
           minItems: 1
+        epsInterworkingInfo:
+          $ref: 'TS29503_Nudm_UECM.yaml#/components/schemas/EpsInterworkingInfo'
         traceData:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/TraceData'
         serviceGapExpiryTime:
@@ -2535,6 +2626,9 @@ components:
         lteCatMInd:
           type: boolean
           default: false
+        redCapInd:
+          type: boolean
+          default: false
         moExpDataCounter:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/MoExpDataCounter'
         cagData:
@@ -2551,6 +2645,17 @@ components:
           default: false
         iabOperationAllowed:
           type: boolean
+        proseContext:
+          $ref: '#/components/schemas/ProseContext'
+        analyticsSubscriptionList:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalyticsSubscription'
+          minItems: 1
+        pcfAmpBindingInfo:
+          type: string
+        pcfUepBindingInfo:
+          type: string
         usedServiceAreaRestriction:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/ServiceAreaRestriction'
         praInAmPolicy:
@@ -2567,15 +2672,50 @@ components:
           description: A map(list of key-value pairs) where praId serves as key.
         updpSubscriptionData:
           $ref: '#/components/schemas/UpdpSubscriptionData'
+        smPolicyNotifyPduList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/PduSessionInfo'
+          minItems: 1
+        pcfUeCallbackInfo:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/PcfUeCallbackInfo'
+        uePositioningCap:
+          $ref: 'TS29572_Nlmf_Location.yaml#/components/schemas/UePositioningCapabilities'
+        astiDistributionIndication:
+          type: boolean
+          default: false
+        tsErrorBudget:
+          type: integer
+        snpnOnboardInd:
+          type: boolean
+          default: false
         smfSelInfo:
           $ref: 'TS29507_Npcf_AMPolicyControl.yaml#/components/schemas/SmfSelectionData'
-        pcfAmpBindingInfo:
+        pcfUeSliceMbrList:
+          type: object
+          additionalProperties:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/SliceMbr'
+          minProperties: 1
+          description: A map(list of key-value pairs) where Snssai serves as key.
+        smsfSetId:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/NfSetId'
+        smsfServiceSetId:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/NfServiceSetId'
+        smsfBindingInfo:
           type: string
-        pcfUepBindingInfo:
-          type: string
+        disasterRoamingInd:
+          type: boolean
+          default: false
+        disasterPlmn:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/PlmnId'
+        wlServAreaRes:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/WirelineServiceAreaRestriction'
+        asTimeDisParam:
+          $ref: 'TS29507_Npcf_AMPolicyControl.yaml#/components/schemas/AsTimeDistributionParam'
 
 
     N2SmInformation:
+      description: Represents the session management SMF related N2 information data part
       type: object
       properties:
         pduSessionId:
@@ -2593,6 +2733,7 @@ components:
       required:
         - pduSessionId
     N2InfoContent:
+      description: Represents a transparent N2 information content to be relayed by AMF
       type: object
       properties:
         ngapMessageType:
@@ -2604,6 +2745,7 @@ components:
       required:
         - ngapData
     NrppaInformation:
+      description: Represents a NRPPa related N2 information data part
       type: object
       properties:
         nfId:
@@ -2616,6 +2758,7 @@ components:
         - nfId
         - nrppaPdu
     PwsInformation:
+      description: Represents a PWS related information data part
       type: object
       properties:
         messageIdentifier:
@@ -2634,11 +2777,14 @@ components:
           default: false
         omcId:
           $ref: '#/components/schemas/OmcIdentifier'
+        nfId:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/NfInstanceId'
       required:
         - messageIdentifier
         - serialNumber
         - pwsContainer
     N1N2MsgTxfrFailureNotification:
+      description: Data within a N1/N2 Message Transfer Failure Notification request
       type: object
       properties:
         cause:
@@ -2649,6 +2795,7 @@ components:
         - cause
         - n1n2MsgDataUri
     N1N2MessageTransferError:
+      description: Data within a N1/N2 Message Transfer Error response
       type: object
       properties:
         error:
@@ -2658,6 +2805,7 @@ components:
       required:
         - error
     N1N2MsgTxfrErrDetail:
+      description: N1/N2 Message Transfer Error Details
       type: object
       properties:
         retryAfter:
@@ -2667,6 +2815,7 @@ components:
         maxWaitingTime:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/DurationSec'
     N2InformationTransferRspData:
+      description: Data within a successful response to the N2 Information Transfer request to transfer N2 Information to the AN
       type: object
       properties:
         result:
@@ -2678,6 +2827,7 @@ components:
       required:
         - result
     MmContext:
+      description: Represents a Mobility Management Context in UE Context
       type: object
       properties:
         accessType:
@@ -2742,9 +2892,12 @@ components:
           items:
             $ref: '#/components/schemas/NssaiMapping'
           minItems: 1
+        uuaaMmStatus:
+          $ref: '#/components/schemas/UuaaMmStatus'
       required:
         - accessType
     SeafData:
+      description: Represents SEAF data derived from data received from AUSF
       type: object
       properties:
         ngKsi:
@@ -2766,6 +2919,7 @@ components:
         - ngKsi
         - keyAmf
     NasSecurityMode:
+      description: Indicates the NAS Security Mode
       type: object
       properties:
         integrityAlgorithm:
@@ -2776,6 +2930,7 @@ components:
         - integrityAlgorithm
         - cipheringAlgorithm
     PduSessionContext:
+      description: Represents a PDU Session Context in UE Context
       type: object
       properties:
         pduSessionId:
@@ -2830,6 +2985,32 @@ components:
           default: false
         cnAssistedRanPara:
           $ref: 'TS29502_Nsmf_PDUSession.yaml#/components/schemas/CnAssistedRanPara'
+        nrfManagementUri:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Uri'
+        nrfDiscoveryUri:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Uri'
+        nrfAccessTokenUri:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Uri'
+        smfBindingInfo:
+          type: string
+        vsmfBindingInfo:
+          type: string
+        ismfBindingInfo:
+          type: string
+        additionalSnssai:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Snssai'
+        interPlmnApiRoot:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Uri'
+        pgwFqdn:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Fqdn'
+        pgwIpAddr:
+          $ref: 'TS29503_Nudm_SDM.yaml#/components/schemas/IpAddress'
+        plmnId:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/PlmnId'
+        anchorSmfSupportedFeatures:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/SupportedFeatures'
+        anchorSmfOauth2Required:
+          type: boolean
       required:
         - pduSessionId
         - smContextRef
@@ -2837,6 +3018,7 @@ components:
         - dnn
         - accessType
     NssaiMapping:
+      description: Represents the mapping between a S-NSSAI in serving PLMN to a S-NSSAI in home PLMN
       type: object
       properties:
         mappedSnssai:
@@ -2847,6 +3029,7 @@ components:
         - mappedSnssai
         - hSnssai
     UeRegStatusUpdateReqData:
+      description: Data within a UE registration status update request to indicate a completion of transferring at a target AMF
       type: object
       properties:
         transferStatus:
@@ -2863,9 +3046,20 @@ components:
           items:
             $ref: '#/components/schemas/SmfChangeInfo'
           minItems: 1
+        analyticsNotUsedList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Uri'
+          minItems: 1
+        toReleaseSessionInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReleaseSessionInfo'
+          minItems: 1
       required:
         - transferStatus
     UeRegStatusUpdateRspData:
+      description: Data within a UE registration status update response to provide the status of UE context transfer status update at a source AMF
       type: object
       properties:
         regStatusTransferComplete:
@@ -2873,6 +3067,7 @@ components:
       required:
         - regStatusTransferComplete
     AssignEbiError:
+      description: Data within a failure response to the EBI assignment request
       type: object
       properties:
         error:
@@ -2883,6 +3078,7 @@ components:
         - error
         - failureDetails
     UeContextCreateData:
+      description: Data within a request to create an individual ueContext resource
       type: object
       properties:
         ueContext:
@@ -2900,6 +3096,8 @@ components:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/Uri'
         ueRadioCapability:
           $ref: '#/components/schemas/N2InfoContent'
+        ueRadioCapabilityForPaging:
+          $ref: '#/components/schemas/N2InfoContent'
         ngapCause:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/NgApCause'
         supportedFeatures:
@@ -2912,6 +3110,7 @@ components:
         - sourceToTargetData
         - pduSessionList
     UeContextCreatedData:
+      description: Data within a successful response for creating an individual ueContext resource
       type: object
       properties:
         ueContext:
@@ -2932,11 +3131,17 @@ components:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/SupportedFeatures'
         pcfReselectedInd:
           type: boolean
+        analyticsNotUsedList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Uri'
+          minItems: 1
       required:
         - ueContext
         - targetToSourceData
         - pduSessionList
     UeContextCreateError:
+      description: Data within a failure response for creating a UE context
       type: object
       properties:
         error:
@@ -2948,6 +3153,7 @@ components:
       required:
         - error
     UeContextRelocateData:
+      description: Data within a Relocate UE Context request
       type: object
       properties:
         ueContext:
@@ -2975,11 +3181,16 @@ components:
         - sourceToTargetData
         - forwardRelocationRequest
     UeContextRelocatedData:
+      description: Data within a Relocate UE Context response
       type: object
       properties:
         ueContext:
           $ref: '#/components/schemas/UeContext'
+      required:
+        - ueContext
+
     UeContextCancelRelocateData:
+      description: Data structure used for cancellation of UE Context Relocation
       type: object
       properties:
         supi:
@@ -2989,6 +3200,7 @@ components:
       required:
         - relocationCancelRequest
     NgRanTargetId:
+      description: Indicates a NG RAN as target of the handover
       type: object
       properties:
         ranNodeId:
@@ -2999,6 +3211,7 @@ components:
         - ranNodeId
         - tai
     PWSResponseData:
+      description: Data related PWS included in a N2 Information Transfer response
       type: object
       properties:
         ngapMessageType:
@@ -3017,6 +3230,7 @@ components:
         - serialNumber
         - messageIdentifier
     PWSErrorData:
+      description: Data related to PWS error included in a N2 Information Transfer failure response
       type: object
       properties:
         namfCause:
@@ -3024,6 +3238,7 @@ components:
       required:
         - namfCause
     N2InformationTransferError:
+      description: Data within a failure response for a non-UE related N2 Information Transfer
       type: object
       properties:
         error:
@@ -3033,6 +3248,7 @@ components:
       required:
         - error
     NgKsi:
+      description: Represents the ngKSI
       type: object
       properties:
         tsc:
@@ -3045,6 +3261,7 @@ components:
         - tsc
         - ksi
     KeyAmf:
+      description: Represents the Kamf or K'amf
       type: object
       properties:
         keyType:
@@ -3055,6 +3272,7 @@ components:
         - keyType
         - keyVal
     ExpectedUeBehavior:
+      description: Represents the expected UE behavior (e.g. UE moving trajectory) and its validity period
       type: object
       properties:
         expMoveTrajectory:
@@ -3068,6 +3286,7 @@ components:
         - expMoveTrajectory
         - validityTime
     N2RanInformation:
+      description: Represents the RAN related N2 information data part
       type: object
       properties:
         n2InfoContent:
@@ -3075,6 +3294,7 @@ components:
       required:
         - n2InfoContent
     N2InfoNotificationRspData:
+      description: Data within a N2 information notification response
       type: object
       properties:
         secRatDataUsageList:
@@ -3082,8 +3302,8 @@ components:
           items:
             $ref: '#/components/schemas/N2SmInformation'
           minItems: 1
-
     SmallDataRateStatusInfo:
+      description: Represents the small data rate status
       type: object
       properties:
         Snssai:
@@ -3097,6 +3317,7 @@ components:
         - Dnn
         - SmallDataRateStatus
     SmfChangeInfo:
+      description: SMF change information for PDU session(s)
       type: object
       properties:
         pduSessionIdList:
@@ -3111,6 +3332,7 @@ components:
         - smfChangeInd
 
     V2xContext:
+      description: Represents the V2X services related parameters
       type: object
       properties:
         nrV2xServicesAuth:
@@ -3125,12 +3347,21 @@ components:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/Pc5QoSPara'
 
     V2xInformation:
+      description: V2X related N2 information
       type: object
       properties:
         n2Pc5Pol:
           $ref: '#/components/schemas/N2InfoContent'
 
+    ProSeInformation:
+      description: Represents 5G ProSe related N2 information.
+      type: object
+      properties:
+        n2Pc5ProSePol:
+          $ref: '#/components/schemas/N2InfoContent'
+
     ImmediateMdtConf:
+      description: Immediate MDT Configuration
       type: object
       properties:
         jobType:
@@ -3202,6 +3433,7 @@ components:
         - jobType
 
     EpsNasSecurityMode:
+      description: Indicates the EPS NAS Security Mode
       type: object
       properties:
         integrityAlgorithm:
@@ -3213,6 +3445,7 @@ components:
         - cipheringAlgorithm
 
     EcRestrictionDataWb:
+      description: Enhanced Coverage Restriction Data for WB-N1 mode
       type: object
       properties:
         ecModeARestricted:
@@ -3224,11 +3457,13 @@ components:
         - ecModeBRestricted
 
     ExtAmfEventSubscription:
+      description: AMF event subscription extended with additional information received for the subscription
       allOf:
       - $ref: 'TS29518_Namf_EventExposure.yaml#/components/schemas/AmfEventSubscription'
       - $ref: '#/components/schemas/AmfEventSubscriptionAddInfo'
 
     AmfEventSubscriptionAddInfo:
+      description: Additional information received for an AMF event subscription, e.g. binding indications
       type: object
       properties:
         bindingInfo:
@@ -3241,8 +3476,21 @@ components:
           $ref: 'TS29510_Nnrf_NFManagement.yaml#/components/schemas/NFType'
         eventSyncInd:
           type: boolean
+        nfConsumerInfo:
+          type: array
+          items:
+            type: string
+          minItems: 1
+        aoiStateList:
+          description: >
+            Map of subscribed Area of Interest (AoI) Event State in the old AMF. The JSON pointer to
+            an AmfEventArea element in the areaList IE (or a PresenceInfo element in 
+            presenceInfoList IE) of the AmfEvent data type shall be the key of the map.
+          additionalProperties:
+            $ref: '#/components/schemas/AreaOfInterestEventState'
 
     UeDifferentiationInfo:
+      description: Represents the UE Differentiation Information and its validity time
       type: object
       properties:
         periodicComInd:
@@ -3288,6 +3536,53 @@ components:
             $ref: 'TS29571_CommonData.yaml#/components/schemas/CagId'
           minItems: 1
 
+    ProseContext:
+      description: Represents the ProSe services related parameters.
+      type: object
+      properties:
+        directDiscovery:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/UeAuth'
+        directComm:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/UeAuth'
+        l2Relay:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/UeAuth'
+        l3Relay:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/UeAuth'
+        l2Remote:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/UeAuth'
+        nrUePc5Ambr:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/BitRate'
+        pc5QoSPara:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Pc5QoSPara'
+
+    AnalyticsSubscription:
+      description: Analytics subscriptions created in the NWDAF.
+      type: object
+      properties:
+        nwdafId:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/NfInstanceId'
+        nwdafSetId:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/NfSetId'
+        nwdafSubscriptionList:
+          type: array
+          items:
+            $ref: '#/components/schemas/NwdafSubscription'
+          minItems: 1
+      required:
+        - nwdafSubscriptionList
+
+    NwdafSubscription:
+      description: Individual NWDAF subscription identified by the subscription Id.
+      type: object
+      properties:
+        nwdafEvtSubsServiceUri:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Uri'
+        nwdafEventsSubscription:
+          $ref: 'TS29520_Nnwdaf_EventsSubscription.yaml#/components/schemas/NnwdafEventsSubscription'
+      required:
+        - nwdafEvtSubsServiceUri
+        - nwdafEventsSubscription
+
     UpdpSubscriptionData:
       description: UE policy delivery related N1 message notification subscription data.
       type: object
@@ -3304,14 +3599,45 @@ components:
         - updpNotifySubscriptionId
         - updpNotifyCallbackUri
 
+    ReleaseSessionInfo:
+      description: PDU session Id(s) and the cause for triggering the release.
+      type: object
+      properties:
+        releaseSessionList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/PduSessionId'
+          minItems: 1
+        releaseCause:
+          $ref: '#/components/schemas/ReleaseCause'
+      required:
+        - releaseSessionList
+        - releaseCause
+
+    AreaOfInterestEventState:
+      description: Event State of AoI event in old AMF
+      type: object
+      required:
+        - presence
+      properties:
+        presence:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/PresenceState'
+        individualPraIdList:
+          type: array
+          items:
+            type: string
+          minItems: 1
+
 #
 # SIMPLE DATA TYPES
 #
     EpsBearerId:
+      description: EPS Bearer Identifier
       type: integer
       minimum: 0
       maximum: 15
     Ppi:
+      description: Paging Policy Indicator
       type: integer
       minimum: 0
       maximum: 7
@@ -3326,6 +3652,7 @@ components:
     DrxParameter:
       $ref: 'TS29571_CommonData.yaml#/components/schemas/Bytes'
     OmcIdentifier:
+      description: Represents the OMC Identifier
       type: string
     MSClassmark2:
       $ref: 'TS29571_CommonData.yaml#/components/schemas/Bytes'
@@ -3336,6 +3663,7 @@ components:
 # ENUMERATIONS
 #
     StatusChange:
+      description: Enumeration for AMF status
       anyOf:
       - type: string
         enum:
@@ -3343,6 +3671,7 @@ components:
           - AMF_AVAILABLE
       - type: string
     N2InformationClass:
+      description: Enumeration for N2 Information Class
       anyOf:
       - type: string
         enum:
@@ -3353,8 +3682,10 @@ components:
           - PWS-RF
           - RAN
           - V2X
+          - PROSE
       - type: string
     N1MessageClass:
+      description: Enumeration for N1 Message Class
       anyOf:
       - type: string
         enum:
@@ -3366,6 +3697,7 @@ components:
           - LCS
       - type: string
     N1N2MessageTransferCause:
+      description: Enumeration for N1N2Message Transfer Cause
       anyOf:
       - type: string
         enum:
@@ -3374,11 +3706,16 @@ components:
           - WAITING_FOR_ASYNCHRONOUS_TRANSFER
           - UE_NOT_RESPONDING
           - N1_MSG_NOT_TRANSFERRED
+          - N2_MSG_NOT_TRANSFERRED
           - UE_NOT_REACHABLE_FOR_SESSION
           - TEMPORARY_REJECT_REGISTRATION_ONGOING
           - TEMPORARY_REJECT_HANDOVER_ONGOING
+          - REJECTION_DUE_TO_PAGING_RESTRICTION
+          - AN_NOT_RESPONDING
+          - FAILURE_CAUSE_UNSPECIFIED
       - type: string
     UeContextTransferStatus:
+      description: Describes the status of an individual ueContext resource in UE Context Transfer procedures
       anyOf:
       - type: string
         enum:
@@ -3386,12 +3723,14 @@ components:
           - NOT_TRANSFERRED
       - type: string
     N2InformationTransferResult:
+      description: Describes the result of N2 information transfer by AMF to the AN
       anyOf:
       - type: string
         enum:
           - N2_INFO_TRANSFER_INITIATED
       - type: string
     CipheringAlgorithm:
+      description: Indicates the supported Ciphering Algorithm
       anyOf:
       - type: string
         enum:
@@ -3401,6 +3740,7 @@ components:
           - NEA3
       - type: string
     IntegrityAlgorithm:
+      description: Indicates the supported Integrity Algorithm
       anyOf:
       - type: string
         enum:
@@ -3410,6 +3750,7 @@ components:
           - NIA3
       - type: string
     SmsSupport:
+      description: Indicates the supported SMS delivery of a UE
       anyOf:
       - type: string
         enum:
@@ -3419,6 +3760,7 @@ components:
           - NONE
       - type: string
     ScType:
+      description: Indicates the security context type
       anyOf:
       - type: string
         enum:
@@ -3426,6 +3768,7 @@ components:
           - MAPPED
       - type: string
     KeyAmfType:
+      description: Indicates the Kamf type
       anyOf:
       - type: string
         enum:
@@ -3433,6 +3776,7 @@ components:
           - KPRIMEAMF
       - type: string
     TransferReason:
+      description: Indicates UE Context Transfer Reason
       anyOf:
       - type: string
         enum:
@@ -3441,18 +3785,21 @@ components:
           - MOBI_REG_UE_VALIDATED
       - type: string
     PolicyReqTrigger:
+      description: Policy Request Triggers
       anyOf:
       - type: string
         enum:
           - LOCATION_CHANGE
           - PRA_CHANGE
           - ALLOWED_NSSAI_CHANGE
+          - NWDAF_DATA_CHANGE
           - PLMN_CHANGE
           - CON_STATE_CHANGE
           - SMF_SELECT_CHANGE
           - ACCESS_TYPE_CHANGE
       - type: string
     RatSelector:
+      description: Indicates the RAT type for the transfer of N2 information
       anyOf:
       - type: string
         enum:
@@ -3460,6 +3807,7 @@ components:
           - NR
       - type: string
     NgapIeType:
+      description: Indicates the supported NGAP IE types
       anyOf:
       - type: string
         enum:
@@ -3480,14 +3828,17 @@ components:
           - SECONDARY_RAT_USAGE
           - PC5_QOS_PARA
           - EARLY_STATUS_TRANS_CONTAINER
+          - UE_RADIO_CAPABILITY_FOR_PAGING
       - type: string
     N2InfoNotifyReason:
+      description: N2 Information Notify Reason
       anyOf:
       - type: string
         enum:
           - HANDOVER_COMPLETED
       - type: string
     SmfChangeIndication:
+      description: Indicates the I-SMF or V-SMF change or removal
       anyOf:
       - type: string
         enum:
@@ -3495,6 +3846,7 @@ components:
           - REMOVED
       - type: string
     SbiBindingLevel:
+      description: SBI Binding Level
       anyOf:
       - type: string
         enum:
@@ -3505,6 +3857,7 @@ components:
       - type: string
 
     EpsNasCipheringAlgorithm:
+      description: Indicates the supported EPS NAS Ciphering Algorithm
       anyOf:
       - type: string
         enum:
@@ -3515,6 +3868,7 @@ components:
       - type: string
 
     EpsNasIntegrityAlgorithm:
+      description: Indicates the supported EPS NAS Integrity Algorithm
       anyOf:
       - type: string
         enum:
@@ -3525,9 +3879,30 @@ components:
       - type: string
 
     PeriodicCommunicationIndicator:
+      description: Indicates the Periodic Communication Indicator
       anyOf:
       - type: string
         enum:
           - PIORIODICALLY
           - ON_DEMAND
+      - type: string
+
+    UuaaMmStatus:
+      description: Indicates the UUAA-MM status
+      anyOf:
+      - type: string
+        enum:
+          - SUCCESS
+          - PENDING
+          - FAILED
+      - type: string
+
+    ReleaseCause:
+      description: The cause for triggering the release.
+      anyOf:
+      - type: string
+        enum:
+          - SNPN_SNPN_MOBILITY
+          - NO_HR_AGREEMENT
+          - UNSPECIFIED
       - type: string

@@ -1,6 +1,7 @@
 package models
 
 type UeContextRelocateData struct {
+	NgapCause                *NgApCause        `json:"ngapCause,omitempty"`
 	SupportedFeatures        string            `json:"supportedFeatures,omitempty"`
 	UeContext                UeContext         `json:"ueContext"`
 	TargetId                 NgRanTargetId     `json:"targetId"`
@@ -8,5 +9,4 @@ type UeContextRelocateData struct {
 	ForwardRelocationRequest RefToBinaryData   `json:"forwardRelocationRequest"`
 	PduSessionList           []N2SmInformation `json:"pduSessionList,omitempty"`
 	UeRadioCapability        *N2InfoContent    `json:"ueRadioCapability,omitempty"`
-	NgapCause                *NgApCause        `json:"ngapCause,omitempty"`
 }

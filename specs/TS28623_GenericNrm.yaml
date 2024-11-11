@@ -1,10 +1,10 @@
 openapi: 3.0.1
 info:
   title: Generic NRM
-  version: 16.11.0
+  version: 17.9.0
   description: >-
     OAS 3.0.1 definition of the Generic NRM
-    © 2021, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
+    © 2024, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
     All rights reserved.
 externalDocs:
   description: 3GPP TS 28.623; Generic NRM
@@ -42,6 +42,9 @@ components:
           $ref: 'TS28623_ComDefs.yaml#/components/schemas/Latitude'
         siteLongitude:
           $ref: 'TS28623_ComDefs.yaml#/components/schemas/Longitude'
+        siteAltitude:
+          type: number
+          format: float
         equipmentType:
           type: string
         environmentType:
@@ -51,6 +54,10 @@ components:
     ThresholdInfo:
       type: object
       properties:
+        performanceMetrics:
+          type: array
+          items:
+            type: string
         thresholdDirection:
           type: string
           enum:
@@ -148,7 +155,7 @@ components:
              - FILE_BASED_LOC_SET_BY_PRODUCER
              - FILE_BASED_LOC_SET_BY_CONSUMER
              - STREAM_BASED 
-        monitorGranularityPeriods:
+        reportingPeriods:
           type: array
           items:
             type: integer
@@ -159,6 +166,12 @@ components:
           properties:
             fileReportingPeriod:
               type: integer
+        - type: object
+          properties:
+            fileReportingPeriod:
+              type: integer
+            notificationRecipientAddress:
+              $ref: 'TS28623_ComDefs.yaml#/components/schemas/Uri'
         - type: object
           properties:
             fileReportingPeriod:
@@ -180,6 +193,80 @@ components:
             - BASE_NTH_LEVEL
             - BASE_SUBTREE
         scopeLevel:
+          type: integer
+    ProcessMonitor:
+      description: >-
+        This data type is the "ProcessMonitor" data type without specialisations.
+      type: object
+      properties:
+        jobId:
+          type: string
+        status:
+          type: string
+          enum:
+            - NOT_STARTED
+            - RUNNING
+            - FINSHED
+            - FAILED
+            - PARTIALLY_FAILED
+            - CANCELLING
+            - CANCELLED
+        progressPercentage:
+          type: integer
+          minimum: 0
+          maximum: 100
+        progressStateInfo:
+          type: string
+        resultStateInfo:
+          type: string
+        startTime:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/DateTime'
+        endTime:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/DateTime'
+        timer:
+          type: integer
+    FileDownloadJobProcessMonitor:
+      description: >-
+        This data type is the "ProcessMonitor" data type with specialisations
+        for usage in the "FileDownloadJob".
+      type: object
+      properties:
+        jobId:
+          type: string
+        status:
+          type: string
+          enum:
+            - NOT_STARTED
+            - RUNNING
+            - FINSHED
+            - FAILED
+            - CANCELLING
+            - CANCELLED
+        progressPercentage:
+          type: integer
+          minimum: 0
+          maximum: 100
+        progressStateInfo:
+          type: string
+        resultStateInfo:
+          oneOf:
+            - type: string
+              enum:
+                - NULL
+                - UNKNOWN
+                - NO_STORAGE
+                - LOW_MEMROY
+                - NO_CONNECTION_TO_REMOTE_SERVER
+                - FILE_NOT_AVAILABLE
+                - DNS_CANNOT_BE_RESOLVED
+                - TIMER_EXPIRED
+                - OTHER
+            - type: string
+        startTime:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/DateTime'
+        endTime:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/DateTime'
+        timer:
           type: integer
     AreaScope:
       oneOf:
@@ -246,6 +333,37 @@ components:
         - $ref: 'TS28623_ComDefs.yaml#/components/schemas/Ipv4Addr'
         - $ref: 'TS28623_ComDefs.yaml#/components/schemas/Ipv6Addr'
 
+    ManagementData:
+      oneOf:
+      - type: array
+        items:
+          type: string
+          enum:
+            - COVERAGE
+            - CAPACITY
+            - ENERGY_EFFICIENCY
+            - MOBILITY
+            - ACCESSIBILITY
+      - type: array
+        items:
+          type: string
+    NodeFilter:
+      type: object
+      properties:
+        areaOfInterest:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/AreaOfInterest'
+        networkDomain:
+          type: string
+          enum:
+            - CN
+            - RAN
+        cpUpType:
+          type: string
+          enum:
+            - CP
+            - UP
+        sst:
+          type: integer
 
 #-------- Definition of types used in Trace control NRM fragment------------------
                 
@@ -538,6 +656,9 @@ components:
               - N10
               - N11
               - S5-C
+              - N16
+              - N16a
+              - N38
         SMSFInterfaces:
           type: array
           items:
@@ -593,7 +714,7 @@ components:
             enum:
               - F1-C
 
-    listOfNeTypes-Type:
+    listOfNETypes-Type:
       description: The Network Element types where Trace Session activation is needed. See 3GPP TS 32.422 clause 5.4 for additional details.
       type: array
       items:
@@ -622,7 +743,7 @@ components:
           - HSS
           - UDM
 
-    plmnTarget-Type:
+    pLMNTarget-Type:
       type: object
       description: The PLMN for which sessions shall be selected in the Trace Session in case of management based activation when several PLMNs are supported in the RAN (this means that shared cells and not shared cells are allowed for the specified PLMN. Note that the PLMN Target might differ from the PLMN specified in the Trace Reference, as that specifies the PLMN that is containing the management system requesting the Trace Session from the NE. See 3GPP TS 32.422 clause 5.9b for additional details.
       properties:
@@ -849,14 +970,18 @@ components:
               - UEauthentication
               - EventExposure
     
-    anonymizationOfMdtData-Type:
+    anonymizationOfMDTData-Type:
       description: Specifies level of MDT anonymization. For additional details see 3GPP TS 32.422 clause 5.10.12.
       type: string
       enum:
         - NO_IDENTITY
         - TAC_OF_IMEI
     
-    collectionPeriodRrmLte-Type:
+    beamLevelMeasurement-Type:
+      description: Determines whether beam level measurements shall be included in case of immediate MDT M1 measurement in NR. For additional details see 3GPP TS 32.422 clause 5.10.40.
+      type: boolean
+    
+    collectionPeriodRRMLTE-Type:
       description: See details in 3GPP TS 32.422 clause 5.10.20.
       type: string
       enum:
@@ -871,7 +996,7 @@ components:
         - 10240ms
         - 60000ms
 
-    collectionPeriodM6Lte-Type:
+    collectionPeriodM6LTE-Type:
       description: See details in 3GPP TS 32.422 clause 5.10.32.
       type: string
       enum:
@@ -880,13 +1005,13 @@ components:
         - 5120ms
         - 10240ms
 
-    collectionPeriodM7Lte-Type:
+    collectionPeriodM7LTE-Type:
       description: See details in 3GPP TS 32.422 clause 5.10.33.
       type: integer
       minimum: 1
       maximum: 60
 
-    collectionPeriodRrmUmts-Type:
+    collectionPeriodRRMUMTS-Type:
       description: See details in 3GPP TS 32.422 clause 5.10.21.
       type: string
       enum:
@@ -899,7 +1024,7 @@ components:
         - 4000ms
         - 6000ms
     
-    collectionPeriodRrmNr-Type:
+    collectionPeriodRRMNR-Type:
       description: See details in 3GPP TS 32.422 clause 5.10.30.
       type: string
       enum:
@@ -909,7 +1034,7 @@ components:
         - 10240ms
         - 60000ms
 
-    collectionPeriodM6Nr-Type:
+    collectionPeriodM6NR-Type:
       description: See details in 3GPP TS 32.422 clause 5.10.34.
       type: string
       enum:
@@ -928,7 +1053,7 @@ components:
         - 12min
         - 30min
 
-    collectionPeriodM7Nr-Type:
+    collectionPeriodM7NR-Type:
       description: See details in 3GPP TS 32.422 clause 5.10.35.
       type: integer
       minimum: 1
@@ -1128,7 +1253,7 @@ components:
         - 2560ms
         - 5120ms
 
-    measurementPeriodLte-Type:
+    measurementPeriodLTE-Type:
       description: See details in 3GPP TS 32.422 clause 5.10.23.
       type: string
       enum:
@@ -1138,7 +1263,7 @@ components:
         - 10240ms
         - 1min
 
-    measurementPeriodUmts-Type:
+    measurementPeriodUMTS-Type:
       description: See details in 3GPP TS 32.422 clause 5.10.22.
       type: string
       enum:
@@ -1164,13 +1289,13 @@ components:
         - CPICH_RSCP
         - PathLoss
 
-    eventThresholdUphUmts-Type:
+    eventThresholdUphUMTS-Type:
       description: See details in 3GPP TS 32.422 clause 5.10.A.
       type: integer
       minimum: 0
       maximum: 31
 
-    plmnList-Type:
+    pLMNList-Type:
       description: See details in 3GPP TS 32.422 clause 5.10.24.
       type: array
       items:
@@ -1302,6 +1427,42 @@ components:
       description: See details in 3GPP TS 32.422 clause 5.10.11. Only TCE Id value may be sent over the air to the UE being configured for Logged MDT.
       type: integer
 
+    excessPacketDelayThreshold-Type:
+      description: Excess Packet Delay Threshold for NR MDT. See details in 3GPP TS 32.422 clause 4.1.1 and 4.1.2.
+      type: object
+      properties:
+        fiveQIValue:
+          type: integer
+        excessPacketDelayThresholdValue:
+          type: string
+          enum:
+            - 0.25MS
+            - 0.5MS
+            - 1MS
+            - 2MS
+            - 4MS
+            - 5MS
+            - 10MS
+            - 20MS
+            - 30MS
+            - 40MS
+            - 50MS
+            - 60MS
+            - 70MS
+            - 80MS
+            - 90MS
+            - 100MS
+            - 150MS
+            - 300MS
+            - 500MS
+
+    excessPacketDelayThresholds-Type:
+      description: Array of type excessPacketDelayThreshold-Type.
+      type: array
+      items:
+        $ref: '#/components/schemas/excessPacketDelayThreshold-Type'
+      minItems: 0
+      maxItems: 255
 
 #-------- end of Definition of types used in Trace control NRM fragment ----------
 
@@ -1360,6 +1521,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SupportedPerfMetricGroup'
+        supportedTraceMetrics:
+          type: array
+          items:
+            type: string
     ManagedElement-Attr:
       type: object
       properties:
@@ -1387,6 +1552,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SupportedPerfMetricGroup'
+        supportedTraceMetrics:
+          type: array
+          items:
+            type: string
 
     SubNetwork-ncO:
       type: object
@@ -1401,12 +1570,20 @@ components:
           $ref: '#/components/schemas/PerfMetricJob-Multiple'
         ThresholdMonitor:
           $ref: '#/components/schemas/ThresholdMonitor-Multiple'
-        NtfSubscriptionControl:
-          $ref: '#/components/schemas/NtfSubscriptionControl-Multiple'
         TraceJob:
           $ref: '#/components/schemas/TraceJob-Multiple'
+        ManagementDataCollection:
+          $ref: '#/components/schemas/ManagementDataCollection-Multiple'
+        NtfSubscriptionControl:
+          $ref: '#/components/schemas/NtfSubscriptionControl-Multiple'
         AlarmList:
           $ref: '#/components/schemas/AlarmList-Single'
+        FileDownloadJob:
+          $ref: '#/components/schemas/FileDownloadJob-Multiple'
+        Files:
+          $ref: '#/components/schemas/Files-Multiple'
+        MnsRegistry:
+          $ref: '#/components/schemas/MnsRegistry-Single'
     ManagedElement-ncO:
       type: object
       properties:
@@ -1416,12 +1593,16 @@ components:
           $ref: '#/components/schemas/PerfMetricJob-Multiple'
         ThresholdMonitor:
           $ref: '#/components/schemas/ThresholdMonitor-Multiple'
-        NtfSubscriptionControl:
-          $ref: '#/components/schemas/NtfSubscriptionControl-Multiple'
         TraceJob:
           $ref: '#/components/schemas/TraceJob-Multiple'
+        NtfSubscriptionControl:
+          $ref: '#/components/schemas/NtfSubscriptionControl-Multiple'
         AlarmList:
           $ref: '#/components/schemas/AlarmList-Single'
+        FileDownloadJob:
+          $ref: '#/components/schemas/FileDownloadJob-Multiple'
+        Files:
+          $ref: '#/components/schemas/Files-Multiple'
 
 #-------- Definition of abstract IOCs --------------------------------------------
 
@@ -1444,6 +1625,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SupportedPerfMetricGroup'
+        supportedTraceMetrics:
+          type: array
+          items:
+            type: string
     EP_RP-Attr:
       type: object
       properties:
@@ -1464,13 +1649,13 @@ components:
           $ref: '#/components/schemas/jobType-Type'
         listOfInterfaces:
           $ref: '#/components/schemas/listOfInterfaces-Type'                  
-        listOfNeTypes:
-          $ref: '#/components/schemas/listOfNeTypes-Type'
-        plmnTarget:
-          $ref: '#/components/schemas/plmnTarget-Type'
+        listOfNETypes:
+          $ref: '#/components/schemas/listOfNETypes-Type'
+        pLMNTarget:
+          $ref: '#/components/schemas/pLMNTarget-Type'
         traceReportingConsumerUri:
           $ref: 'TS28623_ComDefs.yaml#/components/schemas/Uri'
-        traceCollectionEntityIpAddress:
+        traceCollectionEntityIPAddress:
           $ref: '#/components/schemas/IpAddr'
         traceDepth:
           $ref: '#/components/schemas/traceDepth-Type'
@@ -1478,34 +1663,38 @@ components:
           $ref: '#/components/schemas/traceReference-Type'
         traceRecordingSessionReference:
           type: string
+        jobId:
+          type: string
         traceReportingFormat:
           $ref: '#/components/schemas/traceReportingFormat-Type'
         traceTarget:
           $ref: '#/components/schemas/traceTarget-Type'
         triggeringEvents:
           $ref: '#/components/schemas/triggeringEvents-Type'
-        anonymizationOfMdtData:
-          $ref: '#/components/schemas/anonymizationOfMdtData-Type'
+        anonymizationOfMDTData:
+          $ref: '#/components/schemas/anonymizationOfMDTData-Type'
         areaConfigurationForNeighCell:
           $ref: '#/components/schemas/AreaConfig'
         areaScope:
           type: array
           items:
             $ref: '#/components/schemas/AreaScope'
-        collectionPeriodRrmLte:
-          $ref: '#/components/schemas/collectionPeriodRrmLte-Type'
-        collectionPeriodM6Lte:
-          $ref: '#/components/schemas/collectionPeriodM6Lte-Type'
-        collectionPeriodM7Lte:
-          $ref: '#/components/schemas/collectionPeriodM7Lte-Type'
-        collectionPeriodRrmUmts:
-          $ref: '#/components/schemas/collectionPeriodRrmUmts-Type'
-        collectionPeriodRrmNr:
-          $ref: '#/components/schemas/collectionPeriodRrmNr-Type'
-        collectionPeriodM6Nr:
-          $ref: '#/components/schemas/collectionPeriodM6Nr-Type'
-        collectionPeriodM7Nr:
-          $ref: '#/components/schemas/collectionPeriodM7Nr-Type'
+        beamLevelMeasurement:
+          $ref: '#/components/schemas/beamLevelMeasurement-Type'
+        collectionPeriodRRMLTE:
+          $ref: '#/components/schemas/collectionPeriodRRMLTE-Type'
+        collectionPeriodM6LTE:
+          $ref: '#/components/schemas/collectionPeriodM6LTE-Type'
+        collectionPeriodM7LTE:
+          $ref: '#/components/schemas/collectionPeriodM7LTE-Type'
+        collectionPeriodRRMUMTS:
+          $ref: '#/components/schemas/collectionPeriodRRMUMTS-Type'
+        collectionPeriodRRMNR:
+          $ref: '#/components/schemas/collectionPeriodRRMNR-Type'
+        collectionPeriodM6NR:
+          $ref: '#/components/schemas/collectionPeriodM6NR-Type'
+        collectionPeriodM7NR:
+          $ref: '#/components/schemas/collectionPeriodM7NR-Type'
         eventListForEventTriggeredMeasurement:
           $ref: '#/components/schemas/eventListForEventTriggeredMeasurement-Type'
         eventThreshold:
@@ -1522,20 +1711,20 @@ components:
           $ref: '#/components/schemas/hysteresisL1-Type'
         timeToTriggerL1:
           $ref: '#/components/schemas/timeToTriggerL1-Type'
-        mbsfnAreaList:
+        mBSFNAreaList:
           type: array
           items:
             $ref: '#/components/schemas/MbsfnArea'
-        measurementPeriodLte:
-          $ref: '#/components/schemas/measurementPeriodLte-Type'
-        measurementPeriodUmts:
-          $ref: '#/components/schemas/measurementPeriodUmts-Type'
+        measurementPeriodLTE:
+          $ref: '#/components/schemas/measurementPeriodLTE-Type'
+        measurementPeriodUMTS:
+          $ref: '#/components/schemas/measurementPeriodUMTS-Type'
         measurementQuantity:
           $ref: '#/components/schemas/measurementQuantity-Type'
-        eventThresholdUphUmts:
-          $ref: '#/components/schemas/eventThresholdUphUmts-Type'
-        plmnList:
-          $ref: '#/components/schemas/plmnList-Type'
+        eventThresholdUphUMTS:
+          $ref: '#/components/schemas/eventThresholdUphUMTS-Type'
+        pLMNList:
+          $ref: '#/components/schemas/pLMNList-Type'
         positioningMethod:
           $ref: '#/components/schemas/positioningMethod-Type'
         reportAmount:
@@ -1550,6 +1739,8 @@ components:
           $ref: '#/components/schemas/sensorInformation-Type'
         traceCollectionEntityId:
           $ref: '#/components/schemas/traceCollectionEntityId-Type'
+        excessPacketDelayThresholds:
+          $ref: '#/components/schemas/excessPacketDelayThresholds-Type'
 
     ManagedFunction-ncO:
       type: object
@@ -1676,6 +1867,8 @@ components:
                   $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
                 reportingCtrl:
                   $ref: '#/components/schemas/ReportingCtrl'
+            Files:
+              $ref: '#/components/schemas/Files-Multiple'
     ThresholdMonitor-Single:
       allOf:
         - $ref: '#/components/schemas/Top'
@@ -1688,10 +1881,6 @@ components:
                   $ref: 'TS28623_ComDefs.yaml#/components/schemas/AdministrativeState'
                 operationalState:
                   $ref: 'TS28623_ComDefs.yaml#/components/schemas/OperationalState'
-                performanceMetrics:
-                  type: array
-                  items:
-                    type: string
                 thresholdInfoList:
                   type: array
                   items:
@@ -1743,7 +1932,29 @@ components:
           properties:
             attributes:
               $ref: '#/components/schemas/TraceJob-Attr'
-
+            Files:
+              $ref: '#/components/schemas/Files-Multiple'
+    ManagementDataCollection-Single:
+      allOf:
+        - $ref: '#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                managementData:
+                  $ref: '#/components/schemas/ManagementData'
+                targetNodeFilter:
+                  $ref: '#/components/schemas/NodeFilter'
+                collectionTimeWindow:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/TimeWindow'
+                reportingCtrl:
+                  $ref: '#/components/schemas/ReportingCtrl'
+                dataScope:
+                  type: string
+                  enum:
+                    - SNSSAI
+                    - 5QI
     AlarmList-Single:
       allOf:
         - $ref: '#/components/schemas/Top'
@@ -1767,6 +1978,109 @@ components:
                   type: object
                   additionalProperties:
                     $ref: 'TS28532_FaultMnS.yaml#/components/schemas/AlarmRecord'
+    FileDownloadJob-Single:
+      allOf:
+        - $ref: '#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                fileLocation:
+                  type: string
+                notificationRecipientAddress:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/Uri'
+                cancelJob:
+                  type: string
+                  enum:
+                    - TRUE
+                    - FALSE
+                jobMonitor:
+                  $ref: '#/components/schemas/FileDownloadJobProcessMonitor'
+    Files-Single:
+      allOf:
+        - $ref: '#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                numberOfFiles:
+                  type: integer
+                jobRef:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+                jobId:
+                  type: string
+                File:
+                  $ref: '#/components/schemas/File-Multiple'
+    File-Single:
+      allOf:
+        - $ref: '#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                fileLocation:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/Uri'
+                fileCompression:
+                  type: string
+                fileSize:
+                  type: integer
+                fileDataType:
+                  type: string
+                  enum:
+                    - PERFORMANCE
+                    - TRACE
+                    - ANALYTICS
+                    - PROPRIETARY
+                fileFormat:
+                  type: string
+                fileReadyTime:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/DateTime'
+                fileExpirationTime:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/DateTime'
+                fileContent:
+                  type: string
+                jobRef:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+                jobId:
+                  type: string
+    MnsRegistry-Single:
+      allOf:
+        - $ref: '#/components/schemas/Top'
+        - type: object
+          properties:
+            MnsInfo:
+              $ref: '#/components/schemas/MnsInfo-Multiple'
+    MnsInfo-Single:
+      allOf:
+        - $ref: '#/components/schemas/Top'
+        - type: object
+          properties:
+             mnsLabel:
+               type: string
+             mnsType:
+               type: string
+               enum:
+                 - ProvMnS
+                 - FaultSupervisionMnS
+                 - StreamingDataReportingMnS
+                 - FileDataReportingMnS
+             mnsVersion:
+               type: string
+             mnsAddress:
+               description: Resource URI as defined in the relevant Technical Specification
+               $ref: 'TS28623_ComDefs.yaml#/components/schemas/Uri'
+             mnsScope:
+               description: >-
+                 List of the managed object instances that can be accessed using the MnS.
+                 If a complete SubNetwork can be accessed using the MnS, this attribute may 
+                 contain the DN of the SubNetwork instead of the DNs of the individual managed 
+                 entities within the SubNetwork.
+               type: array
+               items:
+                 $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
 
 #-------- Definition of YAML arrays for name-contained IOCs ----------------------
 
@@ -1802,10 +2116,30 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/TraceJob-Single'
+    ManagementDataCollection-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/ManagementDataCollection-Single'
     NtfSubscriptionControl-Multiple:
       type: array
       items:
         $ref: '#/components/schemas/NtfSubscriptionControl-Single'
+    FileDownloadJob-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/FileDownloadJob-Single'
+    Files-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/Files-Single'
+    File-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/File-Single'
+    MnsInfo-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MnsInfo-Single'
 
 #-------- Definitions in TS 28.623 for TS 28.532 ---------------------------------
 
@@ -1823,8 +2157,16 @@ components:
        - $ref: '#/components/schemas/PerfMetricJob-Single'
        - $ref: '#/components/schemas/ThresholdMonitor-Single'
        - $ref: '#/components/schemas/TraceJob-Single'
-
+       - $ref: '#/components/schemas/ManagementDataCollection-Single'
+       
        - $ref: '#/components/schemas/NtfSubscriptionControl-Single'
        - $ref: '#/components/schemas/HeartbeatControl-Single'
 
        - $ref: '#/components/schemas/AlarmList-Single'
+
+       - $ref: '#/components/schemas/FileDownloadJob-Single'
+       - $ref: '#/components/schemas/Files-Single'
+       - $ref: '#/components/schemas/File-Single'
+       
+       - $ref: '#/components/schemas/MnsRegistry-Single'
+       - $ref: '#/components/schemas/MnsInfo-Single'

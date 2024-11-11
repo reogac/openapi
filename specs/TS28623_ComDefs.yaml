@@ -1,10 +1,10 @@
 openapi: 3.0.1
 info:
   title: Common Type Definitions
-  version: 16.9.0
+  version: 17.6.0
   description: >-
     OAS 3.0.1 specification of common type definitions in the Generic NRM
-    © 2021, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
+    © 2023, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
     All rights reserved.
 externalDocs:
   description: 3GPP TS 28.623; Generic NRM; Common type definitions
@@ -56,12 +56,62 @@ components:
     Tac:
       type: string
       pattern: '(^[A-Fa-f0-9]{4}$)|(^[A-Fa-f0-9]{6}$)'
+    UtraCellId:
+      type: integer
     EutraCellId:
       type: string
       pattern: '^[A-Fa-f0-9]{7}$'
     NrCellId:
       type: string
       pattern: '^[A-Fa-f0-9]{9}$'
+    TimeWindow:
+      type: object
+      properties:
+        startTime:
+          $ref: '#/components/schemas/DateTime'
+        endTime:
+          $ref: '#/components/schemas/DateTime'
+    GeoCoordinate:
+      type: object
+      properties:
+        latitude:
+          $ref: '#/components/schemas/Latitude'
+        longitude:
+          $ref: '#/components/schemas/Longitude'
+        altitude:
+          $ref: '#/components/schemas/Float'
+    ConvexGeoPolygon:
+      type: array
+      items:
+        $ref: '#/components/schemas/GeoCoordinate'
+      minItems: 3
+    GeoArea:
+      type: object
+      properties:
+        convexGeoPolygon:
+          $ref: '#/components/schemas/ConvexGeoPolygon'
+    GeoAreaToCellMapping:
+      type: object
+      properties:
+        convexGeoPolygon:
+          $ref: '#/components/schemas/GeoArea'
+        associationThreshold:
+          type: integer
+    AreaOfInterest:
+      oneOf:
+        - $ref: '#/components/schemas/GeoAreaToCellMapping'
+        - type: array
+          items:
+            $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Tai'
+        - type: array
+          items:
+            $ref: '#/components/schemas/NrCellId'
+        - type: array
+          items:
+            $ref: '#/components/schemas/EutraCellId'
+        - type: array
+          items:
+            $ref: '#/components/schemas/UtraCellId'
 
     Fqdn:
       type: string
@@ -85,6 +135,7 @@ components:
       oneOf:
         - $ref: '#/components/schemas/Ipv4Addr'
         - $ref: '#/components/schemas/Ipv6Addr'
+        - $ref: '#/components/schemas/Ipv6Prefix'
     HostAddr:
       #  This definition will be deprecated, when all occurances of HostAddr
       #  are replaced by Host.

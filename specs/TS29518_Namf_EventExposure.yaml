@@ -1,30 +1,35 @@
 openapi: 3.0.0
+
 info:
-  version: 1.1.7
+  version: 1.2.3
   title: Namf_EventExposure
   description: |
-    AMF Event Exposure Service
-    © 2022, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
+    AMF Event Exposure Service.  
+    © 2023, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).  
     All rights reserved.
+
 security:
   - {}
   - oAuth2ClientCredentials:
       - namf-evts
+
 externalDocs:
-  description: 3GPP TS 29.518 V16.11.0; 5G System; Access and Mobility Management Services
-  url: 'http://www.3gpp.org/ftp/Specs/archive/29_series/29.518/'
+  description: 3GPP TS 29.518 V17.10.0; 5G System; Access and Mobility Management Services
+  url: 'https://www.3gpp.org/ftp/Specs/archive/29_series/29.518/'
+
 servers:
   - url: '{apiRoot}/namf-evts/v1'
     variables:
       apiRoot:
         default: https://example.com
-        description: apiRoot as defined in clause clause 4.4 of 3GPP TS 29.501
+        description: apiRoot as defined in clause 4.4 of 3GPP TS 29.501
+
 paths:
   /subscriptions:
     post:
       summary: Namf_EventExposure Subscribe service Operation
       tags:
-        - Subscriptions collection (Document)
+        - Subscriptions collection (Collection)
       operationId: CreateSubscription
       requestBody:
         content:
@@ -247,6 +252,7 @@ components:
             namf-evts: Access to the Namf_EventExposure API
   schemas:
     AmfEventSubscription:
+      description: Represents an individual event subscription resource on AMF
       type: object
       properties:
         eventList:
@@ -268,6 +274,26 @@ components:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/Supi'
         groupId:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/GroupId'
+        excludeSupiList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Supi'
+          minItems: 1
+        excludeGpsiList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Gpsi'
+          minItems: 1
+        includeSupiList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Supi'
+          minItems: 1
+        includeGpsiList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Gpsi'
+          minItems: 1
         gpsi:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/Gpsi'
         pei:
@@ -284,6 +310,7 @@ components:
         - notifyCorrelationId
         - nfId
     AmfEvent:
+      description: Describes an event to be subscribed
       type: object
       properties:
         type:
@@ -313,16 +340,43 @@ components:
           default: false
         reachabilityFilter:
           $ref: '#/components/schemas/ReachabilityFilter'
+        udmDetectInd:
+          type: boolean
+          default: false
         maxReports:
           type: integer
+        presenceInfoList:
+          type: object
+          additionalProperties:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/PresenceInfo'
+          minProperties: 1
+          description: A map(list of key-value pairs) where praId serves as key.
         maxResponseTime:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/DurationSec'
+        targetArea:
+          $ref: '#/components/schemas/TargetArea'
+        snssaiFilter:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/ExtSnssai'
+          minItems: 1
+        ueInAreaFilter:
+          $ref: '#/components/schemas/UeInAreaFilter'
+        minInterval:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/DurationSec'
+        nextReport:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/DateTime'
         idleStatusInd:
           type: boolean
           default: false
+        dispersionArea:
+          $ref: '#/components/schemas/DispersionArea'
+        nextPeriodicReportTime:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/DateTime'
       required:
         - type
     AmfEventNotification:
+      description: Data within a AMF Event Notification request
       type: object
       properties:
         notifyCorrelationId:
@@ -337,6 +391,7 @@ components:
         eventSubsSyncInfo:
           $ref: '#/components/schemas/AmfEventSubsSyncInfo'
     AmfEventReport:
+      description: Represents a report triggered by a subscribed event type
       type: object
       properties:
         type:
@@ -408,13 +463,39 @@ components:
           items:
             $ref: '#/components/schemas/UEIdExt'
           minItems: 1
+        snssaiTaiList:
+          type: array
+          items:
+            $ref: '#/components/schemas/SnssaiTaiMapping'
+          minItems: 1
         idleStatusIndication:
           $ref: '#/components/schemas/IdleStatusIndication'
+        ueAccessBehaviorTrends:
+          type: array
+          items:
+            $ref: '#/components/schemas/UeAccessBehaviorReportItem'
+          minItems: 1
+        ueLocationTrends:
+          type: array
+          items:
+            $ref: '#/components/schemas/UeLocationTrendsReportItem'
+          minItems: 1
+        mmTransLocationReportList:
+          type: array
+          items:
+            $ref: '#/components/schemas/MmTransactionLocationReportItem'
+          minItems: 1
+        mmTransSliceReportList:
+          type: array
+          items:
+            $ref: '#/components/schemas/MmTransactionSliceReportItem'
+          minItems: 1
       required:
         - type
         - state
         - timeStamp
     AmfEventMode:
+      description: Describes how the reports shall be generated by a subscribed event
       type: object
       properties:
         trigger:
@@ -427,9 +508,17 @@ components:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/DurationSec'
         sampRatio:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/SamplingRatio'
+        partitioningCriteria:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/PartitioningCriteria'
+          minItems: 1
+        notifFlag:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/NotificationFlag'
       required:
         - trigger
     AmfEventState:
+      description: Represents the state of a subscribed event
       type: object
       properties:
         active:
@@ -441,6 +530,7 @@ components:
       required:
         - active
     RmInfo:
+      description: Represents the registration state of a UE for an access type
       type: object
       properties:
         rmState:
@@ -451,6 +541,7 @@ components:
         - rmState
         - accessType
     CmInfo:
+      description: Represents the connection management state of a UE for an access type
       type: object
       properties:
         cmState:
@@ -461,6 +552,7 @@ components:
         - cmState
         - accessType
     CommunicationFailure:
+      description: Describes a communication failure detected by AMF
       type: object
       properties:
         nasReleaseCode:
@@ -468,6 +560,7 @@ components:
         ranReleaseCode:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/NgApCause'
     AmfCreateEventSubscription:
+      description: Data within a create AMF event subscription request
       type: object
       properties:
         subscription:
@@ -479,6 +572,7 @@ components:
       required:
         - subscription
     AmfCreatedEventSubscription:
+      description: Data within a create AMF event subscription response
       type: object
       properties:
         subscription:
@@ -496,6 +590,7 @@ components:
         - subscription
         - subscriptionId
     AmfUpdateEventSubscriptionItem:
+      description: Document describing the modification(s) to an AMF Event Subscription
       type: object
       properties:
         op:
@@ -506,13 +601,36 @@ components:
             - replace
         path:
           type: string
-          pattern: '\/eventList\/[0-]$|\/eventList\/[1-9][0-9]*$'
+          pattern: '^\/eventList\/-|(\/eventList\/0|\/eventList\/[1-9][0-9]*){1}(\/presenceInfoList\/0|\/presenceInfoList\/[1-9][0-9]*)?|\/excludeSupiList|\/excludeGpsiList|\/includeSupiList|\/includeGpsiList$'
         value:
           $ref: '#/components/schemas/AmfEvent'
+        presenceInfo:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/PresenceInfo'
+        excludeSupiList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Supi'
+          minItems: 1
+        excludeGpsiList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Gpsi'
+          minItems: 1
+        includeSupiList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Supi'
+          minItems: 1
+        includeGpsiList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Gpsi'
+          minItems: 1
       required:
         - op
         - path
     AmfUpdateEventOptionItem:
+      description: Document describing the modifications to AMF event subscription options
       type: object
       properties:
         op:
@@ -521,14 +639,17 @@ components:
             - replace
         path:
           type: string
-          pattern: '\/options\/expiry$'
+          pattern: '^(\/options\/expiry|\/options\/notifFlag)$'
         value:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/DateTime'
+        notifFlag:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/NotificationFlag'
       required:
         - op
         - path
         - value
     AmfUpdatedEventSubscription:
+      description: Represents a successful update on an AMF Event Subscription
       type: object
       properties:
         subscription:
@@ -541,6 +662,7 @@ components:
       required:
         - subscription
     AmfEventArea:
+      description: Represents an area to be monitored by an AMF event
       type: object
       properties:
         presenceInfo:
@@ -552,6 +674,7 @@ components:
         nsiId:
           $ref: 'TS29531_Nnssf_NSSelection.yaml#/components/schemas/NsiId'
     LadnInfo:
+      description: LADN Information
       type: object
       properties:
         ladn:
@@ -561,6 +684,7 @@ components:
       required:
         - ladn
     5GsUserStateInfo:
+      description: Represents the 5GS User state of the UE for an access type
       type: object
       properties:
         5gsUserState:
@@ -571,6 +695,7 @@ components:
         - 5gsUserState
         - accessType
     TrafficDescriptor:
+      description: Represents the Traffic Descriptor
       type: object
       properties:
         dnn:
@@ -583,6 +708,7 @@ components:
             $ref: 'TS29571_CommonData.yaml#/components/schemas/DddTrafficDescriptor'
           minItems: 1
     UEIdExt:
+      description: UE Identity
       type: object
       properties:
         supi:
@@ -591,6 +717,7 @@ components:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/Gpsi'
 
     AmfEventSubsSyncInfo:
+      description: AMF Event Subscriptions Information for synchronization
       type: object
       properties:
         subscriptionList:
@@ -602,6 +729,7 @@ components:
         - subscriptionList
 
     AmfEventSubscriptionInfo:
+      description: Individual AMF Event Subscription Information
       type: object
       properties:
         subId:
@@ -619,7 +747,60 @@ components:
         - subId
         - refIdList
 
+    TargetArea:
+      description: TA list or TAI range list or any TA
+      type: object
+      properties:
+        taList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Tai'
+          minItems: 1
+        taiRangeList:
+          type: array
+          items:
+            $ref: 'TS29510_Nnrf_NFManagement.yaml#/components/schemas/TaiRange'
+          minItems: 1
+        anyTa:
+          type: boolean
+          default: false
+
+    SnssaiTaiMapping:
+      description: List of restricted or unrestricted S-NSSAIs per TAI(s)
+      type: object
+      properties:
+        reportingArea:
+          $ref: '#/components/schemas/TargetArea'
+        accessTypeList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/AccessType'
+          minItems: 1
+        supportedSnssaiList:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupportedSnssai'
+          minItems: 1
+      required:
+        - reportingArea
+
+    UeAccessBehaviorReportItem:
+      description: Report Item for UE Access Behavior Trends event.
+      type: object
+      properties:
+        stateTransitionType:
+          $ref: '#/components/schemas/AccessStateTransitionType'
+        spacing:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/DurationSec'
+        duration:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/DurationSec'
+      required:
+        - stateTransitionType
+        - spacing
+        - duration
+
     IdleStatusIndication:
+      description: Represents the idle status indication.
       type: object
       properties:
         timeStamp:
@@ -633,7 +814,110 @@ components:
         suggestedNumOfDlPackets:
           type: integer
 
+    UeInAreaFilter:
+      description: Additional filters for UE in Area Report event
+      type: object
+      properties:
+        ueType:
+          $ref: '#/components/schemas/UeType'
+        aerialSrvDnnInd:
+          type: boolean
+          default: false
+
+    SupportedSnssai:
+      description: Supported S-NSSAIs
+      type: object
+      properties:
+        sNssai:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/ExtSnssai'
+        restrictionInd:
+          type: boolean
+          default: false
+      required:
+        - sNssai
+
+    UeLocationTrendsReportItem:
+      description: Report Item for UE Location Trends event.
+      type: object
+      properties:
+        tai:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Tai'
+        ncgi:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Ncgi'
+        ecgi:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Ecgi'
+        n3gaLocation:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/N3gaLocation'
+        spacing:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/DurationSec'
+        duration:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/DurationSec'
+        timestamp:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/DateTime'
+      required:
+        - spacing
+        - duration
+        - timestamp
+
+    DispersionArea:
+      description: Dispersion Area
+      type: object
+      properties:
+        taiList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Tai'
+          minItems: 1
+        ncgiList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Ncgi'
+          minItems: 1
+        ecgiList:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Ecgi'
+          minItems: 1
+        n3gaInd:
+          type: boolean
+          default: false
+
+    MmTransactionLocationReportItem:
+      description: UE MM Transaction Report Item per Location
+      type: object
+      properties:
+        tai:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Tai'
+        ncgi:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Ncgi'
+        ecgi:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Ecgi'
+        n3gaLocation:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/N3gaLocation'
+        timestamp:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/DateTime'
+        transactions:
+          type: integer
+      required:
+        - timestamp
+        - transactions
+
+    MmTransactionSliceReportItem:
+      description: UE MM Transaction Report Item per Slice
+      type: object
+      properties:
+        snssai:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Snssai'
+        timestamp:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/DateTime'
+        transactions:
+          type: integer
+      required:
+        - timestamp
+        - transactions
+
     AmfEventType:
+      description: Describes the supported event types of Namf_EventExposure Service
       anyOf:
       - type: string
         enum:
@@ -653,8 +937,13 @@ components:
           - AVAILABILITY_AFTER_DDN_FAILURE
           - TYPE_ALLOCATION_CODE_REPORT
           - FREQUENT_MOBILITY_REGISTRATION_REPORT
+          - SNSSAI_TA_MAPPING_REPORT
+          - UE_LOCATION_TRENDS
+          - UE_ACCESS_BEHAVIOR_TRENDS
+          - UE_MM_TRANSACTION_REPORT
       - type: string
     AmfEventTrigger:
+      description: Describes how AMF should generate the report for the event
       anyOf:
       - type: string
         enum:
@@ -663,11 +952,13 @@ components:
           - PERIODIC
       - type: string
     LocationFilter :
+      description: Describes the supported filters of LOCATION_REPORT event type
       anyOf:
       - type: string
         enum:
           - TAI
           - CELL_ID
+          - RAN_NODE
           - N3IWF
           - UE_IP
           - UDP_PORT
@@ -676,6 +967,7 @@ components:
           - TWAP_ID
       - type: string
     UeReachability:
+      description: Describes the reachability of the UE
       anyOf:
       - type: string
         enum:
@@ -684,6 +976,7 @@ components:
           - REGULATORY_ONLY
       - type: string
     RmState:
+      description: Describes the registration management state of a UE
       anyOf:
       - type: string
         enum:
@@ -691,6 +984,7 @@ components:
           - DEREGISTERED
       - type: string
     CmState:
+      description: Describes the connection management state of a UE
       anyOf:
       - type: string
         enum:
@@ -698,6 +992,7 @@ components:
           - CONNECTED
       - type: string
     5GsUserState:
+      description: Describes the 5GS User State of a UE
       anyOf:
       - type: string
         enum:
@@ -707,6 +1002,7 @@ components:
           - NOT_PROVIDED_FROM_AMF
       - type: string
     LossOfConnectivityReason:
+      description: Describes the reason for loss of connectivity
       anyOf:
       - type: string
         enum:
@@ -716,9 +1012,33 @@ components:
       - type: string
 
     ReachabilityFilter:
+      description: Event filter for REACHABILITY_REPORT event type
       anyOf:
       - type: string
         enum:
           - UE_REACHABILITY_STATUS_CHANGE
           - UE_REACHABLE_DL_TRAFFIC
+      - type: string
+
+    UeType:
+      description: Describes the type of UEs
+      anyOf:
+      - type: string
+        enum:
+          - AERIAL_UE
+      - type: string
+
+    AccessStateTransitionType:
+      description: Access State Transition Type.
+      anyOf:
+      - type: string
+        enum:
+          - ACCESS_TYPE_CHANGE_3GPP
+          - ACCESS_TYPE_CHANGE_N3GPP
+          - RM_STATE_CHANGE_DEREGISTERED
+          - RM_STATE_CHANGE_REGISTERED
+          - CM_STATE_CHANGE_IDLE
+          - CM_STATE_CHANGE_CONNECTED
+          - HANDOVER
+          - MOBILITY_REGISTRATION_UPDATE
       - type: string

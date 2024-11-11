@@ -1,14 +1,14 @@
 openapi: 3.0.0
 info:
-  version: 1.0.0
+  version: 1.1.1
   title: VAE_FileDistribution
   description: |
-    API for VAE File Distribution Service
-    © 2020, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
+    API for VAE File Distribution Service  
+    © 2024, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).  
     All rights reserved.
 externalDocs:
-  description: 3GPP TS 29.486 V16.1.0 V2X Application Enabler (VAE) Services
-  url: 'http://www.3gpp.org/ftp/Specs/archive/29_series/29.486/'
+  description: 3GPP TS 29.486 V17.7.0 V2X Application Enabler (VAE) Services
+  url: 'https://www.3gpp.org/ftp/Specs/archive/29_series/29.486/'
 security:
   - {}
   - oAuth2ClientCredentials: []
@@ -65,7 +65,7 @@ paths:
         '503':
           $ref: 'TS29571_CommonData.yaml#/components/responses/503'
         default:
-          description: Unexpected error
+          $ref: 'TS29571_CommonData.yaml#/components/responses/default'
   /file-distributions/{distributionId}:
     get:
       summary: Get an existing individual file distribution resource
@@ -86,6 +86,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FileDistributionData'
+        '307':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/307'
+        '308':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/308'
         '400':
           $ref: 'TS29571_CommonData.yaml#/components/responses/400'
         '401':
@@ -119,6 +123,10 @@ paths:
       responses:
         '204':
           description: The subscription was terminated successfully.
+        '307':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/307'
+        '308':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/308'
         '400':
           $ref: 'TS29571_CommonData.yaml#/components/responses/400'
         '401':
@@ -134,7 +142,7 @@ paths:
         '503':
           $ref: 'TS29571_CommonData.yaml#/components/responses/503'
         default:
-          description: Unexpected error
+          $ref: 'TS29571_CommonData.yaml#/components/responses/default'
 components:
   securitySchemes:
     oAuth2ClientCredentials:
@@ -145,6 +153,7 @@ components:
           scopes: {}
   schemas:
     FileDistributionData:
+      description: Represents an individual File Distribution resource for a V2X group ID.
       type: object
       properties:
         groupId:
@@ -162,6 +171,12 @@ components:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/BitRate'
         maxDelay:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/Uinteger'
+        duration:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/DateTime'
+        localMbmsInfo:
+          $ref: '#/components/schemas/LocalMbmsInfo'
+        localMbmsActInd:
+          type: boolean
         suppFeat:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/SupportedFeatures'
       required:
@@ -170,6 +185,7 @@ components:
         - maxBitrate
         - maxDelay
     FileList:
+      description: Represents a file list.
       type: object
       properties:
         fileUri:
@@ -200,8 +216,28 @@ components:
         - fileStatus
         - completionTime
         - keepUpdateInterval
-
+    LocalMbmsInfo:
+      description: Contains the local MBMS information.
+      type: object
+      properties:
+        mbmsEnbIpv4MulAddr:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Ipv4Addr'
+        mbmsEnbIpv6MulAddr:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Ipv6Prefix'
+        mbmsGwIpv4SsmAddr:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Ipv4Addr'
+        mbmsGwIpv6SsmAddr:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Ipv6Addr'
+        cteid:
+          type: string
+        bmscIpv4Addr:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Ipv4Addr'
+        bmscIpv6Addr:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Ipv6Addr'
+        bmscPort:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Uinteger'
     FileStatus:
+      description: Represents a file status.
       anyOf:
       - type: string
         enum:

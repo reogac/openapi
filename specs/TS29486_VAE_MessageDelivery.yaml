@@ -1,14 +1,14 @@
 openapi: 3.0.0
 info:
-  version: 1.0.0
+  version: 1.1.0
   title: VAE_MessageDelivery
   description: |
-    API for VAE Message Delivery Service
-    © 2020, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
+    API for VAE Message Delivery Service  
+    © 2022, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).  
     All rights reserved.
 externalDocs:
-  description: 3GPP TS 29.486 V16.1.0 V2X Application Enabler (VAE) Services
-  url: 'http://www.3gpp.org/ftp/Specs/archive/29_series/29.486/'
+  description: 3GPP TS 29.486 V17.5.0 V2X Application Enabler (VAE) Services
+  url: 'https://www.3gpp.org/ftp/Specs/archive/29_series/29.486/'
 security:
   - {}
   - oAuth2ClientCredentials: []
@@ -79,6 +79,48 @@ paths:
               responses:
                 '204':
                   description: No Content, Notification was successful
+                '307':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/307'
+                '308':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/308'
+                '400':
+                  $ref: 'TS29571_CommonData.yaml#/components/responses/400'
+                '401':
+                  $ref: 'TS29571_CommonData.yaml#/components/responses/401'
+                '403':
+                  $ref: 'TS29571_CommonData.yaml#/components/responses/403'
+                '404':
+                  $ref: 'TS29571_CommonData.yaml#/components/responses/404'
+                '411':
+                  $ref: 'TS29571_CommonData.yaml#/components/responses/411'
+                '413':
+                  $ref: 'TS29571_CommonData.yaml#/components/responses/413'
+                '415':
+                  $ref: 'TS29571_CommonData.yaml#/components/responses/415'
+                '429':
+                  $ref: 'TS29571_CommonData.yaml#/components/responses/429'
+                '500':
+                  $ref: 'TS29571_CommonData.yaml#/components/responses/500'
+                '503':
+                  $ref: 'TS29571_CommonData.yaml#/components/responses/503'
+                default:
+                  $ref: 'TS29571_CommonData.yaml#/components/responses/default'
+        receptReportOfDownlinkMesageDelivery:
+          '{$request.body#/notifUri}':
+            post:
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/Result'
+              responses:
+                '204':
+                  description: No Content, Notification was successful
+                '307':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/307'
+                '308':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/308'
                 '400':
                   $ref: 'TS29571_CommonData.yaml#/components/responses/400'
                 '401':
@@ -122,6 +164,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageDeliverySubscriptionData'
+        '307':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/307'
+        '308':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/308'
         '400':
           $ref: 'TS29571_CommonData.yaml#/components/responses/400'
         '401':
@@ -155,6 +201,10 @@ paths:
       responses:
         '204':
           description: The subscription was terminated successfully.
+        '307':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/307'
+        '308':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/308'
         '400':
           $ref: 'TS29571_CommonData.yaml#/components/responses/400'
         '401':
@@ -226,7 +276,7 @@ paths:
         '503':
           $ref: 'TS29571_CommonData.yaml#/components/responses/503'
         default:
-          description: Unexpected error
+          $ref: 'TS29571_CommonData.yaml#/components/responses/default'
   /subscriptions/{subscriptionId}/message-deliveries/{dlDeliveryId}:
     get:
       summary: VAE Message delivery resource Read service Operation
@@ -253,6 +303,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DownlinkMessageDeliveryData'
+        '307':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/307'
+        '308':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/308'
         '400':
           $ref: 'TS29571_CommonData.yaml#/components/responses/400'
         '401':
@@ -292,6 +346,10 @@ paths:
       responses:
         '204':
           description: No Content (Successful deletion of the existing subscription)
+        '307':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/307'
+        '308':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/308'
         '400':
           $ref: 'TS29571_CommonData.yaml#/components/responses/400'
         '401':
@@ -307,7 +365,7 @@ paths:
         '503':
           $ref: 'TS29571_CommonData.yaml#/components/responses/503'
         default:
-          description: Unexpected error
+          $ref: 'TS29571_CommonData.yaml#/components/responses/default'
 components:
   securitySchemes:
     oAuth2ClientCredentials:
@@ -318,6 +376,7 @@ components:
           scopes: {}
   schemas:
     DownlinkMessageDeliveryData:
+      description: Contains the downlink V2X message delivery data.
       type: object
       properties:
         ueId:
@@ -333,6 +392,7 @@ components:
       required:
         - payload
     MessageDeliverySubscriptionData:
+      description: Represents the V2X message delivery subscription data.
       type: object
       properties:
         appSerId:
@@ -345,7 +405,9 @@ components:
           $ref: 'TS29571_CommonData.yaml#/components/schemas/Uri'
         requestTestNotification:
           type: boolean
-          description: Set to true by the NF service consumer to request the VAE server to send a test notification as defined in clause 6.1.5.3. Set to false or omitted otherwise.
+          description: >
+            Set to true by the NF service consumer to request the VAE server to send a test
+            notification as defined in clause 6.1.5.3. Set to false or omitted otherwise.
         websockNotifConfig:
           $ref: 'TS29122_CommonData.yaml#/components/schemas/WebsockNotifConfig'
         suppFeat:
@@ -355,6 +417,7 @@ components:
         - serviceId
         - notifUri
     UplinkMessageDeliveryData:
+      description: Represents the uplink V2X message delivery data.
       type: object
       properties:
         resourceUri:
@@ -369,15 +432,28 @@ components:
         - resourceUri
         - ueId
         - payload
+    Result:
+      description: Contains the result of downlink message delivery.
+      anyOf:
+      - type: string
+        enum:
+          - SUCCESS
+          - FAIL
+      - type: string
     AppServerId:
+      description: Represents the V2X application specific server identifier.
       type: string
     V2xUeId:
+      description: Represents the identifier of the V2X UE.
       type: string
     V2xGroupId:
+      description: Represents the group ID for which a V2X message is addressed.
       type: string
     V2xServiceId:
+      description: Represents the V2X service ID to which a V2X message belongs.
       type: string
     GeoId:
+      description: Represents a geographical area identifier.
       type: string
     V2xMessagePayload:
       $ref: 'TS29571_CommonData.yaml#/components/schemas/Bytes'
