@@ -60,9 +60,9 @@ func readSpec() {
 		BasePath:              "specs",
 	}
 	// load an OpenAPI 3 specification from bytes
-	specApis, _ := os.ReadFile("specs/TS29502_Nsmf_PDUSession.yaml")
+	//specApis, _ := os.ReadFile("specs/TS29502_Nsmf_PDUSession.yaml")
 	//specApis, _ := os.ReadFile("specs/TS29571_CommonData.yaml")
-	//specApis, _ := os.ReadFile("specs/TS29518_Namf_Communication.yaml")
+	specApis, _ := os.ReadFile("specs/TS29518_Namf_Communication.yaml")
 
 	// create a new document from specification bytes
 	document, err := libopenapi.NewDocumentWithConfiguration(specApis, config)
