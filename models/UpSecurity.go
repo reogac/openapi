@@ -1,4 +1,6 @@
+package models
+
 type UpSecurity struct {
-	 UpConfid	string	`json:"upConfid"`
-	 UpIntegr	string	`json:"upIntegr"`
+	UpIntegr string `json:"upIntegr"`
+	UpConfid string `json:"upConfid"`
 }

@@ -1,3 +1,5 @@
+package models
+
 type SmContextCreateError struct {
 	N1SmMsg      *RefToBinaryData  `json:"n1SmMsg,omitempty"`
 	N2SmInfo     *RefToBinaryData  `json:"n2SmInfo,omitempty"`

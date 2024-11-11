@@ -1,4 +1,6 @@
+package models
+
 type LocationAreaId struct {
-	 Lac	string	`json:"lac"`
-	 PlmnId	PlmnId	`json:"plmnId"`
+	PlmnId PlmnId `json:"plmnId"`
+	Lac    string `json:"lac"`
 }

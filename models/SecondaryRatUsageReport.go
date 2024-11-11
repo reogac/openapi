@@ -1,4 +1,6 @@
+package models
+
 type SecondaryRatUsageReport struct {
-	 SecondaryRatType	string	`json:"secondaryRatType"`
-	 QosFlowsUsageData	[]QosFlowUsageReport	`json:"qosFlowsUsageData"`
+	SecondaryRatType  string               `json:"secondaryRatType"`
+	QosFlowsUsageData []QosFlowUsageReport `json:"qosFlowsUsageData"`
 }

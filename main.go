@@ -109,6 +109,9 @@ func writeModel(m *DataModel) {
 	prefix := "models/"
 	f, _ := os.Create(prefix + m.id + ".go")
 	defer f.Close()
+
+	fmt.Fprintf(f, "package models\n")
+
 	fmt.Fprintf(f, "type %s struct {\n", m.id)
 
 	for _, p := range m.properties {
@@ -120,10 +123,16 @@ func writeModel(m *DataModel) {
 		if p.isArray {
 			goType = "[]" + goType
 		}
+
+		attr := strings.Title(p.id)
+		if attr[0] == '5' {
+			attr = "Five" + attr[1:]
+		}
+
 		if p.required || p.isNullable() {
-			fmt.Fprintf(f, "\t %s\t%s\t%s\n", strings.Title(p.id), goType, p.writeTag())
+			fmt.Fprintf(f, "\t %s\t%s\t%s\n", attr, goType, p.writeTag())
 		} else {
-			fmt.Fprintf(f, "\t %s\t*%s\t%s\n", strings.Title(p.id), goType, p.writeTag())
+			fmt.Fprintf(f, "\t %s\t*%s\t%s\n", attr, goType, p.writeTag())
 		}
 	}
 	fmt.Fprintf(f, "}\n")
