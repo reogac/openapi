@@ -1,6 +1,5 @@
 package models
-
 type SubscriptionData struct {
-	GuamiList    []Guami `json:"guamiList,omitempty"`
-	AmfStatusUri string  `json:"amfStatusUri"`
+	 AmfStatusUri	string	`json:"amfStatusUri"`
+	 GuamiList	[]Guami	`json:"guamiList,omitempty"`
 }

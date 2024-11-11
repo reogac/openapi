@@ -1,6 +1,5 @@
 package models
-
 type NgApCause struct {
-	Group int `json:"group"`
-	Value int `json:"value"`
+	 Value	int	`json:"value"`
+	 Group	int	`json:"group"`
 }

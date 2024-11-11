@@ -60,9 +60,9 @@ func readSpec() {
 		BasePath:              "specs",
 	}
 	// load an OpenAPI 3 specification from bytes
-	//specApis, _ := os.ReadFile("specs/TS29502_Nsmf_PDUSession.yaml")
+	specApis, _ := os.ReadFile("specs/TS29502_Nsmf_PDUSession.yaml")
 	//specApis, _ := os.ReadFile("specs/TS29571_CommonData.yaml")
-	specApis, _ := os.ReadFile("specs/TS29518_Namf_Communication.yaml")
+	//specApis, _ := os.ReadFile("specs/TS29518_Namf_Communication.yaml")
 
 	// create a new document from specification bytes
 	document, err := libopenapi.NewDocumentWithConfiguration(specApis, config)
@@ -112,21 +112,31 @@ func writeModel(m *DataModel) {
 
 	fmt.Fprintf(f, "package models\n")
 
-	fmt.Fprintf(f, "type %s struct {\n", m.id)
+	structName := strings.Title(m.id)
+	if structName[0] == '5' {
+		structName = "Five" + strings.Title(structName[1:])
+	}
+	fmt.Fprintf(f, "type %s struct {\n", structName)
 
 	for _, p := range m.properties {
 		goType := p.goType
+
 		if len(goType) == 0 {
 			fmt.Printf("model %s has untype attribute %s\n", m.id, p.id)
 			continue
 		}
+
+		if goType[0] == '5' {
+			goType = "Five" + strings.Title(goType[1:])
+		}
+
 		if p.isArray {
 			goType = "[]" + goType
 		}
 
 		attr := strings.Title(p.id)
 		if attr[0] == '5' {
-			attr = "Five" + attr[1:]
+			attr = "Five" + strings.Title(attr[1:])
 		}
 
 		if p.required || p.isNullable() {

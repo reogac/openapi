@@ -1,6 +1,5 @@
 package models
-
 type SmfChangeInfo struct {
-	PduSessionIdList []int  `json:"pduSessionIdList"`
-	SmfChangeInd     string `json:"smfChangeInd"`
+	 SmfChangeInd	string	`json:"smfChangeInd"`
+	 PduSessionIdList	[]int	`json:"pduSessionIdList"`
 }

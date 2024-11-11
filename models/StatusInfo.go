@@ -1,8 +1,7 @@
 package models
-
 type StatusInfo struct {
-	Cause             string             `json:"cause,omitempty"`
-	CnAssistedRanPara *CnAssistedRanPara `json:"cnAssistedRanPara,omitempty"`
-	AnType            string             `json:"anType,omitempty"`
-	ResourceStatus    string             `json:"resourceStatus"`
+	 CnAssistedRanPara	*CnAssistedRanPara	`json:"cnAssistedRanPara,omitempty"`
+	 AnType	string	`json:"anType,omitempty"`
+	 ResourceStatus	string	`json:"resourceStatus"`
+	 Cause	string	`json:"cause,omitempty"`
 }
