@@ -1,7 +1,6 @@
 package models
-
 type PlmnIdNid struct {
-	Mcc string `json:"mcc"`
-	Mnc string `json:"mnc"`
-	Nid string `json:"nid,omitempty"`
+	 Nid	string	`json:"nid,omitempty"`
+	 Mcc	string	`json:"mcc"`
+	 Mnc	string	`json:"mnc"`
 }

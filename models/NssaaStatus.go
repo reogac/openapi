@@ -1,6 +1,5 @@
 package models
-
 type NssaaStatus struct {
-	Snssai Snssai `json:"snssai"`
-	Status string `json:"status"`
+	 Snssai	Snssai	`json:"snssai"`
+	 Status	string	`json:"status"`
 }
