@@ -16,8 +16,15 @@ type DataModel struct {
 	goType      string
 	isPrimitive bool
 	isArray     bool
+	isMap       bool
 	properties  map[string]Property
 	schema      *base.Schema
+	enum        *Enum
+}
+
+type Enum struct {
+	enumType string
+	values   []string
 }
 
 type Property struct {
@@ -25,10 +32,15 @@ type Property struct {
 	required bool
 	goType   string
 	isArray  bool
+	isMap    bool
 }
 
 func (p *Property) isNullable() bool {
 	if p.isArray {
+		return true
+	}
+
+	if p.isMap {
 		return true
 	}
 
@@ -61,8 +73,8 @@ func readSpec() {
 	}
 	// load an OpenAPI 3 specification from bytes
 	//specApis, _ := os.ReadFile("specs/TS29502_Nsmf_PDUSession.yaml")
-	specApis, _ := os.ReadFile("specs/TS29571_CommonData.yaml")
-	//specApis, _ := os.ReadFile("specs/TS29518_Namf_Communication.yaml")
+	//specApis, _ := os.ReadFile("specs/TS29571_CommonData.yaml")
+	specApis, _ := os.ReadFile("specs/TS29518_Namf_Communication.yaml")
 
 	// create a new document from specification bytes
 	document, err := libopenapi.NewDocumentWithConfiguration(specApis, config)
@@ -98,6 +110,25 @@ func readSpec() {
 
 }
 
+func writeEnum(id string, enum *Enum) {
+	fmt.Printf("Define constant values for %s[%s]\n", id, enum.enumType)
+	prefix := "models/"
+	f, _ := os.Create(prefix + id + ".go")
+
+	defer f.Close()
+
+	fmt.Fprintf(f, "package models\n")
+	fmt.Fprintf(f, "// Define constant values for %s\n", id)
+	fmt.Fprintf(f, "const (\n")
+	for _, v := range enum.values {
+		def := fmt.Sprintf("%s_%s", id, v)
+		def = strings.Replace(def, "-", "_", -1)
+		def = strings.ToUpper(def)
+		fmt.Fprintf(f, "\t %s %s = \"%s\"\n", def, enum.enumType, v)
+	}
+
+	fmt.Fprintf(f, ") \n")
+}
 func writeModel(m *DataModel) {
 	if m.isPrimitive {
 		return
@@ -132,6 +163,8 @@ func writeModel(m *DataModel) {
 
 		if p.isArray {
 			goType = "[]" + goType
+		} else if p.isMap {
+			goType = "map[string]" + goType
 		}
 
 		attr := strings.Title(p.id)
@@ -298,28 +331,45 @@ func analyzeOneOf(id string, oneOf []*base.SchemaProxy) *DataModel {
 }
 func analyzeAnyOf(id string, anyOf []*base.SchemaProxy) *DataModel {
 	isArray := false
-	goTypes := make(map[string]bool)
+	goTypes := make(map[string]DataModel)
 	for _, s := range anyOf {
 		if m := analyzeSchema(s); m != nil {
 			if m.isArray {
 				isArray = true
 			}
 			if len(m.goType) > 0 {
-				goTypes[m.goType] = true
+				goTypes[m.goType] = *m
 			}
+			if len(id) > 0 && m.enum != nil {
+				writeEnum(id, m.enum)
+			}
+
 		}
 	}
 	if len(goTypes) == 0 {
 		return nil
 	} else if len(goTypes) > 1 {
 		fmt.Printf("ANYOF %s has more than one types\n", id)
-		return nil
+		m := &DataModel{
+			id:         id,
+			goType:     id,
+			properties: make(map[string]Property),
+		}
+		for tStr, t := range goTypes {
+			m.properties[tStr] = Property{
+				id:      tStr,
+				goType:  t.goType,
+				isArray: t.isArray,
+				isMap:   t.isMap,
+			}
+		}
+		return m
 	} else {
 		m := &DataModel{
 			isArray: isArray,
 			id:      id,
 		}
-		for t, _ := range goTypes {
+		for t := range goTypes {
 			m.goType = t
 			break
 		}
@@ -338,6 +388,9 @@ func getSchemaId(schemaP *base.SchemaProxy) string {
 }
 
 func analyzeSchema(schemaP *base.SchemaProxy) *DataModel {
+	if schemaP == nil {
+		return nil
+	}
 	id := getSchemaId(schemaP)
 	if len(id) > 0 {
 		if m, ok := models[id]; ok {
@@ -374,38 +427,54 @@ func analyzeSchema(schemaP *base.SchemaProxy) *DataModel {
 		}
 		switch schema.Type[0] {
 		case "object":
-			m.goType = id
-			for pair := schema.Properties.First(); pair != nil; pair = pair.Next() {
-				propName := pair.Key()
-				propSchemaProxy := pair.Value()
-				propSchema := propSchemaProxy.Schema()
-				if propSchema == nil {
-					fmt.Printf("%s has empty attribute %s\n", id, propName)
+			if schema.AdditionalProperties != nil {
+				m.goType = id
+				m.isMap = true
+				if schema.AdditionalProperties.IsA() {
+					if refModel := analyzeSchema(schema.AdditionalProperties.A); refModel != nil {
+						m.goType = refModel.goType
+					} else {
+						m.goType = "UNKNOWN"
+					}
 				} else {
-					p := Property{
-						id:       propName,
-						required: inList(propName, schema.Required),
-					}
-
-					if refModel := analyzeSchema(propSchemaProxy); refModel != nil {
-						p.goType = refModel.goType
-						p.isArray = refModel.isArray
-
-					}
-					m.properties[p.id] = p
+					m.goType = "BOOL"
 				}
-			}
-			var extra *DataModel
-			if l := len(schema.AllOf); l > 0 {
-				extra = analyzeAllOf("", schema.AllOf)
-			} else if l = len(schema.AnyOf); l > 0 {
-				extra = analyzeAnyOf("", schema.AnyOf)
-			} else if l = len(schema.OneOf); l > 0 {
-				extra = analyzeAnyOf("", schema.OneOf)
-			}
-			if extra != nil {
-				for key, value := range extra.properties {
-					m.properties[key] = value
+				fmt.Printf("ADDPROP:map[string]%s\n", m.goType)
+			} else {
+				m.goType = id
+				for pair := schema.Properties.First(); pair != nil; pair = pair.Next() {
+					propName := pair.Key()
+					propSchemaProxy := pair.Value()
+					propSchema := propSchemaProxy.Schema()
+					if propSchema == nil {
+						fmt.Printf("%s has empty attribute %s\n", id, propName)
+					} else {
+						p := Property{
+							id:       propName,
+							required: inList(propName, schema.Required),
+						}
+
+						if refModel := analyzeSchema(propSchemaProxy); refModel != nil {
+							p.goType = refModel.goType
+							p.isArray = refModel.isArray
+							p.isMap = refModel.isMap
+
+						}
+						m.properties[p.id] = p
+					}
+				}
+				var extra *DataModel
+				if l := len(schema.AllOf); l > 0 {
+					extra = analyzeAllOf("", schema.AllOf)
+				} else if l = len(schema.AnyOf); l > 0 {
+					extra = analyzeAnyOf("", schema.AnyOf)
+				} else if l = len(schema.OneOf); l > 0 {
+					extra = analyzeAnyOf("", schema.OneOf)
+				}
+				if extra != nil {
+					for key, value := range extra.properties {
+						m.properties[key] = value
+					}
 				}
 			}
 		case "string":
@@ -452,6 +521,19 @@ func analyzeSchema(schemaP *base.SchemaProxy) *DataModel {
 		}
 		fmt.Printf("%s: %s\n", id, m.goType)
 	}
+
+	if len(schema.Enum) > 0 {
+		m.enum = &Enum{
+			enumType: m.goType,
+		}
+		for _, node := range schema.Enum {
+			m.enum.values = append(m.enum.values, node.Value)
+		}
+		if len(id) > 0 {
+			writeEnum(id, m.enum)
+		}
+	}
+
 	if m != nil && len(m.id) > 0 {
 		models[m.id] = *m
 	}

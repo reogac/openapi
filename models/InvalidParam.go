@@ -1,5 +1,6 @@
 package models
+
 type InvalidParam struct {
-	 Reason	string	`json:"reason,omitempty"`
-	 Param	string	`json:"param"`
+	Param  string `json:"param"`
+	Reason string `json:"reason,omitempty"`
 }

@@ -1,0 +1,10 @@
+package models
+
+// Define constant values for CollectionPeriodRmmNrMdt
+const (
+	COLLECTIONPERIODRMMNRMDT_1024  string = "1024"
+	COLLECTIONPERIODRMMNRMDT_2048  string = "2048"
+	COLLECTIONPERIODRMMNRMDT_5120  string = "5120"
+	COLLECTIONPERIODRMMNRMDT_10240 string = "10240"
+	COLLECTIONPERIODRMMNRMDT_60000 string = "60000"
+)

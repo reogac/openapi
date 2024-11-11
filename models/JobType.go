@@ -1,0 +1,12 @@
+package models
+
+// Define constant values for JobType
+const (
+	JOBTYPE_IMMEDIATE_MDT_ONLY      string = "IMMEDIATE_MDT_ONLY"
+	JOBTYPE_LOGGED_MDT_ONLY         string = "LOGGED_MDT_ONLY"
+	JOBTYPE_TRACE_ONLY              string = "TRACE_ONLY"
+	JOBTYPE_IMMEDIATE_MDT_AND_TRACE string = "IMMEDIATE_MDT_AND_TRACE"
+	JOBTYPE_RLF_REPORTS_ONLY        string = "RLF_REPORTS_ONLY"
+	JOBTYPE_RCEF_REPORTS_ONLY       string = "RCEF_REPORTS_ONLY"
+	JOBTYPE_LOGGED_MBSFN_MDT        string = "LOGGED_MBSFN_MDT"
+)

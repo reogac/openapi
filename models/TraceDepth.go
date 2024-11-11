@@ -1,0 +1,11 @@
+package models
+
+// Define constant values for TraceDepth
+const (
+	TRACEDEPTH_MINIMUM                     string = "MINIMUM"
+	TRACEDEPTH_MEDIUM                      string = "MEDIUM"
+	TRACEDEPTH_MAXIMUM                     string = "MAXIMUM"
+	TRACEDEPTH_MINIMUM_WO_VENDOR_EXTENSION string = "MINIMUM_WO_VENDOR_EXTENSION"
+	TRACEDEPTH_MEDIUM_WO_VENDOR_EXTENSION  string = "MEDIUM_WO_VENDOR_EXTENSION"
+	TRACEDEPTH_MAXIMUM_WO_VENDOR_EXTENSION string = "MAXIMUM_WO_VENDOR_EXTENSION"
+)
