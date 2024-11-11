@@ -1,4 +1,5 @@
 package models
+
 type TransferMtDataReqData struct {
-	 MtData	RefToBinaryData	`json:"mtData"`
+	MtData RefToBinaryData `json:"mtData"`
 }

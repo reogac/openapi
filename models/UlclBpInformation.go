@@ -1,4 +1,5 @@
 package models
+
 type UlclBpInformation struct {
-	 UlclBpUpfId	string	`json:"ulclBpUpfId,omitempty"`
+	UlclBpUpfId string `json:"ulclBpUpfId,omitempty"`
 }

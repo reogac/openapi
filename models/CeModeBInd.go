@@ -1,4 +1,5 @@
 package models
+
 type CeModeBInd struct {
-	 CeModeBSupportInd	bool	`json:"ceModeBSupportInd"`
+	CeModeBSupportInd bool `json:"ceModeBSupportInd"`
 }
