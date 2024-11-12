@@ -1,27 +1,27 @@
 package models
 
 type MmContext struct {
-	UeSecurityCapability    string                 `json:"ueSecurityCapability,omitempty"`
+	AccessType              AccessType             `json:"accessType"`
 	S1UeNetworkCapability   string                 `json:"s1UeNetworkCapability,omitempty"`
+	AllowedNssai            []Snssai               `json:"allowedNssai,omitempty"`
 	AllowedHomeNssai        []Snssai               `json:"allowedHomeNssai,omitempty"`
 	NsInstanceList          []string               `json:"nsInstanceList,omitempty"`
-	TngfId                  *GlobalRanNodeId       `json:"tngfId,omitempty"`
+	N3IwfId                 *GlobalRanNodeId       `json:"n3IwfId,omitempty"`
 	UuaaMmStatus            UuaaMmStatus           `json:"uuaaMmStatus,omitempty"`
 	NasSecurityMode         *NasSecurityMode       `json:"nasSecurityMode,omitempty"`
 	NasDownlinkCount        *int                   `json:"nasDownlinkCount,omitempty"`
-	NasUplinkCount          *int                   `json:"nasUplinkCount,omitempty"`
-	NssaiMappingList        []NssaiMapping         `json:"nssaiMappingList,omitempty"`
+	WagfId                  *GlobalRanNodeId       `json:"wagfId,omitempty"`
+	TngfId                  *GlobalRanNodeId       `json:"tngfId,omitempty"`
 	AnN2ApId                *int                   `json:"anN2ApId,omitempty"`
-	NssaaStatusList         []NssaaStatus          `json:"nssaaStatusList,omitempty"`
-	AccessType              AccessType             `json:"accessType"`
+	PendingNssaiMappingList []NssaiMapping         `json:"pendingNssaiMappingList,omitempty"`
+	EpsNasSecurityMode      *EpsNasSecurityMode    `json:"epsNasSecurityMode,omitempty"`
 	ExpectedUEbehavior      *ExpectedUeBehavior    `json:"expectedUEbehavior,omitempty"`
 	UeDifferentiationInfo   *UeDifferentiationInfo `json:"ueDifferentiationInfo,omitempty"`
-	PlmnAssiUeRadioCapId    string                 `json:"plmnAssiUeRadioCapId,omitempty"`
 	ManAssiUeRadioCapId     string                 `json:"manAssiUeRadioCapId,omitempty"`
-	N3IwfId                 *GlobalRanNodeId       `json:"n3IwfId,omitempty"`
-	WagfId                  *GlobalRanNodeId       `json:"wagfId,omitempty"`
-	EpsNasSecurityMode      *EpsNasSecurityMode    `json:"epsNasSecurityMode,omitempty"`
+	NssaaStatusList         []NssaaStatus          `json:"nssaaStatusList,omitempty"`
+	NasUplinkCount          *int                   `json:"nasUplinkCount,omitempty"`
+	UeSecurityCapability    string                 `json:"ueSecurityCapability,omitempty"`
+	NssaiMappingList        []NssaiMapping         `json:"nssaiMappingList,omitempty"`
+	PlmnAssiUeRadioCapId    string                 `json:"plmnAssiUeRadioCapId,omitempty"`
 	UcmfDicEntryId          string                 `json:"ucmfDicEntryId,omitempty"`
-	PendingNssaiMappingList []NssaiMapping         `json:"pendingNssaiMappingList,omitempty"`
-	AllowedNssai            []Snssai               `json:"allowedNssai,omitempty"`
 }

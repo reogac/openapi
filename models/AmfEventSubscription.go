@@ -1,21 +1,21 @@
 package models
 
 type AmfEventSubscription struct {
+	Pei                           string        `json:"pei,omitempty"`
+	GroupId                       string        `json:"groupId,omitempty"`
+	ExcludeGpsiList               []string      `json:"excludeGpsiList,omitempty"`
+	IncludeGpsiList               []string      `json:"includeGpsiList,omitempty"`
+	SubsChangeNotifyUri           string        `json:"subsChangeNotifyUri,omitempty"`
+	Gpsi                          string        `json:"gpsi,omitempty"`
+	AnyUE                         *bool         `json:"anyUE,omitempty"`
+	Options                       *AmfEventMode `json:"options,omitempty"`
 	SourceNfType                  NFType        `json:"sourceNfType,omitempty"`
 	EventList                     []AmfEvent    `json:"eventList"`
-	NfId                          string        `json:"nfId"`
-	GroupId                       string        `json:"groupId,omitempty"`
-	ExcludeSupiList               []string      `json:"excludeSupiList,omitempty"`
-	ExcludeGpsiList               []string      `json:"excludeGpsiList,omitempty"`
 	EventNotifyUri                string        `json:"eventNotifyUri"`
-	Options                       *AmfEventMode `json:"options,omitempty"`
-	NotifyCorrelationId           string        `json:"notifyCorrelationId"`
-	SubsChangeNotifyUri           string        `json:"subsChangeNotifyUri,omitempty"`
+	NfId                          string        `json:"nfId"`
 	Supi                          string        `json:"supi,omitempty"`
-	IncludeSupiList               []string      `json:"includeSupiList,omitempty"`
+	ExcludeSupiList               []string      `json:"excludeSupiList,omitempty"`
+	NotifyCorrelationId           string        `json:"notifyCorrelationId"`
 	SubsChangeNotifyCorrelationId string        `json:"subsChangeNotifyCorrelationId,omitempty"`
-	IncludeGpsiList               []string      `json:"includeGpsiList,omitempty"`
-	Gpsi                          string        `json:"gpsi,omitempty"`
-	Pei                           string        `json:"pei,omitempty"`
-	AnyUE                         *bool         `json:"anyUE,omitempty"`
+	IncludeSupiList               []string      `json:"includeSupiList,omitempty"`
 }

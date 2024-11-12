@@ -1,17 +1,17 @@
 package models
 
 type TransferMtDataError struct {
-	Type               string          `json:"type,omitempty"`
+	InvalidParams      []InvalidParam  `json:"invalidParams,omitempty"`
 	Detail             string          `json:"detail,omitempty"`
+	Instance           string          `json:"instance,omitempty"`
+	AccessTokenRequest *AccessTokenReq `json:"accessTokenRequest,omitempty"`
+	RemoteError        *bool           `json:"remoteError,omitempty"`
+	Type               string          `json:"type,omitempty"`
+	Title              string          `json:"title,omitempty"`
 	Cause              string          `json:"cause,omitempty"`
 	NrfId              string          `json:"nrfId,omitempty"`
-	Instance           string          `json:"instance,omitempty"`
-	InvalidParams      []InvalidParam  `json:"invalidParams,omitempty"`
-	AccessTokenRequest *AccessTokenReq `json:"accessTokenRequest,omitempty"`
 	SupportedFeatures  string          `json:"supportedFeatures,omitempty"`
-	Title              string          `json:"title,omitempty"`
-	RemoteError        *bool           `json:"remoteError,omitempty"`
 	AccessTokenError   *AccessTokenErr `json:"accessTokenError,omitempty"`
-	Status             *int            `json:"status,omitempty"`
 	MaxWaitingTime     *int            `json:"maxWaitingTime,omitempty"`
+	Status             *int            `json:"status,omitempty"`
 }

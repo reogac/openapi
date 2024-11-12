@@ -1,16 +1,16 @@
 package models
 
 type UsageMonitoringData struct {
-	VolumeThresholdUplink    *int64   `json:"volumeThresholdUplink,omitempty"`
-	MonitoringTime           string   `json:"monitoringTime,omitempty"`
-	NextVolThresholdUplink   *int64   `json:"nextVolThresholdUplink,omitempty"`
 	NextVolThresholdDownlink *int64   `json:"nextVolThresholdDownlink,omitempty"`
+	NextTimeThreshold        *int     `json:"nextTimeThreshold,omitempty"`
 	ExUsagePccRuleIds        []string `json:"exUsagePccRuleIds,omitempty"`
-	UmId                     string   `json:"umId"`
+	VolumeThreshold          *int64   `json:"volumeThreshold,omitempty"`
 	VolumeThresholdDownlink  *int64   `json:"volumeThresholdDownlink,omitempty"`
 	TimeThreshold            *int     `json:"timeThreshold,omitempty"`
+	MonitoringTime           string   `json:"monitoringTime,omitempty"`
 	NextVolThreshold         *int64   `json:"nextVolThreshold,omitempty"`
-	NextTimeThreshold        *int     `json:"nextTimeThreshold,omitempty"`
+	NextVolThresholdUplink   *int64   `json:"nextVolThresholdUplink,omitempty"`
 	InactivityTime           *int     `json:"inactivityTime,omitempty"`
-	VolumeThreshold          *int64   `json:"volumeThreshold,omitempty"`
+	UmId                     string   `json:"umId"`
+	VolumeThresholdUplink    *int64   `json:"volumeThresholdUplink,omitempty"`
 }

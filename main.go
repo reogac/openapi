@@ -156,7 +156,6 @@ func readSpec(specFile string) {
 	for _, m := range models {
 		writeModel(&m)
 	}
-
 }
 
 func writeEnum(id string, enum *Enum) {
@@ -254,6 +253,20 @@ func showPaths(paths *orderedmap.Map[string, *v3.PathItem]) {
 		showPathItem(pathName, pathItem)
 	}
 }
+
+func createOpId(path string) string {
+	parts := strings.FieldsFunc(path, func(c rune) bool {
+		return c == '/' || c == '-' || c == '_' || c == ' '
+	})
+	idParts := []string{}
+	for _, p := range parts {
+		if len(p) > 0 && p[0] != '{' {
+			idParts = append(idParts, strings.Title(p))
+		}
+	}
+	return strings.Join(idParts, "")
+}
+
 func showPathItem(path string, item *v3.PathItem) *Operation {
 	var op *v3.Operation
 	var opStr string
@@ -281,9 +294,13 @@ func showPathItem(path string, item *v3.PathItem) *Operation {
 		method:     opStr,
 		summary:    op.Summary,
 		desc:       op.Description,
-		id:         op.OperationId,
 		parameters: make(map[string]Parameter),
 		responses:  make(map[string]Response),
+	}
+	if len(op.OperationId) == 0 {
+		opModel.id = createOpId(opModel.path + "/" + strings.Title(strings.ToLower(opStr)))
+	} else {
+		opModel.id = createOpId(op.OperationId)
 	}
 	//fmt.Printf("%s[%s][%s]: %s\n", path, opStr, op.OperationId, op.Summary)
 	//get request body
