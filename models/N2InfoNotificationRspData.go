@@ -1,4 +1,5 @@
 package models
+
 type N2InfoNotificationRspData struct {
-	 SecRatDataUsageList	[]N2SmInformation	`json:"secRatDataUsageList,omitempty"`
+	SecRatDataUsageList []N2SmInformation `json:"secRatDataUsageList,omitempty"`
 }
