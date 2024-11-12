@@ -1,8 +1,8 @@
 package models
 
 type PointUncertaintyEllipse struct {
-	Point              GeographicalCoordinates `json:"point"`
 	UncertaintyEllipse UncertaintyEllipse      `json:"uncertaintyEllipse"`
 	Confidence         int                     `json:"confidence"`
-	Shape              string                  `json:"shape"`
+	Shape              SupportedGADShapes      `json:"shape"`
+	Point              GeographicalCoordinates `json:"point"`
 }

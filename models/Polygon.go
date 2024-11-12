@@ -1,6 +1,6 @@
 package models
 
 type Polygon struct {
-	Shape     string                    `json:"shape"`
+	Shape     SupportedGADShapes        `json:"shape"`
 	PointList []GeographicalCoordinates `json:"pointList"`
 }

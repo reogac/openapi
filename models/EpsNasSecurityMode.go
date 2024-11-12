@@ -1,6 +1,6 @@
 package models
 
 type EpsNasSecurityMode struct {
-	IntegrityAlgorithm string `json:"integrityAlgorithm"`
-	CipheringAlgorithm string `json:"cipheringAlgorithm"`
+	IntegrityAlgorithm EpsNasIntegrityAlgorithm `json:"integrityAlgorithm"`
+	CipheringAlgorithm EpsNasCipheringAlgorithm `json:"cipheringAlgorithm"`
 }

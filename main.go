@@ -37,11 +37,6 @@ type Property struct {
 	id       string
 	required bool
 	m        *DataModel
-	/*
-		goType   string
-		isArray  bool
-		isMap    bool
-	*/
 }
 
 func (p *Property) isNullable() bool {
@@ -82,9 +77,9 @@ func readSpec() {
 	}
 	// load an OpenAPI 3 specification from bytes
 	//specApis, _ := os.ReadFile("specs/TS29502_Nsmf_PDUSession.yaml")
-	specApis, _ := os.ReadFile("specs/TS29571_CommonData.yaml")
+	//specApis, _ := os.ReadFile("specs/TS29571_CommonData.yaml")
 	//specApis, _ := os.ReadFile("specs/TS29518_Namf_Communication.yaml")
-	//specApis, _ := os.ReadFile("specs/TS29509_Nausf_UEAuthentication.yaml")
+	specApis, _ := os.ReadFile("specs/TS29509_Nausf_UEAuthentication.yaml")
 
 	// create a new document from specification bytes
 	document, err := libopenapi.NewDocumentWithConfiguration(specApis, config)
@@ -160,19 +155,21 @@ func writeModel(m *DataModel) {
 		return
 	}
 
+	structName := makeModelName(m.id)
+
+	fmt.Printf("Write model %s\n", structName)
+
 	prefix := "models/"
 	f, _ := os.Create(prefix + m.id + ".go")
 	defer f.Close()
 
 	fmt.Fprintf(f, "package models\n")
 
-	structName := makeModelName(m.id)
-
 	fmt.Fprintf(f, "type %s struct {\n", structName)
 
 	for _, p := range m.properties {
 		if p.m == nil {
-			fmt.Printf("model %s has untype attribute %s\n", m.id)
+			fmt.Printf("model %s has untype attribute %s\n", m.id, p.id)
 			continue
 		}
 
@@ -355,6 +352,7 @@ func analyzeAnyOf(id string, anyOf []*base.SchemaProxy) *DataModel {
 	isArray := false
 	goTypes := make(map[string]DataModel)
 	var enum *Enum
+	var subModels []DataModel
 	for _, s := range anyOf {
 		if m := analyzeSchema("", s); m != nil {
 			if m.isArray {
@@ -363,8 +361,10 @@ func analyzeAnyOf(id string, anyOf []*base.SchemaProxy) *DataModel {
 			if len(m.goType) > 0 {
 				goTypes[m.goType] = *m
 			}
-			enum = m.enum
-
+			if m.enum != nil {
+				enum = m.enum
+			}
+			subModels = append(subModels, *m)
 		}
 	}
 	if len(goTypes) == 0 {
@@ -385,26 +385,31 @@ func analyzeAnyOf(id string, anyOf []*base.SchemaProxy) *DataModel {
 				tStr = makeModelName(t.id)
 			}
 			m.properties[tStr] = Property{
-				id: tStr,
-				m:  &t,
-				//goType:   t.goType,
-				//isArray:  t.isArray,
-				//isMap:    t.isMap,
+				id:       tStr,
+				m:        &t,
 				required: false,
 			}
 		}
 		return m
 	} else {
-		m := &DataModel{
-			isArray: isArray,
-			id:      id,
-			enum:    enum,
+		if len(subModels) == 1 {
+			m := subModels[0]
+			if len(m.id) == 0 {
+				m.id = id
+			}
+			return &m
+		} else {
+			m := &DataModel{
+				isArray: isArray,
+				id:      id,
+				enum:    enum,
+			}
+			for t := range goTypes {
+				m.goType = t
+				break
+			}
+			return m
 		}
-		for t := range goTypes {
-			m.goType = t
-			break
-		}
-		return m
 	}
 	return nil
 }
@@ -448,7 +453,7 @@ func analyzeSchema(id string, schemaP *base.SchemaProxy) *DataModel {
 		} else if len(schema.OneOf) > 0 {
 			m = analyzeOneOf(id, schema.OneOf)
 		} else {
-			fmt.Printf("UNTYPE %s\n", id)
+			//fmt.Printf("UNTYPE schema %s\n", id)
 			return nil
 		}
 	} else {
@@ -471,7 +476,7 @@ func analyzeSchema(id string, schemaP *base.SchemaProxy) *DataModel {
 				} else {
 					m.goType = "bool"
 				}
-				fmt.Printf("ADDPROP:map[string]%s\n", m.goType)
+				//fmt.Printf("ADDPROP:map[string]%s\n", m.goType)
 			} else {
 				m.goType = id
 				for pair := schema.Properties.First(); pair != nil; pair = pair.Next() {
@@ -543,7 +548,7 @@ func analyzeSchema(id string, schemaP *base.SchemaProxy) *DataModel {
 			fmt.Printf("Not supported type: %s\n", schema.Type[0])
 			return nil
 		}
-		fmt.Printf("%s: %s\n", id, m.goType)
+		//fmt.Printf("%s: %s\n", id, m.goType)
 	}
 
 	if len(schema.Enum) > 0 {

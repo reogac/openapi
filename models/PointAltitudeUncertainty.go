@@ -6,6 +6,6 @@ type PointAltitudeUncertainty struct {
 	VConfidence         *int                    `json:"vConfidence,omitempty"`
 	Point               GeographicalCoordinates `json:"point"`
 	Altitude            float64                 `json:"altitude"`
+	Shape               SupportedGADShapes      `json:"shape"`
 	UncertaintyEllipse  UncertaintyEllipse      `json:"uncertaintyEllipse"`
-	Shape               string                  `json:"shape"`
 }

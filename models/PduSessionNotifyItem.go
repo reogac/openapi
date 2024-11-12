@@ -1,5 +1,5 @@
 package models
 
 type PduSessionNotifyItem struct {
-	NotificationCause string `json:"notificationCause"`
+	NotificationCause NotificationCause `json:"notificationCause"`
 }

@@ -3,11 +3,11 @@ package models
 type QosFlowProfile struct {
 	FiveQi                int                    `json:"5qi"`
 	NonDynamic5Qi         *NonDynamic5Qi         `json:"nonDynamic5Qi,omitempty"`
-	GbrQosFlowInfo        *GbrQosFlowInformation `json:"gbrQosFlowInfo,omitempty"`
 	Dynamic5Qi            *Dynamic5Qi            `json:"dynamic5Qi,omitempty"`
+	AdditionalQosFlowInfo AdditionalQosFlowInfo  `json:"additionalQosFlowInfo,omitempty"`
+	QosMonitoringReq      QosMonitoringReq       `json:"qosMonitoringReq,omitempty"`
 	Arp                   *Arp                   `json:"arp,omitempty"`
-	Rqa                   string                 `json:"rqa,omitempty"`
-	AdditionalQosFlowInfo string                 `json:"additionalQosFlowInfo,omitempty"`
-	QosMonitoringReq      string                 `json:"qosMonitoringReq,omitempty"`
+	GbrQosFlowInfo        *GbrQosFlowInformation `json:"gbrQosFlowInfo,omitempty"`
+	Rqa                   ReflectiveQoSAttribute `json:"rqa,omitempty"`
 	QosRepPeriod          *int                   `json:"qosRepPeriod,omitempty"`
 }

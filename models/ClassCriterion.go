@@ -1,7 +1,7 @@
 package models
 
 type ClassCriterion struct {
-	DisperClass    string `json:"disperClass"`
-	ClassThreshold int    `json:"classThreshold"`
-	ThresMatch     string `json:"thresMatch"`
+	DisperClass    DispersionClass   `json:"disperClass"`
+	ClassThreshold int               `json:"classThreshold"`
+	ThresMatch     MatchingDirection `json:"thresMatch"`
 }
