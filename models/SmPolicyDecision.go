@@ -1,0 +1,33 @@
+package models
+
+type SmPolicyDecision struct {
+	TraffContDecs         map[string]TrafficControlData   `json:"traffContDecs,omitempty"`
+	RelCause              SmPolicyAssociationReleaseCause `json:"relCause,omitempty"`
+	SuppFeat              string                          `json:"suppFeat,omitempty"`
+	TsnBridgeManCont      *BridgeManagementContainer      `json:"tsnBridgeManCont,omitempty"`
+	RedSessIndication     *bool                           `json:"redSessIndication,omitempty"`
+	PccRules              map[string]PccRule              `json:"pccRules,omitempty"`
+	UmDecs                map[string]UsageMonitoringData  `json:"umDecs,omitempty"`
+	Conds                 map[string]ConditionData        `json:"conds,omitempty"`
+	Offline               *bool                           `json:"offline,omitempty"`
+	PolicyCtrlReqTriggers []string                        `json:"policyCtrlReqTriggers,omitempty"`
+	SessRules             map[string]SessionRule          `json:"sessRules,omitempty"`
+	ChgDecs               map[string]ChargingData         `json:"chgDecs,omitempty"`
+	ReflectiveQoSTimer    *int                            `json:"reflectiveQoSTimer,omitempty"`
+	Online                *bool                           `json:"online,omitempty"`
+	LastReqUsageData      *RequestedUsageData             `json:"lastReqUsageData,omitempty"`
+	Ipv6Index             *int                            `json:"ipv6Index,omitempty"`
+	TsnPortManContNwtts   []PortManagementContainer       `json:"tsnPortManContNwtts,omitempty"`
+	QosChars              map[string]QosCharacteristics   `json:"qosChars,omitempty"`
+	OfflineChOnly         *bool                           `json:"offlineChOnly,omitempty"`
+	Ipv4Index             *int                            `json:"ipv4Index,omitempty"`
+	QosDecs               map[string]QosData              `json:"qosDecs,omitempty"`
+	ChargingInfo          *ChargingInformation            `json:"chargingInfo,omitempty"`
+	LastReqRuleData       []RequestedRuleData             `json:"lastReqRuleData,omitempty"`
+	QosFlowUsage          QosFlowUsage                    `json:"qosFlowUsage,omitempty"`
+	TsnPortManContDstt    *PortManagementContainer        `json:"tsnPortManContDstt,omitempty"`
+	QosMonDecs            map[string]QosMonitoringData    `json:"qosMonDecs,omitempty"`
+	RevalidationTime      string                          `json:"revalidationTime,omitempty"`
+	PraInfos              map[string]PresenceInfoRm       `json:"praInfos,omitempty"`
+	PcscfRestIndication   *bool                           `json:"pcscfRestIndication,omitempty"`
+}

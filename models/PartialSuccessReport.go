@@ -1,0 +1,10 @@
+package models
+
+type PartialSuccessReport struct {
+	RuleReports             []RuleReport        `json:"ruleReports,omitempty"`
+	SessRuleReports         []SessionRuleReport `json:"sessRuleReports,omitempty"`
+	UeCampingRep            *UeCampingRep       `json:"ueCampingRep,omitempty"`
+	PolicyDecFailureReports []string            `json:"policyDecFailureReports,omitempty"`
+	InvalidPolicyDecs       []InvalidParam      `json:"invalidPolicyDecs,omitempty"`
+	FailureCause            FailureCause        `json:"failureCause"`
+}
