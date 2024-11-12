@@ -1,21 +1,21 @@
 package models
 
 type SmContextCreatedData struct {
-	SNssai               *Snssai          `json:"sNssai,omitempty"`
-	AdditionalSnssai     *Snssai          `json:"additionalSnssai,omitempty"`
-	N2SmInfoType         N2SmInfoType     `json:"n2SmInfoType,omitempty"`
-	AllocatedEbiList     []EbiArpMapping  `json:"allocatedEbiList,omitempty"`
-	HoState              HoState          `json:"hoState,omitempty"`
-	SelectedSmfId        string           `json:"selectedSmfId,omitempty"`
 	InterPlmnApiRoot     string           `json:"interPlmnApiRoot,omitempty"`
-	SmfServiceInstanceId string           `json:"smfServiceInstanceId,omitempty"`
-	PduSessionId         *int             `json:"pduSessionId,omitempty"`
-	UpCnxState           UpCnxState       `json:"upCnxState,omitempty"`
-	Gpsi                 string           `json:"gpsi,omitempty"`
-	SupportedFeatures    string           `json:"supportedFeatures,omitempty"`
-	SelectedOldSmfId     string           `json:"selectedOldSmfId,omitempty"`
-	HSmfUri              string           `json:"hSmfUri,omitempty"`
-	SmfUri               string           `json:"smfUri,omitempty"`
+	SNssai               *Snssai          `json:"sNssai,omitempty"`
+	HoState              HoState          `json:"hoState,omitempty"`
 	N2SmInfo             *RefToBinaryData `json:"n2SmInfo,omitempty"`
 	RecoveryTime         string           `json:"recoveryTime,omitempty"`
+	SupportedFeatures    string           `json:"supportedFeatures,omitempty"`
+	SelectedSmfId        string           `json:"selectedSmfId,omitempty"`
+	SmfUri               string           `json:"smfUri,omitempty"`
+	AdditionalSnssai     *Snssai          `json:"additionalSnssai,omitempty"`
+	AllocatedEbiList     []EbiArpMapping  `json:"allocatedEbiList,omitempty"`
+	SmfServiceInstanceId string           `json:"smfServiceInstanceId,omitempty"`
+	SelectedOldSmfId     string           `json:"selectedOldSmfId,omitempty"`
+	UpCnxState           UpCnxState       `json:"upCnxState,omitempty"`
+	N2SmInfoType         N2SmInfoType     `json:"n2SmInfoType,omitempty"`
+	Gpsi                 string           `json:"gpsi,omitempty"`
+	HSmfUri              string           `json:"hSmfUri,omitempty"`
+	PduSessionId         *int             `json:"pduSessionId,omitempty"`
 }

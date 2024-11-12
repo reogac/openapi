@@ -139,6 +139,7 @@ func writeEnum(id string, enum *Enum) {
 	fmt.Fprintf(f, "// Define constant values for %s\n", id)
 	fmt.Fprintf(f, "const (\n")
 	for _, v := range enum.values {
+		v = strings.Replace(v, " ", "", -1)
 		def := fmt.Sprintf("%s_%s", id, v)
 		def = strings.Replace(def, "-", "_", -1)
 		def = strings.ToUpper(def)
@@ -596,22 +597,25 @@ func inList(item string, list []string) bool {
 	}
 	return false
 }
-
 func makeModelName(s string) string {
 	if len(s) == 0 {
 		return ""
 	}
 
-	out := strings.Title(s)
+	parts := strings.FieldsFunc(s, func(c rune) bool {
+		return c == ' ' || c == '-' || c == '_'
+	})
+	out := ""
+	for _, p := range parts {
+		out = out + strings.Title(p)
+	}
+
 	if out[0] == '5' {
 		out = "Five" + strings.Title(out[1:])
 	}
 
 	if out[0] == '3' {
 		out = "Three" + strings.Title(out[1:])
-	}
-	if out[0] == '_' {
-		out = strings.Title(out[1:])
 	}
 
 	return out

@@ -4,11 +4,11 @@ type AuthorizedDefaultQos struct {
 	FiveQi             *int   `json:"5qi,omitempty"`
 	Arp                *Arp   `json:"arp,omitempty"`
 	MaxbrUl            string `json:"maxbrUl,omitempty"`
-	GbrUl              string `json:"gbrUl,omitempty"`
+	MaxbrDl            string `json:"maxbrDl,omitempty"`
+	ExtMaxDataBurstVol *int   `json:"extMaxDataBurstVol,omitempty"`
 	PriorityLevel      *int   `json:"priorityLevel,omitempty"`
 	AverWindow         *int   `json:"averWindow,omitempty"`
 	MaxDataBurstVol    *int   `json:"maxDataBurstVol,omitempty"`
-	MaxbrDl            string `json:"maxbrDl,omitempty"`
+	GbrUl              string `json:"gbrUl,omitempty"`
 	GbrDl              string `json:"gbrDl,omitempty"`
-	ExtMaxDataBurstVol *int   `json:"extMaxDataBurstVol,omitempty"`
 }

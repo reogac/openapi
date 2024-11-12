@@ -1,6 +1,5 @@
 package models
-
 type Point struct {
-	Point GeographicalCoordinates `json:"point"`
-	Shape SupportedGADShapes      `json:"shape"`
+	 Shape	SupportedGADShapes	`json:"shape"`
+	 Point	GeographicalCoordinates	`json:"point"`
 }

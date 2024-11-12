@@ -1,6 +1,6 @@
 package models
 
 type RequestedUsageData struct {
-	AllUmIds *bool    `json:"allUmIds,omitempty"`
 	RefUmIds []string `json:"refUmIds,omitempty"`
+	AllUmIds *bool    `json:"allUmIds,omitempty"`
 }

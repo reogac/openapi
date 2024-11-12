@@ -1,6 +1,5 @@
 package models
-
 type ExpectedUeBehavior struct {
-	ExpMoveTrajectory []UserLocation `json:"expMoveTrajectory"`
-	ValidityTime      string         `json:"validityTime"`
+	 ExpMoveTrajectory	[]UserLocation	`json:"expMoveTrajectory"`
+	 ValidityTime	string	`json:"validityTime"`
 }
