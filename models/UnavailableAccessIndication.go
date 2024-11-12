@@ -1,7 +1,0 @@
-package models
-
-// Define constant values for UnavailableAccessIndication
-const (
-	UNAVAILABLEACCESSINDICATION_3GA_UNAVAILABLE  string = "3GA_UNAVAILABLE"
-	UNAVAILABLEACCESSINDICATION_N3GA_UNAVAILABLE string = "N3GA_UNAVAILABLE"
-)

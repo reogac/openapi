@@ -1,7 +1,0 @@
-package models
-
-// Define constant values for ReachabilityFilter
-const (
-	REACHABILITYFILTER_UE_REACHABILITY_STATUS_CHANGE string = "UE_REACHABILITY_STATUS_CHANGE"
-	REACHABILITYFILTER_UE_REACHABLE_DL_TRAFFIC       string = "UE_REACHABLE_DL_TRAFFIC"
-)

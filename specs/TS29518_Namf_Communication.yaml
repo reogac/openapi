@@ -3482,6 +3482,7 @@ components:
             type: string
           minItems: 1
         aoiStateList:
+          type: object
           description: >
             Map of subscribed Area of Interest (AoI) Event State in the old AMF. The JSON pointer to
             an AmfEventArea element in the areaList IE (or a PresenceInfo element in 

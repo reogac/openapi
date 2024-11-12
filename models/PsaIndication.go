@@ -1,9 +1,0 @@
-package models
-
-// Define constant values for PsaIndication
-const (
-	PSAINDICATION_PSA_INSERTED      string = "PSA_INSERTED"
-	PSAINDICATION_PSA_REMOVED       string = "PSA_REMOVED"
-	PSAINDICATION_PSA_INSERTED_ONLY string = "PSA_INSERTED_ONLY"
-	PSAINDICATION_PSA_REMOVED_ONLY  string = "PSA_REMOVED_ONLY"
-)

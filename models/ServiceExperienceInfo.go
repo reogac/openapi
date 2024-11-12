@@ -1,20 +1,20 @@
 package models
 
 type ServiceExperienceInfo struct {
-	UeLocs           []LocationInfo      `json:"ueLocs,omitempty"`
-	AppServerInst    *AddrFqdn           `json:"appServerInst,omitempty"`
-	Confidence       *int                `json:"confidence,omitempty"`
-	Dnn              string              `json:"dnn,omitempty"`
-	Ratio            *int                `json:"ratio,omitempty"`
+	NetworkArea      *NetworkAreaInfo    `json:"networkArea,omitempty"`
 	RatFreq          *RatFreqInformation `json:"ratFreq,omitempty"`
 	SvcExprc         SvcExperience       `json:"svcExprc"`
+	SvcExprcVariance *float64            `json:"svcExprcVariance,omitempty"`
+	Dnai             string              `json:"dnai,omitempty"`
+	Dnn              string              `json:"dnn,omitempty"`
+	NsiId            string              `json:"nsiId,omitempty"`
 	Supis            []string            `json:"supis,omitempty"`
 	UpfInfo          *UpfInformation     `json:"upfInfo,omitempty"`
-	Dnai             string              `json:"dnai,omitempty"`
-	NetworkArea      *NetworkAreaInfo    `json:"networkArea,omitempty"`
-	SvcExprcVariance *float64            `json:"svcExprcVariance,omitempty"`
+	AppServerInst    *AddrFqdn           `json:"appServerInst,omitempty"`
 	Snssai           *Snssai             `json:"snssai,omitempty"`
+	Confidence       *int                `json:"confidence,omitempty"`
+	Ratio            *int                `json:"ratio,omitempty"`
 	AppId            string              `json:"appId,omitempty"`
 	SrvExpcType      string              `json:"srvExpcType,omitempty"`
-	NsiId            string              `json:"nsiId,omitempty"`
+	UeLocs           []LocationInfo      `json:"ueLocs,omitempty"`
 }

@@ -1,16 +1,16 @@
 package models
 
 type ExtProblemDetails struct {
-	SupportedFeatures  string          `json:"supportedFeatures,omitempty"`
-	InvalidParams      []InvalidParam  `json:"invalidParams,omitempty"`
-	NrfId              string          `json:"nrfId,omitempty"`
-	RemoteError        *bool           `json:"remoteError,omitempty"`
-	Type               string          `json:"type,omitempty"`
-	Title              string          `json:"title,omitempty"`
-	AccessTokenRequest *AccessTokenReq `json:"accessTokenRequest,omitempty"`
-	Status             *int            `json:"status,omitempty"`
 	Detail             string          `json:"detail,omitempty"`
-	Instance           string          `json:"instance,omitempty"`
 	Cause              string          `json:"cause,omitempty"`
+	Status             *int            `json:"status,omitempty"`
+	AccessTokenRequest *AccessTokenReq `json:"accessTokenRequest,omitempty"`
+	SupportedFeatures  string          `json:"supportedFeatures,omitempty"`
 	AccessTokenError   *AccessTokenErr `json:"accessTokenError,omitempty"`
+	NrfId              string          `json:"nrfId,omitempty"`
+	Type               string          `json:"type,omitempty"`
+	InvalidParams      []InvalidParam  `json:"invalidParams,omitempty"`
+	RemoteError        *bool           `json:"remoteError,omitempty"`
+	Title              string          `json:"title,omitempty"`
+	Instance           string          `json:"instance,omitempty"`
 }

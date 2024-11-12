@@ -12,14 +12,20 @@ import (
 )
 
 type DataModel struct {
-	id          string
-	goType      string
-	isPrimitive bool
-	isArray     bool
-	isMap       bool
-	properties  map[string]Property
-	schema      *base.Schema
-	enum        *Enum
+	id         string
+	goType     string
+	isArray    bool
+	isMap      bool
+	properties map[string]Property
+	schema     *base.Schema
+	enum       *Enum
+}
+
+func (m *DataModel) getGoType() string {
+	if m.enum != nil {
+		return m.id
+	}
+	return m.goType
 }
 
 type Enum struct {
@@ -30,21 +36,24 @@ type Enum struct {
 type Property struct {
 	id       string
 	required bool
-	goType   string
-	isArray  bool
-	isMap    bool
+	m        *DataModel
+	/*
+		goType   string
+		isArray  bool
+		isMap    bool
+	*/
 }
 
 func (p *Property) isNullable() bool {
-	if p.isArray {
+	if p.m.isArray {
 		return true
 	}
 
-	if p.isMap {
+	if p.m.isMap {
 		return true
 	}
 
-	if p.goType == "string" {
+	if p.m.goType == "string" {
 		return true
 	}
 
@@ -74,7 +83,8 @@ func readSpec() {
 	// load an OpenAPI 3 specification from bytes
 	//specApis, _ := os.ReadFile("specs/TS29502_Nsmf_PDUSession.yaml")
 	//specApis, _ := os.ReadFile("specs/TS29571_CommonData.yaml")
-	specApis, _ := os.ReadFile("specs/TS29518_Namf_Communication.yaml")
+	//specApis, _ := os.ReadFile("specs/TS29518_Namf_Communication.yaml")
+	specApis, _ := os.ReadFile("specs/TS29509_Nausf_UEAuthentication.yaml")
 
 	// create a new document from specification bytes
 	document, err := libopenapi.NewDocumentWithConfiguration(specApis, config)
@@ -112,27 +122,40 @@ func readSpec() {
 
 func writeEnum(id string, enum *Enum) {
 	fmt.Printf("Define constant values for %s[%s]\n", id, enum.enumType)
+	id = makeModelName(id)
 	prefix := "models/"
 	f, _ := os.Create(prefix + id + ".go")
 
 	defer f.Close()
 
 	fmt.Fprintf(f, "package models\n")
+
+	fmt.Fprintf(f, "type %s %s\n", id, enum.enumType)
 	fmt.Fprintf(f, "// Define constant values for %s\n", id)
 	fmt.Fprintf(f, "const (\n")
 	for _, v := range enum.values {
 		def := fmt.Sprintf("%s_%s", id, v)
 		def = strings.Replace(def, "-", "_", -1)
 		def = strings.ToUpper(def)
-		fmt.Fprintf(f, "\t %s %s = \"%s\"\n", def, enum.enumType, v)
+		if enum.enumType == "string" {
+			fmt.Fprintf(f, "\t %s %s = \"%s\"\n", def, id, v)
+		} else {
+			fmt.Fprintf(f, "\t %s %s = %s\n", def, id, v)
+		}
 	}
 
 	fmt.Fprintf(f, ") \n")
 }
 func writeModel(m *DataModel) {
-	if m.isPrimitive {
+	if m.enum != nil {
+		writeEnum(m.id, m.enum)
 		return
 	}
+
+	if isPrimitive(m.goType) {
+		return
+	}
+
 	if len(m.properties) == 0 {
 		return
 	}
@@ -143,34 +166,32 @@ func writeModel(m *DataModel) {
 
 	fmt.Fprintf(f, "package models\n")
 
-	structName := strings.Title(m.id)
-	if structName[0] == '5' {
-		structName = "Five" + strings.Title(structName[1:])
-	}
+	structName := makeModelName(m.id)
+
 	fmt.Fprintf(f, "type %s struct {\n", structName)
 
 	for _, p := range m.properties {
-		goType := p.goType
-
-		if len(goType) == 0 {
-			fmt.Printf("model %s has untype attribute %s\n", m.id, p.id)
+		if p.m == nil {
+			fmt.Printf("model %s has untype attribute %s\n", m.id, p.m.id)
 			continue
 		}
 
-		if goType[0] == '5' {
-			goType = "Five" + strings.Title(goType[1:])
+		goType := p.m.goType
+		if p.m.enum != nil {
+			goType = p.m.id
 		}
 
-		if p.isArray {
+		if !isPrimitive(goType) {
+			goType = makeModelName(goType)
+		}
+
+		if p.m.isArray {
 			goType = "[]" + goType
-		} else if p.isMap {
+		} else if p.m.isMap {
 			goType = "map[string]" + goType
 		}
 
-		attr := strings.Title(p.id)
-		if attr[0] == '5' {
-			attr = "Five" + strings.Title(attr[1:])
-		}
+		attr := makeModelName(p.id)
 
 		if p.required || p.isNullable() {
 			fmt.Fprintf(f, "\t %s\t%s\t%s\n", attr, goType, p.writeTag())
@@ -297,7 +318,7 @@ func createModels(schemas *orderedmap.Map[string, *base.SchemaProxy]) {
 		if schema == nil {
 			fmt.Printf("EMPTY SCHEMA '%s'\n", schemaName)
 		} else {
-			analyzeSchema(schemaValue)
+			analyzeSchema(schemaName, schemaValue)
 		}
 	}
 }
@@ -317,7 +338,7 @@ func analyzeAllOf(id string, allOf []*base.SchemaProxy) *DataModel {
 	}
 
 	for _, s := range allOf {
-		if m := analyzeSchema(s); m != nil {
+		if m := analyzeSchema("", s); m != nil {
 			for pId, p := range m.properties {
 				out.properties[pId] = p
 			}
@@ -330,25 +351,29 @@ func analyzeOneOf(id string, oneOf []*base.SchemaProxy) *DataModel {
 	return analyzeAnyOf(id, oneOf)
 }
 func analyzeAnyOf(id string, anyOf []*base.SchemaProxy) *DataModel {
+
 	isArray := false
 	goTypes := make(map[string]DataModel)
+	var enum *Enum
 	for _, s := range anyOf {
-		if m := analyzeSchema(s); m != nil {
+		if m := analyzeSchema("", s); m != nil {
 			if m.isArray {
 				isArray = true
 			}
 			if len(m.goType) > 0 {
 				goTypes[m.goType] = *m
 			}
-			if len(id) > 0 && m.enum != nil {
-				writeEnum(id, m.enum)
-			}
+			enum = m.enum
 
 		}
 	}
 	if len(goTypes) == 0 {
 		return nil
 	} else if len(goTypes) > 1 {
+		if len(id) == 0 {
+			return nil
+		}
+
 		fmt.Printf("ANYOF %s has more than one types\n", id)
 		m := &DataModel{
 			id:         id,
@@ -356,11 +381,16 @@ func analyzeAnyOf(id string, anyOf []*base.SchemaProxy) *DataModel {
 			properties: make(map[string]Property),
 		}
 		for tStr, t := range goTypes {
+			if len(t.id) > 0 {
+				tStr = makeModelName(t.id)
+			}
 			m.properties[tStr] = Property{
-				id:      tStr,
-				goType:  t.goType,
-				isArray: t.isArray,
-				isMap:   t.isMap,
+				id: tStr,
+				m:  &t,
+				//goType:   t.goType,
+				//isArray:  t.isArray,
+				//isMap:    t.isMap,
+				required: false,
 			}
 		}
 		return m
@@ -368,6 +398,7 @@ func analyzeAnyOf(id string, anyOf []*base.SchemaProxy) *DataModel {
 		m := &DataModel{
 			isArray: isArray,
 			id:      id,
+			enum:    enum,
 		}
 		for t := range goTypes {
 			m.goType = t
@@ -377,21 +408,16 @@ func analyzeAnyOf(id string, anyOf []*base.SchemaProxy) *DataModel {
 	}
 	return nil
 }
-func getSchemaId(schemaP *base.SchemaProxy) string {
-	if schemaP.IsReference() {
-		return getSchemaIdFromRef(schemaP.GetReference())
-	} else if keyNode := schemaP.GetSchemaKeyNode(); keyNode != nil {
-		return keyNode.Value
-	}
 
-	return ""
-}
-
-func analyzeSchema(schemaP *base.SchemaProxy) *DataModel {
+func analyzeSchema(id string, schemaP *base.SchemaProxy) *DataModel {
 	if schemaP == nil {
 		return nil
 	}
-	id := getSchemaId(schemaP)
+	if len(id) == 0 {
+		if schemaP.IsReference() {
+			id = getSchemaIdFromRef(schemaP.GetReference())
+		}
+	}
 	if len(id) > 0 {
 		if m, ok := models[id]; ok {
 			return &m
@@ -409,6 +435,12 @@ func analyzeSchema(schemaP *base.SchemaProxy) *DataModel {
 	}
 	var m *DataModel
 	if len(schema.Type) == 0 {
+		if len(id) == 0 {
+			if keyNode := schemaP.GetSchemaKeyNode(); keyNode != nil {
+				id = keyNode.Value
+			}
+		}
+
 		if len(schema.AllOf) > 0 {
 			m = analyzeAllOf(id, schema.AllOf)
 		} else if len(schema.AnyOf) > 0 {
@@ -431,13 +463,13 @@ func analyzeSchema(schemaP *base.SchemaProxy) *DataModel {
 				m.goType = id
 				m.isMap = true
 				if schema.AdditionalProperties.IsA() {
-					if refModel := analyzeSchema(schema.AdditionalProperties.A); refModel != nil {
+					if refModel := analyzeSchema("", schema.AdditionalProperties.A); refModel != nil {
 						m.goType = refModel.goType
 					} else {
 						m.goType = "UNKNOWN"
 					}
 				} else {
-					m.goType = "BOOL"
+					m.goType = "bool"
 				}
 				fmt.Printf("ADDPROP:map[string]%s\n", m.goType)
 			} else {
@@ -454,11 +486,8 @@ func analyzeSchema(schemaP *base.SchemaProxy) *DataModel {
 							required: inList(propName, schema.Required),
 						}
 
-						if refModel := analyzeSchema(propSchemaProxy); refModel != nil {
-							p.goType = refModel.goType
-							p.isArray = refModel.isArray
-							p.isMap = refModel.isMap
-
+						if refModel := analyzeSchema("", propSchemaProxy); refModel != nil {
+							p.m = refModel
 						}
 						m.properties[p.id] = p
 					}
@@ -469,7 +498,7 @@ func analyzeSchema(schemaP *base.SchemaProxy) *DataModel {
 				} else if l = len(schema.AnyOf); l > 0 {
 					extra = analyzeAnyOf("", schema.AnyOf)
 				} else if l = len(schema.OneOf); l > 0 {
-					extra = analyzeAnyOf("", schema.OneOf)
+					extra = analyzeOneOf("", schema.OneOf)
 				}
 				if extra != nil {
 					for key, value := range extra.properties {
@@ -479,9 +508,7 @@ func analyzeSchema(schemaP *base.SchemaProxy) *DataModel {
 			}
 		case "string":
 			m.goType = "string"
-			m.isPrimitive = true
 		case "integer":
-			m.isPrimitive = true
 			switch schema.Format {
 			case "int32":
 				m.goType = "int32"
@@ -491,7 +518,6 @@ func analyzeSchema(schemaP *base.SchemaProxy) *DataModel {
 				m.goType = "int"
 			}
 		case "number":
-			m.isPrimitive = true
 			switch schema.Format {
 			case "double":
 				m.goType = "float64"
@@ -500,13 +526,11 @@ func analyzeSchema(schemaP *base.SchemaProxy) *DataModel {
 			}
 		case "boolean":
 			m.goType = "bool"
-			m.isPrimitive = true
 
 		case "array":
-			m.isPrimitive = false
 			m.isArray = true
 			if schema.Items.IsA() {
-				if itemModel := analyzeSchema(schema.Items.A); itemModel != nil {
+				if itemModel := analyzeSchema("", schema.Items.A); itemModel != nil {
 					m.goType = itemModel.goType
 				} else {
 					m.goType = "[]Unknown"
@@ -529,15 +553,24 @@ func analyzeSchema(schemaP *base.SchemaProxy) *DataModel {
 		for _, node := range schema.Enum {
 			m.enum.values = append(m.enum.values, node.Value)
 		}
-		if len(id) > 0 {
-			writeEnum(id, m.enum)
+		if len(id) == 0 {
+			if keyNode := schemaP.GetSchemaKeyNode(); keyNode != nil {
+				id = keyNode.Value
+			}
 		}
+		m.id = id
 	}
 
 	if m != nil && len(m.id) > 0 {
 		models[m.id] = *m
 	}
 	return m
+}
+
+var primitives []string = []string{"bool", "int", "int16", "int32", "int64", "float32", "float64", "string"}
+
+func isPrimitive(t string) bool {
+	return inList(t, primitives)
 }
 
 func inList(item string, list []string) bool {
@@ -547,4 +580,16 @@ func inList(item string, list []string) bool {
 		}
 	}
 	return false
+}
+
+func makeModelName(s string) string {
+	if len(s) == 0 {
+		return ""
+	}
+
+	out := strings.Title(s)
+	if out[0] == '5' {
+		out = "Five" + strings.Title(out[1:])
+	}
+	return out
 }

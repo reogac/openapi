@@ -1,23 +1,23 @@
 package models
 
 type AccessTokenReq struct {
-	Scope                string      `json:"scope"`
-	TargetPlmn           *PlmnId     `json:"targetPlmn,omitempty"`
+	TargetSnpn           *PlmnIdNid  `json:"targetSnpn,omitempty"`
 	TargetNfSetId        string      `json:"targetNfSetId,omitempty"`
-	TargetNfServiceSetId string      `json:"targetNfServiceSetId,omitempty"`
-	HnrfAccessTokenUri   string      `json:"hnrfAccessTokenUri,omitempty"`
+	NfType               string      `json:"nfType,omitempty"`
 	TargetNfInstanceId   string      `json:"targetNfInstanceId,omitempty"`
 	RequesterPlmn        *PlmnId     `json:"requesterPlmn,omitempty"`
-	RequesterPlmnList    []PlmnId    `json:"requesterPlmnList,omitempty"`
-	RequesterFqdn        string      `json:"requesterFqdn,omitempty"`
 	RequesterSnpnList    []PlmnIdNid `json:"requesterSnpnList,omitempty"`
-	TargetNfType         string      `json:"targetNfType,omitempty"`
-	TargetNsiList        []string    `json:"targetNsiList,omitempty"`
-	SourceNfInstanceId   string      `json:"sourceNfInstanceId,omitempty"`
+	TargetPlmn           *PlmnId     `json:"targetPlmn,omitempty"`
+	RequesterFqdn        string      `json:"requesterFqdn,omitempty"`
 	TargetSnssaiList     []Snssai    `json:"targetSnssaiList,omitempty"`
-	Grant_type           string      `json:"grant_type"`
+	Grant_type           Grant_type  `json:"grant_type"`
 	NfInstanceId         string      `json:"nfInstanceId"`
-	NfType               string      `json:"nfType,omitempty"`
+	TargetNfType         string      `json:"targetNfType,omitempty"`
+	Scope                string      `json:"scope"`
 	RequesterSnssaiList  []Snssai    `json:"requesterSnssaiList,omitempty"`
-	TargetSnpn           *PlmnIdNid  `json:"targetSnpn,omitempty"`
+	RequesterPlmnList    []PlmnId    `json:"requesterPlmnList,omitempty"`
+	TargetNfServiceSetId string      `json:"targetNfServiceSetId,omitempty"`
+	SourceNfInstanceId   string      `json:"sourceNfInstanceId,omitempty"`
+	TargetNsiList        []string    `json:"targetNsiList,omitempty"`
+	HnrfAccessTokenUri   string      `json:"hnrfAccessTokenUri,omitempty"`
 }

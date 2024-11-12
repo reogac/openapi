@@ -1,9 +1,0 @@
-package models
-
-// Define constant values for NwdafFailureCode
-const (
-	NWDAFFAILURECODE_UNAVAILABLE_DATA                     string = "UNAVAILABLE_DATA"
-	NWDAFFAILURECODE_BOTH_STAT_PRED_NOT_ALLOWED           string = "BOTH_STAT_PRED_NOT_ALLOWED"
-	NWDAFFAILURECODE_UNSATISFIED_REQUESTED_ANALYTICS_TIME string = "UNSATISFIED_REQUESTED_ANALYTICS_TIME"
-	NWDAFFAILURECODE_OTHER                                string = "OTHER"
-)

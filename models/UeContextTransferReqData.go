@@ -5,5 +5,5 @@ type UeContextTransferReqData struct {
 	RegRequest        *N1MessageContainer `json:"regRequest,omitempty"`
 	SupportedFeatures string              `json:"supportedFeatures,omitempty"`
 	Reason            string              `json:"reason"`
-	AccessType        string              `json:"accessType"`
+	AccessType        AccessType          `json:"accessType"`
 }

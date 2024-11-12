@@ -1,9 +1,0 @@
-package models
-
-// Define constant values for EpsInterworkingIndication
-const (
-	EPSINTERWORKINGINDICATION_NONE         string = "NONE"
-	EPSINTERWORKINGINDICATION_WITH_N26     string = "WITH_N26"
-	EPSINTERWORKINGINDICATION_WITHOUT_N26  string = "WITHOUT_N26"
-	EPSINTERWORKINGINDICATION_IWK_NON_3GPP string = "IWK_NON_3GPP"
-)
