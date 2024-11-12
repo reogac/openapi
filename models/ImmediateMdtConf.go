@@ -1,23 +1,23 @@
 package models
 
 type ImmediateMdtConf struct {
+	SensorMeasurementList    []string                  `json:"sensorMeasurementList,omitempty"`
+	ReportIntervalNr         ReportIntervalNrMdt       `json:"reportIntervalNr,omitempty"`
+	EventThresholdRsrp       *int                      `json:"eventThresholdRsrp,omitempty"`
+	EventThresholdRsrpNr     *int                      `json:"eventThresholdRsrpNr,omitempty"`
+	AddPositioningMethodList []string                  `json:"addPositioningMethodList,omitempty"`
+	MdtAllowedPlmnIdList     []PlmnId                  `json:"mdtAllowedPlmnIdList,omitempty"`
+	AreaScope                *AreaScope                `json:"areaScope,omitempty"`
+	PositioningMethod        PositioningMethodMdt      `json:"positioningMethod,omitempty"`
 	MeasurementNrList        []string                  `json:"measurementNrList,omitempty"`
+	ReportInterval           ReportIntervalMdt         `json:"reportInterval,omitempty"`
+	ReportAmount             ReportAmountMdt           `json:"reportAmount,omitempty"`
+	EventThresholdRsrq       *int                      `json:"eventThresholdRsrq,omitempty"`
+	CollectionPeriodRmmLte   CollectionPeriodRmmLteMdt `json:"collectionPeriodRmmLte,omitempty"`
+	MeasurementLteList       []string                  `json:"measurementLteList,omitempty"`
+	CollectionPeriodRmmNr    CollectionPeriodRmmNrMdt  `json:"collectionPeriodRmmNr,omitempty"`
+	JobType                  JobType                   `json:"jobType"`
 	ReportingTriggerList     []string                  `json:"reportingTriggerList,omitempty"`
 	EventThresholdRsrqNr     *int                      `json:"eventThresholdRsrqNr,omitempty"`
-	MdtAllowedPlmnIdList     []PlmnId                  `json:"mdtAllowedPlmnIdList,omitempty"`
-	ReportInterval           ReportIntervalMdt         `json:"reportInterval,omitempty"`
-	EventThresholdRsrp       *int                      `json:"eventThresholdRsrp,omitempty"`
-	EventThresholdRsrq       *int                      `json:"eventThresholdRsrq,omitempty"`
 	MeasurementPeriodLte     MeasurementPeriodLteMdt   `json:"measurementPeriodLte,omitempty"`
-	AddPositioningMethodList []string                  `json:"addPositioningMethodList,omitempty"`
-	ReportIntervalNr         ReportIntervalNrMdt       `json:"reportIntervalNr,omitempty"`
-	EventThresholdRsrpNr     *int                      `json:"eventThresholdRsrpNr,omitempty"`
-	CollectionPeriodRmmNr    CollectionPeriodRmmNrMdt  `json:"collectionPeriodRmmNr,omitempty"`
-	PositioningMethod        PositioningMethodMdt      `json:"positioningMethod,omitempty"`
-	SensorMeasurementList    []string                  `json:"sensorMeasurementList,omitempty"`
-	JobType                  JobType                   `json:"jobType"`
-	MeasurementLteList       []string                  `json:"measurementLteList,omitempty"`
-	ReportAmount             ReportAmountMdt           `json:"reportAmount,omitempty"`
-	CollectionPeriodRmmLte   CollectionPeriodRmmLteMdt `json:"collectionPeriodRmmLte,omitempty"`
-	AreaScope                *AreaScope                `json:"areaScope,omitempty"`
 }

@@ -1,14 +1,14 @@
 package models
 
 type UeContextCreateData struct {
-	TargetId                   NgRanTargetId     `json:"targetId"`
-	PduSessionList             []N2SmInformation `json:"pduSessionList"`
-	UeRadioCapability          *N2InfoContent    `json:"ueRadioCapability,omitempty"`
-	SupportedFeatures          string            `json:"supportedFeatures,omitempty"`
-	ServingNetwork             *PlmnIdNid        `json:"servingNetwork,omitempty"`
-	UeContext                  UeContext         `json:"ueContext"`
 	SourceToTargetData         N2InfoContent     `json:"sourceToTargetData"`
+	PduSessionList             []N2SmInformation `json:"pduSessionList"`
 	N2NotifyUri                string            `json:"n2NotifyUri,omitempty"`
+	UeRadioCapability          *N2InfoContent    `json:"ueRadioCapability,omitempty"`
 	UeRadioCapabilityForPaging *N2InfoContent    `json:"ueRadioCapabilityForPaging,omitempty"`
 	NgapCause                  *NgApCause        `json:"ngapCause,omitempty"`
+	SupportedFeatures          string            `json:"supportedFeatures,omitempty"`
+	UeContext                  UeContext         `json:"ueContext"`
+	ServingNetwork             *PlmnIdNid        `json:"servingNetwork,omitempty"`
+	TargetId                   NgRanTargetId     `json:"targetId"`
 }

@@ -66,21 +66,31 @@ func (p *Property) writeTag() string {
 var models map[string]DataModel
 
 func main() {
-	readSpec()
+	specs := []string{
+		"TS29503_Nudm_SDM.yaml",
+		"TS29503_Nudm_UEAU.yaml",
+		"TS29503_Nudm_UECM.yaml",
+		"TS29507_Npcf_AMPolicyControl.yaml",
+		"TS29512_Npcf_SMPolicyControl.yaml",
+		"TS29525_Npcf_UEPolicyControl.yaml",
+		"TS29502_Nsmf_PDUSession.yaml",
+		"TS29571_CommonData.yaml",
+		"TS29518_Namf_Communication.yaml",
+		"TS29509_Nausf_UEAuthentication.yaml",
+	}
+	for _, specFile := range specs {
+		readSpec(specFile)
+	}
 }
 
-func readSpec() {
+func readSpec(specFile string) {
 	config := &datamodel.DocumentConfiguration{
 		AllowFileReferences:   true,
 		AllowRemoteReferences: true,
 		BasePath:              "specs",
 	}
-	// load an OpenAPI 3 specification from bytes
-	//specApis, _ := os.ReadFile("specs/TS29502_Nsmf_PDUSession.yaml")
-	//specApis, _ := os.ReadFile("specs/TS29571_CommonData.yaml")
-	//specApis, _ := os.ReadFile("specs/TS29518_Namf_Communication.yaml")
-	specApis, _ := os.ReadFile("specs/TS29509_Nausf_UEAuthentication.yaml")
 
+	specApis, _ := os.ReadFile("specs/" + specFile)
 	// create a new document from specification bytes
 	document, err := libopenapi.NewDocumentWithConfiguration(specApis, config)
 
@@ -160,7 +170,7 @@ func writeModel(m *DataModel) {
 	fmt.Printf("Write model %s\n", structName)
 
 	prefix := "models/"
-	f, _ := os.Create(prefix + m.id + ".go")
+	f, _ := os.Create(prefix + structName + ".go")
 	defer f.Close()
 
 	fmt.Fprintf(f, "package models\n")
@@ -595,6 +605,10 @@ func makeModelName(s string) string {
 	out := strings.Title(s)
 	if out[0] == '5' {
 		out = "Five" + strings.Title(out[1:])
+	}
+
+	if out[0] == '3' {
+		out = "Three" + strings.Title(out[1:])
 	}
 	return out
 }
