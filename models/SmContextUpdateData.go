@@ -1,60 +1,60 @@
 package models
 
 type SmContextUpdateData struct {
-	PresenceInLadn                       PresenceState                      `json:"presenceInLadn,omitempty"`
-	AddUeLocation                        *UserLocation                      `json:"addUeLocation,omitempty"`
-	UpCnxState                           UpCnxState                         `json:"upCnxState,omitempty"`
-	HoState                              HoState                            `json:"hoState,omitempty"`
-	N9DlForwardingTunnel                 *TunnelInfo                        `json:"n9DlForwardingTunnel,omitempty"`
-	ForwardingBearerContexts             []string                           `json:"forwardingBearerContexts,omitempty"`
-	SatelliteBackhaulCat                 SatelliteBackhaulCategory          `json:"satelliteBackhaulCat,omitempty"`
-	N1SmMsg                              *RefToBinaryData                   `json:"n1SmMsg,omitempty"`
-	TargetId                             *NgRanTargetId                     `json:"targetId,omitempty"`
-	EpsBearerSetup                       []string                           `json:"epsBearerSetup,omitempty"`
-	SecondaryRatUsageDataReportContainer []string                           `json:"secondaryRatUsageDataReportContainer,omitempty"`
-	ServingNfId                          string                             `json:"servingNfId,omitempty"`
-	PcfUeCallbackInfo                    *PcfUeCallbackInfo                 `json:"pcfUeCallbackInfo,omitempty"`
-	Release                              *bool                              `json:"release,omitempty"`
-	MoExpDataCounter                     *MoExpDataCounter                  `json:"moExpDataCounter,omitempty"`
-	Pei                                  string                             `json:"pei,omitempty"`
-	FailedToBeSwitched                   *bool                              `json:"failedToBeSwitched,omitempty"`
-	N2SmInfoType                         N2SmInfoType                       `json:"n2SmInfoType,omitempty"`
-	FiveGMmCauseValue                    *int                               `json:"5gMmCauseValue,omitempty"`
-	ExemptionInd                         *ExemptionInd                      `json:"exemptionInd,omitempty"`
-	TargetServingNfId                    string                             `json:"targetServingNfId,omitempty"`
-	SmContextStatusUri                   string                             `json:"smContextStatusUri,omitempty"`
 	N2SmInfoExt1                         *RefToBinaryData                   `json:"n2SmInfoExt1,omitempty"`
-	SmPolicyNotifyInd                    *SmPolicyNotifyInd                 `json:"smPolicyNotifyInd,omitempty"`
-	AdditionalAnType                     AccessType                         `json:"additionalAnType,omitempty"`
-	MaNwUpgradeInd                       *bool                              `json:"maNwUpgradeInd,omitempty"`
-	SkipN2PduSessionResRelInd            *bool                              `json:"skipN2PduSessionResRelInd,omitempty"`
-	UeTimeZone                           string                             `json:"ueTimeZone,omitempty"`
+	PcfUeCallbackInfo                    *PcfUeCallbackInfo                 `json:"pcfUeCallbackInfo,omitempty"`
+	TargetId                             *NgRanTargetId                     `json:"targetId,omitempty"`
 	N9DlForwardingTnlList                []IndirectDataForwardingTunnelInfo `json:"n9DlForwardingTnlList,omitempty"`
-	MaReleaseInd                         MaReleaseIndication                `json:"maReleaseInd,omitempty"`
-	MaRequestInd                         *bool                              `json:"maRequestInd,omitempty"`
-	UeLocation                           *UserLocation                      `json:"ueLocation,omitempty"`
-	SNssai                               *Snssai                            `json:"sNssai,omitempty"`
-	AnTypeToReactivate                   AccessType                         `json:"anTypeToReactivate,omitempty"`
-	ToBeSwitched                         *bool                              `json:"toBeSwitched,omitempty"`
-	N9ForwardingTunnel                   *TunnelInfo                        `json:"n9ForwardingTunnel,omitempty"`
 	N9InactivityTimer                    *int                               `json:"n9InactivityTimer,omitempty"`
 	N9UlForwardingTnlList                []IndirectDataForwardingTunnelInfo `json:"n9UlForwardingTnlList,omitempty"`
 	N2SmInfoTypeExt1                     N2SmInfoType                       `json:"n2SmInfoTypeExt1,omitempty"`
-	DdnFailureSubs                       *DdnFailureSubs                    `json:"ddnFailureSubs,omitempty"`
+	BackupAmfInfo                        []BackupAmfInfo                    `json:"backupAmfInfo,omitempty"`
+	AnTypeToReactivate                   AccessType                         `json:"anTypeToReactivate,omitempty"`
+	UeLocation                           *UserLocation                      `json:"ueLocation,omitempty"`
+	FailedToBeSwitched                   *bool                              `json:"failedToBeSwitched,omitempty"`
+	TargetServingNfId                    string                             `json:"targetServingNfId,omitempty"`
+	NgApCause                            *NgApCause                         `json:"ngApCause,omitempty"`
+	FiveGMmCauseValue                    *int                               `json:"5gMmCauseValue,omitempty"`
+	PresenceInLadn                       PresenceState                      `json:"presenceInLadn,omitempty"`
+	AddUeLocation                        *UserLocation                      `json:"addUeLocation,omitempty"`
 	EpsInterworkingInd                   EpsInterworkingIndication          `json:"epsInterworkingInd,omitempty"`
+	MaReleaseInd                         MaReleaseIndication                `json:"maReleaseInd,omitempty"`
+	SmPolicyNotifyInd                    *SmPolicyNotifyInd                 `json:"smPolicyNotifyInd,omitempty"`
+	Pei                                  string                             `json:"pei,omitempty"`
+	AdditionalAnType                     AccessType                         `json:"additionalAnType,omitempty"`
+	MaRequestInd                         *bool                              `json:"maRequestInd,omitempty"`
+	Release                              *bool                              `json:"release,omitempty"`
+	UpCnxState                           UpCnxState                         `json:"upCnxState,omitempty"`
+	SupportedFeatures                    string                             `json:"supportedFeatures,omitempty"`
+	N2SmInfoType                         N2SmInfoType                       `json:"n2SmInfoType,omitempty"`
 	ExtendedNasSmTimerInd                *bool                              `json:"extendedNasSmTimerInd,omitempty"`
-	ServingNetwork                       *PlmnIdNid                         `json:"servingNetwork,omitempty"`
+	MoExpDataCounter                     *MoExpDataCounter                  `json:"moExpDataCounter,omitempty"`
+	SatelliteBackhaulCat                 SatelliteBackhaulCategory          `json:"satelliteBackhaulCat,omitempty"`
 	AnType                               AccessType                         `json:"anType,omitempty"`
+	N1SmMsg                              *RefToBinaryData                   `json:"n1SmMsg,omitempty"`
+	TraceData                            *TraceData                         `json:"traceData,omitempty"`
+	DataForwarding                       *bool                              `json:"dataForwarding,omitempty"`
+	AnTypeCanBeChanged                   *bool                              `json:"anTypeCanBeChanged,omitempty"`
+	ForwardingBearerContexts             []string                           `json:"forwardingBearerContexts,omitempty"`
+	DdnFailureSubs                       *DdnFailureSubs                    `json:"ddnFailureSubs,omitempty"`
+	SkipN2PduSessionResRelInd            *bool                              `json:"skipN2PduSessionResRelInd,omitempty"`
+	Guami                                *Guami                             `json:"guami,omitempty"`
+	ToBeSwitched                         *bool                              `json:"toBeSwitched,omitempty"`
+	ForwardingFTeid                      string                             `json:"forwardingFTeid,omitempty"`
+	EpsBearerSetup                       []string                           `json:"epsBearerSetup,omitempty"`
+	ServingNetwork                       *PlmnIdNid                         `json:"servingNetwork,omitempty"`
+	HoState                              HoState                            `json:"hoState,omitempty"`
+	ExemptionInd                         *ExemptionInd                      `json:"exemptionInd,omitempty"`
+	Cause                                Cause                              `json:"cause,omitempty"`
+	SNssai                               *Snssai                            `json:"sNssai,omitempty"`
+	RevokeEbiList                        []int                              `json:"revokeEbiList,omitempty"`
+	ServingNfId                          string                             `json:"servingNfId,omitempty"`
+	SmContextStatusUri                   string                             `json:"smContextStatusUri,omitempty"`
+	N9DlForwardingTunnel                 *TunnelInfo                        `json:"n9DlForwardingTunnel,omitempty"`
+	SecondaryRatUsageDataReportContainer []string                           `json:"secondaryRatUsageDataReportContainer,omitempty"`
+	UeTimeZone                           string                             `json:"ueTimeZone,omitempty"`
+	N9ForwardingTunnel                   *TunnelInfo                        `json:"n9ForwardingTunnel,omitempty"`
+	MaNwUpgradeInd                       *bool                              `json:"maNwUpgradeInd,omitempty"`
 	RatType                              RatType                            `json:"ratType,omitempty"`
 	N2SmInfo                             *RefToBinaryData                   `json:"n2SmInfo,omitempty"`
-	TraceData                            *TraceData                         `json:"traceData,omitempty"`
-	ForwardingFTeid                      string                             `json:"forwardingFTeid,omitempty"`
-	Guami                                *Guami                             `json:"guami,omitempty"`
-	RevokeEbiList                        []int                              `json:"revokeEbiList,omitempty"`
-	Cause                                Cause                              `json:"cause,omitempty"`
-	NgApCause                            *NgApCause                         `json:"ngApCause,omitempty"`
-	AnTypeCanBeChanged                   *bool                              `json:"anTypeCanBeChanged,omitempty"`
-	SupportedFeatures                    string                             `json:"supportedFeatures,omitempty"`
-	DataForwarding                       *bool                              `json:"dataForwarding,omitempty"`
-	BackupAmfInfo                        []BackupAmfInfo                    `json:"backupAmfInfo,omitempty"`
 }

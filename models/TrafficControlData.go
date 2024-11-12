@@ -1,22 +1,22 @@
 package models
 
 type TrafficControlData struct {
-	SteerModeDl            *SteeringMode          `json:"steerModeDl,omitempty"`
-	RouteToLocs            []RouteToLocation      `json:"routeToLocs,omitempty"`
-	SteerModeUl            *SteeringMode          `json:"steerModeUl,omitempty"`
-	MulAccCtrl             MulticastAccessControl `json:"mulAccCtrl,omitempty"`
-	TrafficSteeringPolIdDl string                 `json:"trafficSteeringPolIdDl,omitempty"`
-	RedirectInfo           *RedirectInformation   `json:"redirectInfo,omitempty"`
-	AddRedirectInfo        []RedirectInformation  `json:"addRedirectInfo,omitempty"`
-	MuteNotif              *bool                  `json:"muteNotif,omitempty"`
-	MaxAllowedUpLat        *int                   `json:"maxAllowedUpLat,omitempty"`
-	EasIpReplaceInfos      []EasIpReplacementInfo `json:"easIpReplaceInfos,omitempty"`
-	SimConnTerm            *int                   `json:"simConnTerm,omitempty"`
 	UpPathChgEvent         *UpPathChgEvent        `json:"upPathChgEvent,omitempty"`
-	TcId                   string                 `json:"tcId"`
+	TrafficSteeringPolIdDl string                 `json:"trafficSteeringPolIdDl,omitempty"`
 	TrafficSteeringPolIdUl string                 `json:"trafficSteeringPolIdUl,omitempty"`
+	RouteToLocs            []RouteToLocation      `json:"routeToLocs,omitempty"`
+	MaxAllowedUpLat        *int                   `json:"maxAllowedUpLat,omitempty"`
 	TraffCorreInd          *bool                  `json:"traffCorreInd,omitempty"`
+	SimConnTerm            *int                   `json:"simConnTerm,omitempty"`
+	FlowStatus             FlowStatus             `json:"flowStatus,omitempty"`
+	AddRedirectInfo        []RedirectInformation  `json:"addRedirectInfo,omitempty"`
 	SimConnInd             *bool                  `json:"simConnInd,omitempty"`
 	SteerFun               SteeringFunctionality  `json:"steerFun,omitempty"`
-	FlowStatus             FlowStatus             `json:"flowStatus,omitempty"`
+	SteerModeUl            *SteeringMode          `json:"steerModeUl,omitempty"`
+	MulAccCtrl             MulticastAccessControl `json:"mulAccCtrl,omitempty"`
+	TcId                   string                 `json:"tcId"`
+	RedirectInfo           *RedirectInformation   `json:"redirectInfo,omitempty"`
+	EasIpReplaceInfos      []EasIpReplacementInfo `json:"easIpReplaceInfos,omitempty"`
+	SteerModeDl            *SteeringMode          `json:"steerModeDl,omitempty"`
+	MuteNotif              *bool                  `json:"muteNotif,omitempty"`
 }

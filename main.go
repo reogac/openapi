@@ -610,5 +610,9 @@ func makeModelName(s string) string {
 	if out[0] == '3' {
 		out = "Three" + strings.Title(out[1:])
 	}
+	if out[0] == '_' {
+		out = strings.Title(out[1:])
+	}
+
 	return out
 }

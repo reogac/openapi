@@ -1,20 +1,20 @@
 package models
 
 type SubscriptionDataSets struct {
-	AmData                          *AccessAndMobilitySubscriptionData `json:"amData,omitempty"`
-	UecSmfData                      *UeContextInSmfData                `json:"uecSmfData,omitempty"`
-	TraceData                       *TraceData                         `json:"traceData,omitempty"`
-	SmsMngData                      *SmsManagementSubscriptionData     `json:"smsMngData,omitempty"`
-	LcsMoData                       *LcsMoData                         `json:"lcsMoData,omitempty"`
-	ProseData                       *ProseSubscriptionData             `json:"proseData,omitempty"`
-	SmfSelData                      *SmfSelectionSubscriptionData      `json:"smfSelData,omitempty"`
-	LcsBroadcastAssistanceTypesData *LcsBroadcastAssistanceTypesData   `json:"lcsBroadcastAssistanceTypesData,omitempty"`
-	UecAmfData                      *UeContextInAmfData                `json:"uecAmfData,omitempty"`
 	SmsSubsData                     *SmsSubscriptionData               `json:"smsSubsData,omitempty"`
 	SmData                          *SmSubsData                        `json:"smData,omitempty"`
-	UecSmsfData                     *UeContextInSmsfData               `json:"uecSmsfData,omitempty"`
-	LcsPrivacyData                  *LcsPrivacyData                    `json:"lcsPrivacyData,omitempty"`
 	V2xData                         *V2xSubscriptionData               `json:"v2xData,omitempty"`
+	LcsBroadcastAssistanceTypesData *LcsBroadcastAssistanceTypesData   `json:"lcsBroadcastAssistanceTypesData,omitempty"`
+	UecAmfData                      *UeContextInAmfData                `json:"uecAmfData,omitempty"`
+	UecSmfData                      *UeContextInSmfData                `json:"uecSmfData,omitempty"`
+	SmsMngData                      *SmsManagementSubscriptionData     `json:"smsMngData,omitempty"`
+	ProseData                       *ProseSubscriptionData             `json:"proseData,omitempty"`
 	MbsData                         *MbsSubscriptionData               `json:"mbsData,omitempty"`
+	AmData                          *AccessAndMobilitySubscriptionData `json:"amData,omitempty"`
+	TraceData                       *TraceData                         `json:"traceData,omitempty"`
+	LcsPrivacyData                  *LcsPrivacyData                    `json:"lcsPrivacyData,omitempty"`
 	UcData                          *UcSubscriptionData                `json:"ucData,omitempty"`
+	SmfSelData                      *SmfSelectionSubscriptionData      `json:"smfSelData,omitempty"`
+	LcsMoData                       *LcsMoData                         `json:"lcsMoData,omitempty"`
+	UecSmsfData                     *UeContextInSmsfData               `json:"uecSmsfData,omitempty"`
 }

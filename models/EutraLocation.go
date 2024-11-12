@@ -1,14 +1,14 @@
 package models
 
 type EutraLocation struct {
-	Ecgi                     Ecgi             `json:"ecgi"`
+	IgnoreTai                *bool            `json:"ignoreTai,omitempty"`
 	IgnoreEcgi               *bool            `json:"ignoreEcgi,omitempty"`
-	AgeOfLocationInformation *int             `json:"ageOfLocationInformation,omitempty"`
-	GeographicalInformation  string           `json:"geographicalInformation,omitempty"`
-	Tai                      Tai              `json:"tai"`
 	UeLocationTimestamp      string           `json:"ueLocationTimestamp,omitempty"`
+	GeographicalInformation  string           `json:"geographicalInformation,omitempty"`
 	GeodeticInformation      string           `json:"geodeticInformation,omitempty"`
+	Tai                      Tai              `json:"tai"`
+	Ecgi                     Ecgi             `json:"ecgi"`
+	AgeOfLocationInformation *int             `json:"ageOfLocationInformation,omitempty"`
 	GlobalNgenbId            *GlobalRanNodeId `json:"globalNgenbId,omitempty"`
 	GlobalENbId              *GlobalRanNodeId `json:"globalENbId,omitempty"`
-	IgnoreTai                *bool            `json:"ignoreTai,omitempty"`
 }

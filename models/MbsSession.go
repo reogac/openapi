@@ -1,28 +1,28 @@
 package models
 
 type MbsSession struct {
-	MbsFsaIdList      []string                 `json:"mbsFsaIdList,omitempty"`
-	Tmgi              *Tmgi                    `json:"tmgi,omitempty"`
-	ServiceType       MbsServiceType           `json:"serviceType"`
-	LocationDependent *bool                    `json:"locationDependent,omitempty"`
-	AreaSessionId     *int                     `json:"areaSessionId,omitempty"`
-	ExtRedMbsServArea *ExternalMbsServiceArea  `json:"extRedMbsServArea,omitempty"`
-	MbsServInfo       *MbsServiceInfo          `json:"mbsServInfo,omitempty"`
-	AnyUeInd          *bool                    `json:"anyUeInd,omitempty"`
-	MbsSessionId      *MbsSessionId            `json:"mbsSessionId,omitempty"`
-	IngressTunAddr    []TunnelAddress          `json:"ingressTunAddr,omitempty"`
-	Ssm               *Ssm                     `json:"ssm,omitempty"`
-	ExtMbsServiceArea *ExternalMbsServiceArea  `json:"extMbsServiceArea,omitempty"`
-	Snssai            *Snssai                  `json:"snssai,omitempty"`
-	ActivationTime    string                   `json:"activationTime,omitempty"`
 	MbsSessionSubsc   *MbsSessionSubscription  `json:"mbsSessionSubsc,omitempty"`
-	ExpirationTime    string                   `json:"expirationTime,omitempty"`
-	IngressTunAddrReq *bool                    `json:"ingressTunAddrReq,omitempty"`
-	RedMbsServArea    *MbsServiceArea          `json:"redMbsServArea,omitempty"`
-	Dnn               string                   `json:"dnn,omitempty"`
-	TerminationTime   string                   `json:"terminationTime,omitempty"`
-	ActivityStatus    MbsSessionActivityStatus `json:"activityStatus,omitempty"`
+	MbsSessionId      *MbsSessionId            `json:"mbsSessionId,omitempty"`
 	TmgiAllocReq      *bool                    `json:"tmgiAllocReq,omitempty"`
-	MbsServiceArea    *MbsServiceArea          `json:"mbsServiceArea,omitempty"`
+	LocationDependent *bool                    `json:"locationDependent,omitempty"`
+	Ssm               *Ssm                     `json:"ssm,omitempty"`
+	Dnn               string                   `json:"dnn,omitempty"`
 	StartTime         string                   `json:"startTime,omitempty"`
+	MbsServInfo       *MbsServiceInfo          `json:"mbsServInfo,omitempty"`
+	ActivityStatus    MbsSessionActivityStatus `json:"activityStatus,omitempty"`
+	Tmgi              *Tmgi                    `json:"tmgi,omitempty"`
+	ExpirationTime    string                   `json:"expirationTime,omitempty"`
+	ServiceType       MbsServiceType           `json:"serviceType"`
+	AreaSessionId     *int                     `json:"areaSessionId,omitempty"`
+	IngressTunAddrReq *bool                    `json:"ingressTunAddrReq,omitempty"`
+	TerminationTime   string                   `json:"terminationTime,omitempty"`
+	MbsFsaIdList      []string                 `json:"mbsFsaIdList,omitempty"`
+	ExtRedMbsServArea *ExternalMbsServiceArea  `json:"extRedMbsServArea,omitempty"`
+	Snssai            *Snssai                  `json:"snssai,omitempty"`
+	IngressTunAddr    []TunnelAddress          `json:"ingressTunAddr,omitempty"`
+	MbsServiceArea    *MbsServiceArea          `json:"mbsServiceArea,omitempty"`
+	ExtMbsServiceArea *ExternalMbsServiceArea  `json:"extMbsServiceArea,omitempty"`
+	RedMbsServArea    *MbsServiceArea          `json:"redMbsServArea,omitempty"`
+	ActivationTime    string                   `json:"activationTime,omitempty"`
+	AnyUeInd          *bool                    `json:"anyUeInd,omitempty"`
 }

@@ -1,57 +1,57 @@
 package models
 
 type AccessAndMobilitySubscriptionData struct {
-	SharedVnGroupDataIds            map[string]string               `json:"sharedVnGroupDataIds,omitempty"`
-	CMsisdn                         string                          `json:"cMsisdn,omitempty"`
-	SorUpdateIndicatorList          []string                        `json:"sorUpdateIndicatorList,omitempty"`
-	TraceData                       *TraceData                      `json:"traceData,omitempty"`
-	PrimaryRatRestrictions          []string                        `json:"primaryRatRestrictions,omitempty"`
-	PcfSelectionAssistanceInfos     []PcfSelectionAssistanceInfo    `json:"pcfSelectionAssistanceInfos,omitempty"`
-	SupportedFeatures               string                          `json:"supportedFeatures,omitempty"`
-	MpsPriority                     *bool                           `json:"mpsPriority,omitempty"`
-	ServiceGapTime                  *int                            `json:"serviceGapTime,omitempty"`
-	AerialUeSubInfo                 *AerialUeSubscriptionInfo       `json:"aerialUeSubInfo,omitempty"`
-	SubsRegTimer                    *int                            `json:"subsRegTimer,omitempty"`
-	SubscribedDnnList               []string                        `json:"subscribedDnnList,omitempty"`
-	NssaiInclusionAllowed           *bool                           `json:"nssaiInclusionAllowed,omitempty"`
 	AdjacentPlmnRestrictions        map[string]PlmnRestriction      `json:"adjacentPlmnRestrictions,omitempty"`
+	UeUsageType                     *int                            `json:"ueUsageType,omitempty"`
 	MdtUserConsent                  MdtUserConsent                  `json:"mdtUserConsent,omitempty"`
 	IabOperationAllowed             *bool                           `json:"iabOperationAllowed,omitempty"`
-	McsPriority                     *bool                           `json:"mcsPriority,omitempty"`
-	RoutingIndicator                string                          `json:"routingIndicator,omitempty"`
-	NbIoTUePriority                 *int                            `json:"nbIoTUePriority,omitempty"`
-	ExpectedUeBehaviourList         *ExpectedUeBehaviourData        `json:"expectedUeBehaviourList,omitempty"`
+	PtwParametersList               []PtwParameters                 `json:"ptwParametersList,omitempty"`
+	MpsPriority                     *bool                           `json:"mpsPriority,omitempty"`
+	CagData                         *CagData                        `json:"cagData,omitempty"`
+	MdtConfiguration                *MdtConfiguration               `json:"mdtConfiguration,omitempty"`
+	SecondaryRatRestrictions        []string                        `json:"secondaryRatRestrictions,omitempty"`
+	PcfSelectionAssistanceInfos     []PcfSelectionAssistanceInfo    `json:"pcfSelectionAssistanceInfos,omitempty"`
+	ServiceAreaRestriction          *ServiceAreaRestriction         `json:"serviceAreaRestriction,omitempty"`
 	OdbPacketServices               OdbPacketServices               `json:"odbPacketServices,omitempty"`
-	EcRestrictionDataWb             *EcRestrictionDataWb            `json:"ecRestrictionDataWb,omitempty"`
+	ServiceGapTime                  *int                            `json:"serviceGapTime,omitempty"`
 	Nssai                           *Nssai                          `json:"nssai,omitempty"`
+	NssaiInclusionAllowed           *bool                           `json:"nssaiInclusionAllowed,omitempty"`
+	ExpectedUeBehaviourList         *ExpectedUeBehaviourData        `json:"expectedUeBehaviourList,omitempty"`
 	ActiveTime                      *int                            `json:"activeTime,omitempty"`
 	SorInfo                         *SorInfo                        `json:"sorInfo,omitempty"`
-	MdtConfiguration                *MdtConfiguration               `json:"mdtConfiguration,omitempty"`
-	CagData                         *CagData                        `json:"cagData,omitempty"`
-	RoamingRestrictions             *RoamingRestrictions            `json:"roamingRestrictions,omitempty"`
-	RatRestrictions                 []string                        `json:"ratRestrictions,omitempty"`
-	RfspIndex                       *int                            `json:"rfspIndex,omitempty"`
-	MicoAllowed                     *bool                           `json:"micoAllowed,omitempty"`
-	SharedAmDataIds                 []string                        `json:"sharedAmDataIds,omitempty"`
-	StnSr                           string                          `json:"stnSr,omitempty"`
-	RgWirelineCharacteristics       string                          `json:"rgWirelineCharacteristics,omitempty"`
 	Gpsis                           []string                        `json:"gpsis,omitempty"`
-	HssGroupId                      string                          `json:"hssGroupId,omitempty"`
-	ForbiddenAreas                  []Area                          `json:"forbiddenAreas,omitempty"`
-	WirelineServiceAreaRestriction  *WirelineServiceAreaRestriction `json:"wirelineServiceAreaRestriction,omitempty"`
-	ThreeGppChargingCharacteristics string                          `json:"3gppChargingCharacteristics,omitempty"`
-	SubscribedUeAmbr                *Ambr                           `json:"subscribedUeAmbr,omitempty"`
-	ServiceAreaRestriction          *ServiceAreaRestriction         `json:"serviceAreaRestriction,omitempty"`
-	SorafRetrieval                  *bool                           `json:"sorafRetrieval,omitempty"`
+	TraceData                       *TraceData                      `json:"traceData,omitempty"`
 	WirelineForbiddenAreas          []WirelineArea                  `json:"wirelineForbiddenAreas,omitempty"`
-	EdrxParametersList              []EdrxParameters                `json:"edrxParametersList,omitempty"`
-	InternalGroupIds                []string                        `json:"internalGroupIds,omitempty"`
-	UeUsageType                     *int                            `json:"ueUsageType,omitempty"`
-	SorInfoExpectInd                *bool                           `json:"sorInfoExpectInd,omitempty"`
-	EcRestrictionDataNb             *bool                           `json:"ecRestrictionDataNb,omitempty"`
-	SecondaryRatRestrictions        []string                        `json:"secondaryRatRestrictions,omitempty"`
-	PtwParametersList               []PtwParameters                 `json:"ptwParametersList,omitempty"`
+	SubscribedDnnList               []string                        `json:"subscribedDnnList,omitempty"`
 	RemoteProvInd                   *bool                           `json:"remoteProvInd,omitempty"`
-	CoreNetworkTypeRestrictions     []string                        `json:"coreNetworkTypeRestrictions,omitempty"`
+	RatRestrictions                 []string                        `json:"ratRestrictions,omitempty"`
+	SharedAmDataIds                 []string                        `json:"sharedAmDataIds,omitempty"`
+	McsPriority                     *bool                           `json:"mcsPriority,omitempty"`
+	SorInfoExpectInd                *bool                           `json:"sorInfoExpectInd,omitempty"`
+	CMsisdn                         string                          `json:"cMsisdn,omitempty"`
+	ThreeGppChargingCharacteristics string                          `json:"3gppChargingCharacteristics,omitempty"`
+	NbIoTUePriority                 *int                            `json:"nbIoTUePriority,omitempty"`
+	EcRestrictionDataNb             *bool                           `json:"ecRestrictionDataNb,omitempty"`
+	EdrxParametersList              []EdrxParameters                `json:"edrxParametersList,omitempty"`
+	SubscribedUeAmbr                *Ambr                           `json:"subscribedUeAmbr,omitempty"`
 	UpuInfo                         *UpuInfo                        `json:"upuInfo,omitempty"`
+	SorafRetrieval                  *bool                           `json:"sorafRetrieval,omitempty"`
+	PrimaryRatRestrictions          []string                        `json:"primaryRatRestrictions,omitempty"`
+	WirelineServiceAreaRestriction  *WirelineServiceAreaRestriction `json:"wirelineServiceAreaRestriction,omitempty"`
+	HssGroupId                      string                          `json:"hssGroupId,omitempty"`
+	SharedVnGroupDataIds            map[string]string               `json:"sharedVnGroupDataIds,omitempty"`
+	CoreNetworkTypeRestrictions     []string                        `json:"coreNetworkTypeRestrictions,omitempty"`
+	RfspIndex                       *int                            `json:"rfspIndex,omitempty"`
+	SubsRegTimer                    *int                            `json:"subsRegTimer,omitempty"`
+	RoutingIndicator                string                          `json:"routingIndicator,omitempty"`
+	SupportedFeatures               string                          `json:"supportedFeatures,omitempty"`
+	ForbiddenAreas                  []Area                          `json:"forbiddenAreas,omitempty"`
+	RoamingRestrictions             *RoamingRestrictions            `json:"roamingRestrictions,omitempty"`
+	MicoAllowed                     *bool                           `json:"micoAllowed,omitempty"`
+	StnSr                           string                          `json:"stnSr,omitempty"`
+	EcRestrictionDataWb             *EcRestrictionDataWb            `json:"ecRestrictionDataWb,omitempty"`
+	RgWirelineCharacteristics       string                          `json:"rgWirelineCharacteristics,omitempty"`
+	AerialUeSubInfo                 *AerialUeSubscriptionInfo       `json:"aerialUeSubInfo,omitempty"`
+	InternalGroupIds                []string                        `json:"internalGroupIds,omitempty"`
+	SorUpdateIndicatorList          []string                        `json:"sorUpdateIndicatorList,omitempty"`
 }

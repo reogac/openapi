@@ -1,60 +1,60 @@
 package models
 
 type SmPolicyUpdateContextData struct {
-	MaPduInd                 MaPduIndication              `json:"maPduInd,omitempty"`
-	AnGwStatus               *bool                        `json:"anGwStatus,omitempty"`
-	AddRelIpv6AddrPrefixes   string                       `json:"addRelIpv6AddrPrefixes,omitempty"`
-	QosFlowUsage             QosFlowUsage                 `json:"qosFlowUsage,omitempty"`
-	TsnBridgeInfo            *TsnBridgeInfo               `json:"tsnBridgeInfo,omitempty"`
-	InterGrpIds              []string                     `json:"interGrpIds,omitempty"`
-	AccessType               AccessType                   `json:"accessType,omitempty"`
-	AddIpv6AddrPrefixes      string                       `json:"addIpv6AddrPrefixes,omitempty"`
-	ThreeGppPsDataOffStatus  *bool                        `json:"3gppPsDataOffStatus,omitempty"`
-	TraceReq                 *TraceData                   `json:"traceReq,omitempty"`
-	SatBackhaulCategory      SatelliteBackhaulCategory    `json:"satBackhaulCategory,omitempty"`
-	RepPolicyCtrlReqTriggers []string                     `json:"repPolicyCtrlReqTriggers,omitempty"`
-	ServingNetwork           *PlmnIdNid                   `json:"servingNetwork,omitempty"`
-	RuleReports              []RuleReport                 `json:"ruleReports,omitempty"`
-	TypesOfNotif             []string                     `json:"typesOfNotif,omitempty"`
-	IpDomain                 string                       `json:"ipDomain,omitempty"`
 	TsnBridgeManCont         *BridgeManagementContainer   `json:"tsnBridgeManCont,omitempty"`
-	VplmnQosNotApp           *bool                        `json:"vplmnQosNotApp,omitempty"`
+	CreditManageStatus       CreditManagementStatus       `json:"creditManageStatus,omitempty"`
+	TraceReq                 *TraceData                   `json:"traceReq,omitempty"`
+	TrafficDescriptors       []DddTrafficDescriptor       `json:"trafficDescriptors,omitempty"`
+	NumOfPackFilter          *int                         `json:"numOfPackFilter,omitempty"`
+	AppDetectionInfos        []AppDetectionInfo           `json:"appDetectionInfos,omitempty"`
+	AuthProfIndex            string                       `json:"authProfIndex,omitempty"`
+	ThreeGppPsDataOffStatus  *bool                        `json:"3gppPsDataOffStatus,omitempty"`
+	TsnPortManContNwtts      []PortManagementContainer    `json:"tsnPortManContNwtts,omitempty"`
+	RelIpv4Address           string                       `json:"relIpv4Address,omitempty"`
+	IpDomain                 string                       `json:"ipDomain,omitempty"`
 	RelIpv6AddressPrefix     string                       `json:"relIpv6AddressPrefix,omitempty"`
-	PccRuleId                string                       `json:"pccRuleId,omitempty"`
-	UeTimeZone               string                       `json:"ueTimeZone,omitempty"`
-	SessRuleReports          []SessionRuleReport          `json:"sessRuleReports,omitempty"`
-	SubsDefQos               *SubscribedDefaultQos        `json:"subsDefQos,omitempty"`
-	AccuUsageReports         []AccuUsageReport            `json:"accuUsageReports,omitempty"`
-	AccNetChIds              []AccNetChId                 `json:"accNetChIds,omitempty"`
-	AddAccessInfo            *AdditionalAccessInfo        `json:"addAccessInfo,omitempty"`
-	ServNfId                 *ServingNfIdentity           `json:"servNfId,omitempty"`
-	AtsssCapab               AtsssCapability              `json:"atsssCapab,omitempty"`
-	Ipv4Address              string                       `json:"ipv4Address,omitempty"`
-	QncReports               []QosNotificationControlInfo `json:"qncReports,omitempty"`
-	QosMonReports            []QosMonitoringReport        `json:"qosMonReports,omitempty"`
-	TsnPortManContDstt       *PortManagementContainer     `json:"tsnPortManContDstt,omitempty"`
+	PolicyDecFailureReports  []string                     `json:"policyDecFailureReports,omitempty"`
 	InvalidPolicyDecs        []InvalidParam               `json:"invalidPolicyDecs,omitempty"`
 	RatType                  RatType                      `json:"ratType,omitempty"`
-	VplmnQos                 *VplmnQos                    `json:"vplmnQos,omitempty"`
-	RelUeMac                 string                       `json:"relUeMac,omitempty"`
-	NumOfPackFilter          *int                         `json:"numOfPackFilter,omitempty"`
-	MulAddrInfos             []IpMulticastAddressInfo     `json:"mulAddrInfos,omitempty"`
-	PolicyDecFailureReports  []string                     `json:"policyDecFailureReports,omitempty"`
+	UeTimeZone               string                       `json:"ueTimeZone,omitempty"`
+	SatBackhaulCategory      SatelliteBackhaulCategory    `json:"satBackhaulCategory,omitempty"`
+	RuleReports              []RuleReport                 `json:"ruleReports,omitempty"`
+	TsnBridgeInfo            *TsnBridgeInfo               `json:"tsnBridgeInfo,omitempty"`
+	PcfUeInfo                *PcfUeCallbackInfo           `json:"pcfUeInfo,omitempty"`
 	NwdafDatas               []NwdafData                  `json:"nwdafDatas,omitempty"`
-	RelAccessInfo            *AdditionalAccessInfo        `json:"relAccessInfo,omitempty"`
-	Ipv6AddressPrefix        string                       `json:"ipv6AddressPrefix,omitempty"`
-	CreditManageStatus       CreditManagementStatus       `json:"creditManageStatus,omitempty"`
-	TsnPortManContNwtts      []PortManagementContainer    `json:"tsnPortManContNwtts,omitempty"`
-	UserLocationInfo         *UserLocation                `json:"userLocationInfo,omitempty"`
-	SubsSessAmbr             *Ambr                        `json:"subsSessAmbr,omitempty"`
+	ServNfId                 *ServingNfIdentity           `json:"servNfId,omitempty"`
+	MulAddrInfos             []IpMulticastAddressInfo     `json:"mulAddrInfos,omitempty"`
+	TypesOfNotif             []string                     `json:"typesOfNotif,omitempty"`
+	InterGrpIds              []string                     `json:"interGrpIds,omitempty"`
+	AnGwStatus               *bool                        `json:"anGwStatus,omitempty"`
+	RelUeMac                 string                       `json:"relUeMac,omitempty"`
+	PccRuleId                string                       `json:"pccRuleId,omitempty"`
 	RefQosIndication         *bool                        `json:"refQosIndication,omitempty"`
 	UeMac                    string                       `json:"ueMac,omitempty"`
-	AppDetectionInfos        []AppDetectionInfo           `json:"appDetectionInfos,omitempty"`
+	VplmnQosNotApp           *bool                        `json:"vplmnQosNotApp,omitempty"`
+	VplmnQos                 *VplmnQos                    `json:"vplmnQos,omitempty"`
+	MaPduInd                 MaPduIndication              `json:"maPduInd,omitempty"`
+	RepPolicyCtrlReqTriggers []string                     `json:"repPolicyCtrlReqTriggers,omitempty"`
+	QncReports               []QosNotificationControlInfo `json:"qncReports,omitempty"`
 	RepPraInfos              map[string]PresenceInfo      `json:"repPraInfos,omitempty"`
-	RelIpv4Address           string                       `json:"relIpv4Address,omitempty"`
-	UeInitResReq             *UeInitiatedResourceRequest  `json:"ueInitResReq,omitempty"`
-	TrafficDescriptors       []DddTrafficDescriptor       `json:"trafficDescriptors,omitempty"`
-	PcfUeInfo                *PcfUeCallbackInfo           `json:"pcfUeInfo,omitempty"`
-	AuthProfIndex            string                       `json:"authProfIndex,omitempty"`
+	AccNetChIds              []AccNetChId                 `json:"accNetChIds,omitempty"`
+	SubsDefQos               *SubscribedDefaultQos        `json:"subsDefQos,omitempty"`
+	UserLocationInfo         *UserLocation                `json:"userLocationInfo,omitempty"`
+	SubsSessAmbr             *Ambr                        `json:"subsSessAmbr,omitempty"`
+	AtsssCapab               AtsssCapability              `json:"atsssCapab,omitempty"`
+	AccessType               AccessType                   `json:"accessType,omitempty"`
+	AddAccessInfo            *AdditionalAccessInfo        `json:"addAccessInfo,omitempty"`
 	UserLocationInfoTime     string                       `json:"userLocationInfoTime,omitempty"`
+	QosFlowUsage             QosFlowUsage                 `json:"qosFlowUsage,omitempty"`
+	Ipv6AddressPrefix        string                       `json:"ipv6AddressPrefix,omitempty"`
+	AddIpv6AddrPrefixes      string                       `json:"addIpv6AddrPrefixes,omitempty"`
+	AddRelIpv6AddrPrefixes   string                       `json:"addRelIpv6AddrPrefixes,omitempty"`
+	AccuUsageReports         []AccuUsageReport            `json:"accuUsageReports,omitempty"`
+	RelAccessInfo            *AdditionalAccessInfo        `json:"relAccessInfo,omitempty"`
+	Ipv4Address              string                       `json:"ipv4Address,omitempty"`
+	QosMonReports            []QosMonitoringReport        `json:"qosMonReports,omitempty"`
+	UeInitResReq             *UeInitiatedResourceRequest  `json:"ueInitResReq,omitempty"`
+	TsnPortManContDstt       *PortManagementContainer     `json:"tsnPortManContDstt,omitempty"`
+	ServingNetwork           *PlmnIdNid                   `json:"servingNetwork,omitempty"`
+	SessRuleReports          []SessionRuleReport          `json:"sessRuleReports,omitempty"`
 }
