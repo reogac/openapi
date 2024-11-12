@@ -1,6 +1,5 @@
 package models
-
 type SliceMbr struct {
-	Uplink   string `json:"uplink"`
-	Downlink string `json:"downlink"`
+	 Downlink	string	`json:"downlink"`
+	 Uplink	string	`json:"uplink"`
 }

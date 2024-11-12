@@ -82,9 +82,9 @@ func readSpec() {
 	}
 	// load an OpenAPI 3 specification from bytes
 	//specApis, _ := os.ReadFile("specs/TS29502_Nsmf_PDUSession.yaml")
-	//specApis, _ := os.ReadFile("specs/TS29571_CommonData.yaml")
+	specApis, _ := os.ReadFile("specs/TS29571_CommonData.yaml")
 	//specApis, _ := os.ReadFile("specs/TS29518_Namf_Communication.yaml")
-	specApis, _ := os.ReadFile("specs/TS29509_Nausf_UEAuthentication.yaml")
+	//specApis, _ := os.ReadFile("specs/TS29509_Nausf_UEAuthentication.yaml")
 
 	// create a new document from specification bytes
 	document, err := libopenapi.NewDocumentWithConfiguration(specApis, config)
@@ -172,7 +172,7 @@ func writeModel(m *DataModel) {
 
 	for _, p := range m.properties {
 		if p.m == nil {
-			fmt.Printf("model %s has untype attribute %s\n", m.id, p.m.id)
+			fmt.Printf("model %s has untype attribute %s\n", m.id)
 			continue
 		}
 

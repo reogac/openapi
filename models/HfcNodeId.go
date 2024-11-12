@@ -1,5 +1,4 @@
 package models
-
 type HfcNodeId struct {
-	HfcNId string `json:"hfcNId"`
+	 HfcNId	string	`json:"hfcNId"`
 }
