@@ -1,4 +1,5 @@
 package models
+
 type LinkRm struct {
-	 Href	string	`json:"href,omitempty"`
+	Href string `json:"href,omitempty"`
 }

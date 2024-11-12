@@ -1,4 +1,5 @@
 package models
+
 type CnfUnit struct {
-	 CnfUnit	[]Atom	`json:"cnfUnit"`
+	CnfUnit []Atom `json:"cnfUnit"`
 }

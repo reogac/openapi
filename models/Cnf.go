@@ -1,4 +1,5 @@
 package models
+
 type Cnf struct {
-	 CnfUnits	[]CnfUnit	`json:"cnfUnits"`
+	CnfUnits []CnfUnit `json:"cnfUnits"`
 }

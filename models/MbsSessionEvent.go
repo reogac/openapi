@@ -1,4 +1,5 @@
 package models
+
 type MbsSessionEvent struct {
-	 EventType	string	`json:"eventType"`
+	EventType string `json:"eventType"`
 }

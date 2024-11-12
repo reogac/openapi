@@ -1,4 +1,5 @@
 package models
+
 type Dnf struct {
-	 DnfUnits	[]DnfUnit	`json:"dnfUnits"`
+	DnfUnits []DnfUnit `json:"dnfUnits"`
 }
