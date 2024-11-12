@@ -1,21 +1,21 @@
 package models
 
 type AmfEventSubscription struct {
-	SubsChangeNotifyCorrelationId string        `json:"subsChangeNotifyCorrelationId,omitempty"`
+	SourceNfType                  NFType        `json:"sourceNfType,omitempty"`
+	EventList                     []AmfEvent    `json:"eventList"`
+	NfId                          string        `json:"nfId"`
+	GroupId                       string        `json:"groupId,omitempty"`
+	ExcludeSupiList               []string      `json:"excludeSupiList,omitempty"`
 	ExcludeGpsiList               []string      `json:"excludeGpsiList,omitempty"`
+	EventNotifyUri                string        `json:"eventNotifyUri"`
+	Options                       *AmfEventMode `json:"options,omitempty"`
+	NotifyCorrelationId           string        `json:"notifyCorrelationId"`
+	SubsChangeNotifyUri           string        `json:"subsChangeNotifyUri,omitempty"`
+	Supi                          string        `json:"supi,omitempty"`
+	IncludeSupiList               []string      `json:"includeSupiList,omitempty"`
+	SubsChangeNotifyCorrelationId string        `json:"subsChangeNotifyCorrelationId,omitempty"`
 	IncludeGpsiList               []string      `json:"includeGpsiList,omitempty"`
 	Gpsi                          string        `json:"gpsi,omitempty"`
-	EventList                     []AmfEvent    `json:"eventList"`
-	NotifyCorrelationId           string        `json:"notifyCorrelationId"`
-	Supi                          string        `json:"supi,omitempty"`
-	ExcludeSupiList               []string      `json:"excludeSupiList,omitempty"`
 	Pei                           string        `json:"pei,omitempty"`
-	SubsChangeNotifyUri           string        `json:"subsChangeNotifyUri,omitempty"`
-	GroupId                       string        `json:"groupId,omitempty"`
-	IncludeSupiList               []string      `json:"includeSupiList,omitempty"`
 	AnyUE                         *bool         `json:"anyUE,omitempty"`
-	SourceNfType                  NFType        `json:"sourceNfType,omitempty"`
-	EventNotifyUri                string        `json:"eventNotifyUri"`
-	NfId                          string        `json:"nfId"`
-	Options                       *AmfEventMode `json:"options,omitempty"`
 }
