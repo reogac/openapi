@@ -1,14 +1,14 @@
 package models
 
 type Dynamic5Qi struct {
-	ExtPacketDelBudget    *int            `json:"extPacketDelBudget,omitempty"`
-	CnPacketDelayBudgetDl *int            `json:"cnPacketDelayBudgetDl,omitempty"`
-	ExtMaxDataBurstVol    *int            `json:"extMaxDataBurstVol,omitempty"`
+	ResourceType          QosResourceType `json:"resourceType"`
 	PriorityLevel         int             `json:"priorityLevel"`
-	PacketDelayBudget     int             `json:"packetDelayBudget"`
 	PacketErrRate         string          `json:"packetErrRate"`
+	CnPacketDelayBudgetDl *int            `json:"cnPacketDelayBudgetDl,omitempty"`
+	CnPacketDelayBudgetUl *int            `json:"cnPacketDelayBudgetUl,omitempty"`
+	PacketDelayBudget     int             `json:"packetDelayBudget"`
 	AverWindow            *int            `json:"averWindow,omitempty"`
 	MaxDataBurstVol       *int            `json:"maxDataBurstVol,omitempty"`
-	CnPacketDelayBudgetUl *int            `json:"cnPacketDelayBudgetUl,omitempty"`
-	ResourceType          QosResourceType `json:"resourceType"`
+	ExtMaxDataBurstVol    *int            `json:"extMaxDataBurstVol,omitempty"`
+	ExtPacketDelBudget    *int            `json:"extPacketDelBudget,omitempty"`
 }

@@ -1,31 +1,31 @@
 package models
 
 type MdtConfiguration struct {
-	MeasurementLteList       []string                  `json:"measurementLteList,omitempty"`
-	ReportAmount             ReportAmountMdt           `json:"reportAmount,omitempty"`
-	LoggingIntervalNr        LoggingIntervalNrMdt      `json:"loggingIntervalNr,omitempty"`
-	ReportType               ReportTypeMdt             `json:"reportType,omitempty"`
-	EventThresholdRsrp       *int                      `json:"eventThresholdRsrp,omitempty"`
-	EventThresholdRsrq       *int                      `json:"eventThresholdRsrq,omitempty"`
 	AddPositioningMethodList []string                  `json:"addPositioningMethodList,omitempty"`
-	CollectionPeriodRmmNr    CollectionPeriodRmmNrMdt  `json:"collectionPeriodRmmNr,omitempty"`
-	AreaScope                *AreaScope                `json:"areaScope,omitempty"`
-	SensorMeasurementList    []string                  `json:"sensorMeasurementList,omitempty"`
-	EventThresholdRsrpNr     *int                      `json:"eventThresholdRsrpNr,omitempty"`
-	EventThresholdRsrqNr     *int                      `json:"eventThresholdRsrqNr,omitempty"`
+	MeasurementLteList       []string                  `json:"measurementLteList,omitempty"`
+	ReportIntervalNr         ReportIntervalNrMdt       `json:"reportIntervalNr,omitempty"`
+	JobType                  JobType                   `json:"jobType"`
 	EventList                []string                  `json:"eventList,omitempty"`
 	LoggingInterval          LoggingIntervalMdt        `json:"loggingInterval,omitempty"`
-	PositioningMethod        PositioningMethodMdt      `json:"positioningMethod,omitempty"`
-	ReportIntervalNr         ReportIntervalNrMdt       `json:"reportIntervalNr,omitempty"`
-	MeasurementNrList        []string                  `json:"measurementNrList,omitempty"`
-	MeasurementPeriodLte     MeasurementPeriodLteMdt   `json:"measurementPeriodLte,omitempty"`
-	MdtAllowedPlmnIdList     []PlmnId                  `json:"mdtAllowedPlmnIdList,omitempty"`
-	ReportingTriggerList     []string                  `json:"reportingTriggerList,omitempty"`
-	ReportInterval           ReportIntervalMdt         `json:"reportInterval,omitempty"`
-	LoggingDurationNr        LoggingDurationNrMdt      `json:"loggingDurationNr,omitempty"`
-	MbsfnAreaList            []MbsfnArea               `json:"mbsfnAreaList,omitempty"`
-	InterFreqTargetList      []InterFreqTargetInfo     `json:"interFreqTargetList,omitempty"`
-	JobType                  JobType                   `json:"jobType"`
 	LoggingDuration          LoggingDurationMdt        `json:"loggingDuration,omitempty"`
 	CollectionPeriodRmmLte   CollectionPeriodRmmLteMdt `json:"collectionPeriodRmmLte,omitempty"`
+	ReportType               ReportTypeMdt             `json:"reportType,omitempty"`
+	ReportAmount             ReportAmountMdt           `json:"reportAmount,omitempty"`
+	MeasurementNrList        []string                  `json:"measurementNrList,omitempty"`
+	EventThresholdRsrqNr     *int                      `json:"eventThresholdRsrqNr,omitempty"`
+	MdtAllowedPlmnIdList     []PlmnId                  `json:"mdtAllowedPlmnIdList,omitempty"`
+	AreaScope                *AreaScope                `json:"areaScope,omitempty"`
+	EventThresholdRsrpNr     *int                      `json:"eventThresholdRsrpNr,omitempty"`
+	LoggingDurationNr        LoggingDurationNrMdt      `json:"loggingDurationNr,omitempty"`
+	PositioningMethod        PositioningMethodMdt      `json:"positioningMethod,omitempty"`
+	ReportingTriggerList     []string                  `json:"reportingTriggerList,omitempty"`
+	ReportInterval           ReportIntervalMdt         `json:"reportInterval,omitempty"`
+	LoggingIntervalNr        LoggingIntervalNrMdt      `json:"loggingIntervalNr,omitempty"`
+	MeasurementPeriodLte     MeasurementPeriodLteMdt   `json:"measurementPeriodLte,omitempty"`
+	EventThresholdRsrp       *int                      `json:"eventThresholdRsrp,omitempty"`
+	CollectionPeriodRmmNr    CollectionPeriodRmmNrMdt  `json:"collectionPeriodRmmNr,omitempty"`
+	MbsfnAreaList            []MbsfnArea               `json:"mbsfnAreaList,omitempty"`
+	InterFreqTargetList      []InterFreqTargetInfo     `json:"interFreqTargetList,omitempty"`
+	SensorMeasurementList    []string                  `json:"sensorMeasurementList,omitempty"`
+	EventThresholdRsrq       *int                      `json:"eventThresholdRsrq,omitempty"`
 }

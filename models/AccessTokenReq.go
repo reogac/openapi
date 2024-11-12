@@ -2,22 +2,22 @@ package models
 
 type AccessTokenReq struct {
 	NfInstanceId         string      `json:"nfInstanceId"`
-	NfType               NFType      `json:"nfType,omitempty"`
+	TargetNfType         NFType      `json:"targetNfType,omitempty"`
 	Scope                string      `json:"scope"`
-	RequesterFqdn        string      `json:"requesterFqdn,omitempty"`
-	TargetNfSetId        string      `json:"targetNfSetId,omitempty"`
-	GrantType            GrantType   `json:"grant_type"`
-	TargetNfServiceSetId string      `json:"targetNfServiceSetId,omitempty"`
-	SourceNfInstanceId   string      `json:"sourceNfInstanceId,omitempty"`
-	TargetNsiList        []string    `json:"targetNsiList,omitempty"`
-	TargetNfInstanceId   string      `json:"targetNfInstanceId,omitempty"`
+	RequesterSnssaiList  []Snssai    `json:"requesterSnssaiList,omitempty"`
+	TargetSnpn           *PlmnIdNid  `json:"targetSnpn,omitempty"`
 	RequesterPlmn        *PlmnId     `json:"requesterPlmn,omitempty"`
 	RequesterPlmnList    []PlmnId    `json:"requesterPlmnList,omitempty"`
 	TargetPlmn           *PlmnId     `json:"targetPlmn,omitempty"`
-	TargetSnssaiList     []Snssai    `json:"targetSnssaiList,omitempty"`
-	TargetNfType         NFType      `json:"targetNfType,omitempty"`
+	TargetNfSetId        string      `json:"targetNfSetId,omitempty"`
+	SourceNfInstanceId   string      `json:"sourceNfInstanceId,omitempty"`
+	GrantType            GrantType   `json:"grant_type"`
+	TargetNfInstanceId   string      `json:"targetNfInstanceId,omitempty"`
+	RequesterFqdn        string      `json:"requesterFqdn,omitempty"`
 	RequesterSnpnList    []PlmnIdNid `json:"requesterSnpnList,omitempty"`
-	TargetSnpn           *PlmnIdNid  `json:"targetSnpn,omitempty"`
+	TargetSnssaiList     []Snssai    `json:"targetSnssaiList,omitempty"`
+	TargetNsiList        []string    `json:"targetNsiList,omitempty"`
+	NfType               NFType      `json:"nfType,omitempty"`
+	TargetNfServiceSetId string      `json:"targetNfServiceSetId,omitempty"`
 	HnrfAccessTokenUri   string      `json:"hnrfAccessTokenUri,omitempty"`
-	RequesterSnssaiList  []Snssai    `json:"requesterSnssaiList,omitempty"`
 }

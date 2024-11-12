@@ -1,7 +1,6 @@
 package models
 
 type ObservedRedundantTransExp struct {
-	AvgPktDelayDl    *int     `json:"avgPktDelayDl,omitempty"`
 	VarPktDelayDl    *float64 `json:"varPktDelayDl,omitempty"`
 	AvgPktDropRateUl *int     `json:"avgPktDropRateUl,omitempty"`
 	VarPktDropRateUl *float64 `json:"varPktDropRateUl,omitempty"`
@@ -9,4 +8,5 @@ type ObservedRedundantTransExp struct {
 	VarPktDropRateDl *float64 `json:"varPktDropRateDl,omitempty"`
 	AvgPktDelayUl    *int     `json:"avgPktDelayUl,omitempty"`
 	VarPktDelayUl    *float64 `json:"varPktDelayUl,omitempty"`
+	AvgPktDelayDl    *int     `json:"avgPktDelayDl,omitempty"`
 }

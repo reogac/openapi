@@ -1,25 +1,25 @@
 package models
 
 type SmfRegistration struct {
-	SmfSetId                    string             `json:"smfSetId,omitempty"`
-	PcscfRestorationCallbackUri string             `json:"pcscfRestorationCallbackUri,omitempty"`
-	DataRestorationCallbackUri  string             `json:"dataRestorationCallbackUri,omitempty"`
-	SmfInstanceId               string             `json:"smfInstanceId"`
-	SingleNssai                 Snssai             `json:"singleNssai"`
-	PlmnId                      PlmnId             `json:"plmnId"`
 	EpdgInd                     *bool              `json:"epdgInd,omitempty"`
-	RegistrationTime            string             `json:"registrationTime,omitempty"`
-	UdrRestartInd               *bool              `json:"udrRestartInd,omitempty"`
-	PgwFqdn                     string             `json:"pgwFqdn,omitempty"`
-	RegistrationReason          RegistrationReason `json:"registrationReason,omitempty"`
+	ContextInfo                 *ContextInfo       `json:"contextInfo,omitempty"`
+	DataRestorationCallbackUri  string             `json:"dataRestorationCallbackUri,omitempty"`
 	LastSynchronizationTime     string             `json:"lastSynchronizationTime,omitempty"`
+	SmfInstanceId               string             `json:"smfInstanceId"`
+	Dnn                         string             `json:"dnn,omitempty"`
+	DeregCallbackUri            string             `json:"deregCallbackUri,omitempty"`
+	RegistrationReason          RegistrationReason `json:"registrationReason,omitempty"`
+	ResetIds                    []string           `json:"resetIds,omitempty"`
+	SmfSetId                    string             `json:"smfSetId,omitempty"`
+	SingleNssai                 Snssai             `json:"singleNssai"`
+	PgwFqdn                     string             `json:"pgwFqdn,omitempty"`
+	RegistrationTime            string             `json:"registrationTime,omitempty"`
+	PcfId                       string             `json:"pcfId,omitempty"`
+	PgwIpAddr                   *IpAddress         `json:"pgwIpAddr,omitempty"`
+	UdrRestartInd               *bool              `json:"udrRestartInd,omitempty"`
 	SupportedFeatures           string             `json:"supportedFeatures,omitempty"`
 	PduSessionId                int                `json:"pduSessionId"`
-	Dnn                         string             `json:"dnn,omitempty"`
 	EmergencyServices           *bool              `json:"emergencyServices,omitempty"`
-	PgwIpAddr                   *IpAddress         `json:"pgwIpAddr,omitempty"`
-	DeregCallbackUri            string             `json:"deregCallbackUri,omitempty"`
-	ContextInfo                 *ContextInfo       `json:"contextInfo,omitempty"`
-	PcfId                       string             `json:"pcfId,omitempty"`
-	ResetIds                    []string           `json:"resetIds,omitempty"`
+	PcscfRestorationCallbackUri string             `json:"pcscfRestorationCallbackUri,omitempty"`
+	PlmnId                      PlmnId             `json:"plmnId"`
 }

@@ -63,6 +63,40 @@ func (p *Property) writeTag() string {
 	}
 }
 
+type Header struct {
+	required bool
+	m        DataModel
+}
+
+type RequestBody struct {
+	required bool
+	content  DataModel
+	desc     string
+}
+
+type Response struct {
+	headers map[string]Header
+	content DataModel
+}
+
+type Parameter struct {
+	id       string
+	in       string
+	required bool
+	m        DataModel
+}
+
+type Operation struct {
+	path        string
+	method      string
+	id          string
+	summary     string
+	desc        string
+	parameters  map[string]Parameter
+	requestBody *RequestBody
+	responses   map[string]Response
+}
+
 var models map[string]DataModel
 
 func main() {
@@ -117,8 +151,8 @@ func readSpec(specFile string) {
 	schemas := v3Model.Model.Components.Schemas
 
 	fmt.Printf("There are %d paths and %d schemas in the document", paths.Len(), schemas.Len())
-	//showPaths(paths)
 	createModels(schemas)
+	showPaths(paths)
 	for _, m := range models {
 		writeModel(&m)
 	}
@@ -220,7 +254,7 @@ func showPaths(paths *orderedmap.Map[string, *v3.PathItem]) {
 		showPathItem(pathName, pathItem)
 	}
 }
-func showPathItem(path string, item *v3.PathItem) {
+func showPathItem(path string, item *v3.PathItem) *Operation {
 	var op *v3.Operation
 	var opStr string
 	if item.Get != nil {
@@ -240,14 +274,78 @@ func showPathItem(path string, item *v3.PathItem) {
 		op = item.Patch
 	} else {
 		fmt.Printf("Unsupported operation\n")
-		return
+		return nil
 	}
-	fmt.Printf("%s[%s][%s]: %s\n", path, opStr, op.OperationId, op.Summary)
+	opModel := &Operation{
+		path:       path,
+		method:     opStr,
+		summary:    op.Summary,
+		desc:       op.Description,
+		id:         op.OperationId,
+		parameters: make(map[string]Parameter),
+		responses:  make(map[string]Response),
+	}
+	//fmt.Printf("%s[%s][%s]: %s\n", path, opStr, op.OperationId, op.Summary)
+	//get request body
+	if body := op.RequestBody; body != nil {
+		if body.Content != nil {
+			var selectedModel *DataModel
+			var bodyModels []*DataModel
 
+			for pair := body.Content.First(); pair != nil; pair = pair.Next() {
+				if m := analyzeSchema("", pair.Value().Schema); m != nil {
+					//fmt.Printf("RequestBodyContent [%d] %s is %s[%s]\n", num, pair.Key(), m.goType, m.id)
+					if len(m.goType) == 0 {
+						selectedModel = m
+						selectedModel.id = opModel.id + "Request"
+						selectedModel.goType = selectedModel.id
+						break
+					} else {
+						bodyModels = append(bodyModels, m)
+					}
+				}
+			}
+			if selectedModel == nil && len(bodyModels) > 0 {
+				selectedModel = bodyModels[0]
+			}
+			if selectedModel != nil {
+				//add model to the global repo
+				models[selectedModel.id] = *selectedModel
+
+				opModel.requestBody = &RequestBody{
+					desc:    body.Description,
+					content: *selectedModel,
+				}
+				if body.Required != nil {
+					opModel.requestBody.required = *body.Required
+				}
+
+				fmt.Printf("OP %s has body '%s'\n", opModel.id, opModel.requestBody.content.id)
+			}
+		} else {
+			fmt.Printf("Request: '%s' has no content\n", body.Description)
+		}
+
+	}
+
+	/*
+		for _, p := range item.Parameters {
+			showParameter(p)
+		}
+		showOperation(opStr, op)
+	*/
+	return opModel
+}
+
+func showOperation(opStr string, op *v3.Operation) {
 	for _, p := range op.Parameters {
 		showParameter(p)
 	}
-
+	if op.RequestBody == nil {
+		fmt.Printf("Operation has no request body\n")
+	} else {
+		showRequestBody(op.RequestBody)
+	}
 	if op.Responses == nil {
 		fmt.Printf("Operation has no response\n")
 	} else {
@@ -259,6 +357,21 @@ func showPathItem(path string, item *v3.PathItem) {
 			fmt.Printf("Callback for [%s]: %s\n", op.OperationId, pair.Key())
 			showCallback(pair.Key(), pair.Value())
 		}
+	}
+
+}
+
+func showRequestBody(body *v3.RequestBody) {
+	if body.Content != nil {
+		num := 1
+		for pair := body.Content.First(); pair != nil; pair = pair.Next() {
+			if m := analyzeSchema("", pair.Value().Schema); m != nil {
+				fmt.Printf("RequestBodyContent [%d] %s is %s[%s]\n", num, pair.Key(), m.goType, m.id)
+				num++
+			}
+		}
+	} else {
+		fmt.Printf("Request: '%s' has no content\n", body.Description)
 	}
 }
 
@@ -273,7 +386,12 @@ func showResponse(code string, response *v3.Response) {
 	numHeaders := 0
 
 	if response.Content != nil {
-		numContents = response.Content.Len()
+		for pair := response.Content.First(); pair != nil; pair = pair.Next() {
+			if m := analyzeSchema("", pair.Value().Schema); m != nil {
+				fmt.Printf("ResponseContent[%d] %s is %s[%s]\n", numContents+1, pair.Key(), m.goType, m.id)
+				numContents++
+			}
+		}
 	}
 
 	if response.Headers != nil {
@@ -301,6 +419,7 @@ func showParameter(p *v3.Parameter) {
 		fmt.Printf("Parameter [%s] with content not supported\n", p.Name)
 		return
 	}
+	fmt.Printf("Parameter %s in %s\n", p.Name, p.In)
 }
 
 func showCallback(path string, callback *v3.Callback) {

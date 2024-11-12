@@ -1,6 +1,6 @@
 package models
 
 type FailureEventInfo struct {
-	FailureCode NwdafFailureCode `json:"failureCode"`
 	Event       NwdafEvent       `json:"event"`
+	FailureCode NwdafFailureCode `json:"failureCode"`
 }

@@ -1,37 +1,37 @@
 package models
 
 type DnnConfiguration struct {
-	Ipv6FrameRouteList                   []FrameRouteInfo        `json:"ipv6FrameRouteList,omitempty"`
-	EasDiscoveryAuthorized               *bool                   `json:"easDiscoveryAuthorized,omitempty"`
 	OnboardingInd                        *bool                   `json:"onboardingInd,omitempty"`
-	PduSessionTypes                      PduSessionTypes         `json:"pduSessionTypes"`
-	SessionAmbr                          *Ambr                   `json:"sessionAmbr,omitempty"`
-	ThreeGppChargingCharacteristics      string                  `json:"3gppChargingCharacteristics,omitempty"`
+	Ipv6FrameRouteList                   []FrameRouteInfo        `json:"ipv6FrameRouteList,omitempty"`
+	SecondaryAuth                        *bool                   `json:"secondaryAuth,omitempty"`
+	IptvAccCtrlInfo                      string                  `json:"iptvAccCtrlInfo,omitempty"`
+	AdditionalEcsAddrConfigInfos         []EcsAddrConfigInfo     `json:"additionalEcsAddrConfigInfos,omitempty"`
+	SharedEcsAddrConfigInfo              string                  `json:"sharedEcsAddrConfigInfo,omitempty"`
 	AcsInfo                              *AcsInfo                `json:"acsInfo,omitempty"`
+	Ipv6Index                            *IpIndex                `json:"ipv6Index,omitempty"`
+	SscModes                             SscModes                `json:"sscModes"`
+	StaticIpAddress                      []IpAddress             `json:"staticIpAddress,omitempty"`
+	EcsAddrConfigInfo                    *EcsAddrConfigInfo      `json:"ecsAddrConfigInfo,omitempty"`
+	AdditionalSharedEcsAddrConfigInfoIds []string                `json:"additionalSharedEcsAddrConfigInfoIds,omitempty"`
+	SessionAmbr                          *Ambr                   `json:"sessionAmbr,omitempty"`
 	AtsssAllowed                         *bool                   `json:"atsssAllowed,omitempty"`
-	DnAaaIpAddressAllocation             *bool                   `json:"dnAaaIpAddressAllocation,omitempty"`
-	DnAaaAddress                         *IpAddress              `json:"dnAaaAddress,omitempty"`
+	EasDiscoveryAuthorized               *bool                   `json:"easDiscoveryAuthorized,omitempty"`
+	PduSessionTypes                      PduSessionTypes         `json:"pduSessionTypes"`
 	IwkEpsInd                            *bool                   `json:"iwkEpsInd,omitempty"`
 	PduSessionContinuityInd              PduSessionContinuityInd `json:"pduSessionContinuityInd,omitempty"`
-	NiddNefId                            string                  `json:"niddNefId,omitempty"`
-	Ipv4FrameRouteList                   []FrameRouteInfo        `json:"ipv4FrameRouteList,omitempty"`
-	DnAaaFqdn                            string                  `json:"dnAaaFqdn,omitempty"`
-	AdditionalEcsAddrConfigInfos         []EcsAddrConfigInfo     `json:"additionalEcsAddrConfigInfos,omitempty"`
-	SubscribedMaxIpv6PrefixSize          *int                    `json:"subscribedMaxIpv6PrefixSize,omitempty"`
-	SscModes                             SscModes                `json:"sscModes"`
 	RedundantSessionAllowed              *bool                   `json:"redundantSessionAllowed,omitempty"`
-	UavSecondaryAuth                     *bool                   `json:"uavSecondaryAuth,omitempty"`
-	UpSecurity                           *UpSecurity             `json:"upSecurity,omitempty"`
-	StaticIpAddress                      []IpAddress             `json:"staticIpAddress,omitempty"`
+	DnAaaAddress                         *IpAddress              `json:"dnAaaAddress,omitempty"`
 	Ipv4Index                            *IpIndex                `json:"ipv4Index,omitempty"`
-	EcsAddrConfigInfo                    *EcsAddrConfigInfo      `json:"ecsAddrConfigInfo,omitempty"`
+	SubscribedMaxIpv6PrefixSize          *int                    `json:"subscribedMaxIpv6PrefixSize,omitempty"`
+	UpSecurity                           *UpSecurity             `json:"upSecurity,omitempty"`
+	NiddNefId                            string                  `json:"niddNefId,omitempty"`
 	NiddInfo                             *NiddInformation        `json:"niddInfo,omitempty"`
-	AdditionalDnAaaAddresses             []IpAddress             `json:"additionalDnAaaAddresses,omitempty"`
-	IptvAccCtrlInfo                      string                  `json:"iptvAccCtrlInfo,omitempty"`
-	AdditionalSharedEcsAddrConfigInfoIds []string                `json:"additionalSharedEcsAddrConfigInfoIds,omitempty"`
+	UavSecondaryAuth                     *bool                   `json:"uavSecondaryAuth,omitempty"`
+	DnAaaIpAddressAllocation             *bool                   `json:"dnAaaIpAddressAllocation,omitempty"`
 	AerialUeInd                          AerialUeIndication      `json:"aerialUeInd,omitempty"`
 	FiveGQosProfile                      *SubscribedDefaultQos   `json:"5gQosProfile,omitempty"`
-	SecondaryAuth                        *bool                   `json:"secondaryAuth,omitempty"`
-	Ipv6Index                            *IpIndex                `json:"ipv6Index,omitempty"`
-	SharedEcsAddrConfigInfo              string                  `json:"sharedEcsAddrConfigInfo,omitempty"`
+	ThreeGppChargingCharacteristics      string                  `json:"3gppChargingCharacteristics,omitempty"`
+	Ipv4FrameRouteList                   []FrameRouteInfo        `json:"ipv4FrameRouteList,omitempty"`
+	AdditionalDnAaaAddresses             []IpAddress             `json:"additionalDnAaaAddresses,omitempty"`
+	DnAaaFqdn                            string                  `json:"dnAaaFqdn,omitempty"`
 }

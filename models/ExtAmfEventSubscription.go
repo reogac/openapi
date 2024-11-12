@@ -1,26 +1,26 @@
 package models
 
 type ExtAmfEventSubscription struct {
-	Supi                          string                              `json:"supi,omitempty"`
-	ExcludeGpsiList               []string                            `json:"excludeGpsiList,omitempty"`
-	IncludeGpsiList               []string                            `json:"includeGpsiList,omitempty"`
-	Pei                           string                              `json:"pei,omitempty"`
-	NfId                          string                              `json:"nfId"`
-	AnyUE                         *bool                               `json:"anyUE,omitempty"`
-	AoiStateList                  map[string]AreaOfInterestEventState `json:"aoiStateList,omitempty"`
-	BindingInfo                   []string                            `json:"bindingInfo,omitempty"`
-	EventSyncInd                  *bool                               `json:"eventSyncInd,omitempty"`
-	SubsChangeNotifyUri           string                              `json:"subsChangeNotifyUri,omitempty"`
-	SourceNfType                  NFType                              `json:"sourceNfType,omitempty"`
-	EventList                     []AmfEvent                          `json:"eventList"`
-	Options                       *AmfEventMode                       `json:"options,omitempty"`
-	NotifyCorrelationId           string                              `json:"notifyCorrelationId"`
-	SubscribingNfType             NFType                              `json:"subscribingNfType,omitempty"`
-	NfConsumerInfo                []string                            `json:"nfConsumerInfo,omitempty"`
-	Gpsi                          string                              `json:"gpsi,omitempty"`
-	EventNotifyUri                string                              `json:"eventNotifyUri"`
 	IncludeSupiList               []string                            `json:"includeSupiList,omitempty"`
-	GroupId                       string                              `json:"groupId,omitempty"`
+	AnyUE                         *bool                               `json:"anyUE,omitempty"`
+	BindingInfo                   []string                            `json:"bindingInfo,omitempty"`
+	AoiStateList                  map[string]AreaOfInterestEventState `json:"aoiStateList,omitempty"`
 	SubsChangeNotifyCorrelationId string                              `json:"subsChangeNotifyCorrelationId,omitempty"`
 	ExcludeSupiList               []string                            `json:"excludeSupiList,omitempty"`
+	SubsChangeNotifyUri           string                              `json:"subsChangeNotifyUri,omitempty"`
+	EventNotifyUri                string                              `json:"eventNotifyUri"`
+	SubscribingNfType             NFType                              `json:"subscribingNfType,omitempty"`
+	EventSyncInd                  *bool                               `json:"eventSyncInd,omitempty"`
+	ExcludeGpsiList               []string                            `json:"excludeGpsiList,omitempty"`
+	NotifyCorrelationId           string                              `json:"notifyCorrelationId"`
+	Pei                           string                              `json:"pei,omitempty"`
+	SourceNfType                  NFType                              `json:"sourceNfType,omitempty"`
+	NfId                          string                              `json:"nfId"`
+	Options                       *AmfEventMode                       `json:"options,omitempty"`
+	NfConsumerInfo                []string                            `json:"nfConsumerInfo,omitempty"`
+	EventList                     []AmfEvent                          `json:"eventList"`
+	Supi                          string                              `json:"supi,omitempty"`
+	GroupId                       string                              `json:"groupId,omitempty"`
+	IncludeGpsiList               []string                            `json:"includeGpsiList,omitempty"`
+	Gpsi                          string                              `json:"gpsi,omitempty"`
 }
