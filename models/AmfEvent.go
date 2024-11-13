@@ -1,24 +1,24 @@
 package models
 
 type AmfEvent struct {
-	UeInAreaFilter         *UeInAreaFilter         `json:"ueInAreaFilter,omitempty"`
-	NextReport             string                  `json:"nextReport,omitempty"`
-	AreaList               []AmfEventArea          `json:"areaList,omitempty"`
-	MaxReports             *int                    `json:"maxReports,omitempty"`
-	PresenceInfoList       map[string]PresenceInfo `json:"presenceInfoList,omitempty"`
-	SnssaiFilter           []ExtSnssai             `json:"snssaiFilter,omitempty"`
-	TargetArea             *TargetArea             `json:"targetArea,omitempty"`
-	MinInterval            *int                    `json:"minInterval,omitempty"`
+	ImmediateFlag          *bool                   `json:"immediateFlag,omitempty"`
+	LocationFilterList     []string                `json:"locationFilterList,omitempty"`
 	IdleStatusInd          *bool                   `json:"idleStatusInd,omitempty"`
 	NextPeriodicReportTime string                  `json:"nextPeriodicReportTime,omitempty"`
-	ImmediateFlag          *bool                   `json:"immediateFlag,omitempty"`
+	SnssaiFilter           []ExtSnssai             `json:"snssaiFilter,omitempty"`
+	Type                   AmfEventType            `json:"type"`
+	AreaList               []AmfEventArea          `json:"areaList,omitempty"`
+	UdmDetectInd           *bool                   `json:"udmDetectInd,omitempty"`
+	MaxReports             *int                    `json:"maxReports,omitempty"`
+	DispersionArea         *DispersionArea         `json:"dispersionArea,omitempty"`
 	RefId                  *int                    `json:"refId,omitempty"`
+	PresenceInfoList       map[string]PresenceInfo `json:"presenceInfoList,omitempty"`
+	TargetArea             *TargetArea             `json:"targetArea,omitempty"`
+	UeInAreaFilter         *UeInAreaFilter         `json:"ueInAreaFilter,omitempty"`
+	MinInterval            *int                    `json:"minInterval,omitempty"`
+	NextReport             string                  `json:"nextReport,omitempty"`
+	TrafficDescriptorList  []TrafficDescriptor     `json:"trafficDescriptorList,omitempty"`
 	ReportUeReachable      *bool                   `json:"reportUeReachable,omitempty"`
 	ReachabilityFilter     ReachabilityFilter      `json:"reachabilityFilter,omitempty"`
-	Type                   AmfEventType            `json:"type"`
-	DispersionArea         *DispersionArea         `json:"dispersionArea,omitempty"`
-	LocationFilterList     []string                `json:"locationFilterList,omitempty"`
-	TrafficDescriptorList  []TrafficDescriptor     `json:"trafficDescriptorList,omitempty"`
-	UdmDetectInd           *bool                   `json:"udmDetectInd,omitempty"`
 	MaxResponseTime        *int                    `json:"maxResponseTime,omitempty"`
 }

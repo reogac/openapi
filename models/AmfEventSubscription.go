@@ -1,21 +1,21 @@
 package models
 
 type AmfEventSubscription struct {
+	EventList                     []AmfEvent    `json:"eventList"`
 	EventNotifyUri                string        `json:"eventNotifyUri"`
-	Supi                          string        `json:"supi,omitempty"`
 	GroupId                       string        `json:"groupId,omitempty"`
-	ExcludeGpsiList               []string      `json:"excludeGpsiList,omitempty"`
 	NotifyCorrelationId           string        `json:"notifyCorrelationId"`
 	SubsChangeNotifyUri           string        `json:"subsChangeNotifyUri,omitempty"`
-	Gpsi                          string        `json:"gpsi,omitempty"`
-	SourceNfType                  NFType        `json:"sourceNfType,omitempty"`
-	IncludeGpsiList               []string      `json:"includeGpsiList,omitempty"`
-	Pei                           string        `json:"pei,omitempty"`
-	AnyUE                         *bool         `json:"anyUE,omitempty"`
-	EventList                     []AmfEvent    `json:"eventList"`
-	NfId                          string        `json:"nfId"`
-	SubsChangeNotifyCorrelationId string        `json:"subsChangeNotifyCorrelationId,omitempty"`
 	ExcludeSupiList               []string      `json:"excludeSupiList,omitempty"`
-	IncludeSupiList               []string      `json:"includeSupiList,omitempty"`
+	ExcludeGpsiList               []string      `json:"excludeGpsiList,omitempty"`
+	SubsChangeNotifyCorrelationId string        `json:"subsChangeNotifyCorrelationId,omitempty"`
+	SourceNfType                  NFType        `json:"sourceNfType,omitempty"`
+	AnyUE                         *bool         `json:"anyUE,omitempty"`
 	Options                       *AmfEventMode `json:"options,omitempty"`
+	NfId                          string        `json:"nfId"`
+	Supi                          string        `json:"supi,omitempty"`
+	IncludeSupiList               []string      `json:"includeSupiList,omitempty"`
+	IncludeGpsiList               []string      `json:"includeGpsiList,omitempty"`
+	Gpsi                          string        `json:"gpsi,omitempty"`
+	Pei                           string        `json:"pei,omitempty"`
 }

@@ -1,24 +1,24 @@
 package models
 
 type QosData struct {
-	MaxbrUl              string `json:"maxbrUl,omitempty"`
-	GbrUl                string `json:"gbrUl,omitempty"`
-	GbrDl                string `json:"gbrDl,omitempty"`
-	Qnc                  *bool  `json:"qnc,omitempty"`
-	MaxDataBurstVol      *int   `json:"maxDataBurstVol,omitempty"`
-	SharingKeyDl         string `json:"sharingKeyDl,omitempty"`
+	ExtMaxDataBurstVol   *int   `json:"extMaxDataBurstVol,omitempty"`
 	PacketDelayBudget    *int   `json:"packetDelayBudget,omitempty"`
-	QosId                string `json:"qosId"`
-	FiveQi               *int   `json:"5qi,omitempty"`
-	MaxbrDl              string `json:"maxbrDl,omitempty"`
-	Arp                  *Arp   `json:"arp,omitempty"`
+	DefQosFlowIndication *bool  `json:"defQosFlowIndication,omitempty"`
 	AverWindow           *int   `json:"averWindow,omitempty"`
+	SharingKeyDl         string `json:"sharingKeyDl,omitempty"`
 	MaxPacketLossRateDl  *int   `json:"maxPacketLossRateDl,omitempty"`
+	FiveQi               *int   `json:"5qi,omitempty"`
+	MaxbrUl              string `json:"maxbrUl,omitempty"`
+	MaxbrDl              string `json:"maxbrDl,omitempty"`
 	PriorityLevel        *int   `json:"priorityLevel,omitempty"`
-	MaxPacketLossRateUl  *int   `json:"maxPacketLossRateUl,omitempty"`
-	PacketErrorRate      string `json:"packetErrorRate,omitempty"`
 	ReflectiveQos        *bool  `json:"reflectiveQos,omitempty"`
 	SharingKeyUl         string `json:"sharingKeyUl,omitempty"`
-	DefQosFlowIndication *bool  `json:"defQosFlowIndication,omitempty"`
-	ExtMaxDataBurstVol   *int   `json:"extMaxDataBurstVol,omitempty"`
+	PacketErrorRate      string `json:"packetErrorRate,omitempty"`
+	QosId                string `json:"qosId"`
+	GbrDl                string `json:"gbrDl,omitempty"`
+	Arp                  *Arp   `json:"arp,omitempty"`
+	Qnc                  *bool  `json:"qnc,omitempty"`
+	MaxDataBurstVol      *int   `json:"maxDataBurstVol,omitempty"`
+	MaxPacketLossRateUl  *int   `json:"maxPacketLossRateUl,omitempty"`
+	GbrUl                string `json:"gbrUl,omitempty"`
 }

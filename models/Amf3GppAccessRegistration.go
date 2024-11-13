@@ -1,38 +1,38 @@
 package models
 
 type Amf3GppAccessRegistration struct {
-	SupportedFeatures           string               `json:"supportedFeatures,omitempty"`
+	RatType                     RatType              `json:"ratType"`
 	UeSrvccCapability           *bool                `json:"ueSrvccCapability,omitempty"`
+	VgmlcAddress                *VgmlcAddress        `json:"vgmlcAddress,omitempty"`
+	Guami                       Guami                `json:"guami"`
+	ContextInfo                 *ContextInfo         `json:"contextInfo,omitempty"`
+	NoEeSubscriptionInd         *bool                `json:"noEeSubscriptionInd,omitempty"`
 	AdminDeregSubWithdrawn      *bool                `json:"adminDeregSubWithdrawn,omitempty"`
 	AmfInstanceId               string               `json:"amfInstanceId"`
-	Pei                         string               `json:"pei,omitempty"`
-	DeregCallbackUri            string               `json:"deregCallbackUri"`
-	PcscfRestorationCallbackUri string               `json:"pcscfRestorationCallbackUri,omitempty"`
-	Guami                       Guami                `json:"guami"`
-	AmfEeSubscriptionId         string               `json:"amfEeSubscriptionId,omitempty"`
-	UeReachableInd              UeReachableInd       `json:"ueReachableInd,omitempty"`
-	ReRegistrationRequired      *bool                `json:"reRegistrationRequired,omitempty"`
-	DisasterRoamingInd          *bool                `json:"disasterRoamingInd,omitempty"`
-	PurgeFlag                   *bool                `json:"purgeFlag,omitempty"`
 	AmfServiceNameDereg         ServiceName          `json:"amfServiceNameDereg,omitempty"`
+	PcscfRestorationCallbackUri string               `json:"pcscfRestorationCallbackUri,omitempty"`
+	InitialRegistrationInd      *bool                `json:"initialRegistrationInd,omitempty"`
+	ResetIds                    []string             `json:"resetIds,omitempty"`
+	SorSnpnSiSupported          *bool                `json:"sorSnpnSiSupported,omitempty"`
+	BackupAmfInfo               []BackupAmfInfo      `json:"backupAmfInfo,omitempty"`
+	AmfEeSubscriptionId         string               `json:"amfEeSubscriptionId,omitempty"`
+	RegistrationTime            string               `json:"registrationTime,omitempty"`
+	ReRegistrationRequired      *bool                `json:"reRegistrationRequired,omitempty"`
+	LastSynchronizationTime     string               `json:"lastSynchronizationTime,omitempty"`
 	AmfServiceNamePcscfRest     ServiceName          `json:"amfServiceNamePcscfRest,omitempty"`
 	DrFlag                      *bool                `json:"drFlag,omitempty"`
-	RegistrationTime            string               `json:"registrationTime,omitempty"`
-	VgmlcAddress                *VgmlcAddress        `json:"vgmlcAddress,omitempty"`
-	DataRestorationCallbackUri  string               `json:"dataRestorationCallbackUri,omitempty"`
-	UdrRestartInd               *bool                `json:"udrRestartInd,omitempty"`
-	ImsVoPs                     ImsVoPs              `json:"imsVoPs,omitempty"`
-	BackupAmfInfo               []BackupAmfInfo      `json:"backupAmfInfo,omitempty"`
 	EpsInterworkingInfo         *EpsInterworkingInfo `json:"epsInterworkingInfo,omitempty"`
-	InitialRegistrationInd      *bool                `json:"initialRegistrationInd,omitempty"`
-	EmergencyRegistrationInd    *bool                `json:"emergencyRegistrationInd,omitempty"`
-	NoEeSubscriptionInd         *bool                `json:"noEeSubscriptionInd,omitempty"`
 	Supi                        string               `json:"supi,omitempty"`
-	ResetIds                    []string             `json:"resetIds,omitempty"`
-	LastSynchronizationTime     string               `json:"lastSynchronizationTime,omitempty"`
-	RatType                     RatType              `json:"ratType"`
-	UrrpIndicator               *bool                `json:"urrpIndicator,omitempty"`
+	Pei                         string               `json:"pei,omitempty"`
 	UeMINTCapability            *bool                `json:"ueMINTCapability,omitempty"`
-	ContextInfo                 *ContextInfo         `json:"contextInfo,omitempty"`
-	SorSnpnSiSupported          *bool                `json:"sorSnpnSiSupported,omitempty"`
+	DisasterRoamingInd          *bool                `json:"disasterRoamingInd,omitempty"`
+	SupportedFeatures           string               `json:"supportedFeatures,omitempty"`
+	EmergencyRegistrationInd    *bool                `json:"emergencyRegistrationInd,omitempty"`
+	UrrpIndicator               *bool                `json:"urrpIndicator,omitempty"`
+	UeReachableInd              UeReachableInd       `json:"ueReachableInd,omitempty"`
+	UdrRestartInd               *bool                `json:"udrRestartInd,omitempty"`
+	PurgeFlag                   *bool                `json:"purgeFlag,omitempty"`
+	ImsVoPs                     ImsVoPs              `json:"imsVoPs,omitempty"`
+	DeregCallbackUri            string               `json:"deregCallbackUri"`
+	DataRestorationCallbackUri  string               `json:"dataRestorationCallbackUri,omitempty"`
 }

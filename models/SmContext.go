@@ -1,62 +1,62 @@
 package models
 
 type SmContext struct {
-	AlwaysOnGranted                 *bool                           `json:"alwaysOnGranted,omitempty"`
-	RoamingChargingProfile          *RoamingChargingProfile         `json:"roamingChargingProfile,omitempty"`
-	SmfBindingInfo                  string                          `json:"smfBindingInfo,omitempty"`
-	DlsetSupportInd                 *bool                           `json:"dlsetSupportInd,omitempty"`
-	N9fscSupportInd                 *bool                           `json:"n9fscSupportInd,omitempty"`
-	Dnn                             string                          `json:"dnn"`
-	ForwardingInd                   *bool                           `json:"forwardingInd,omitempty"`
-	MaxIntegrityProtectedDataRateDl MaxIntegrityProtectedDataRate   `json:"maxIntegrityProtectedDataRateDl,omitempty"`
-	HSmfServiceInstanceId           string                          `json:"hSmfServiceInstanceId,omitempty"`
-	ChargingInfo                    *ChargingInformation            `json:"chargingInfo,omitempty"`
-	RedundantPduSessionInfo         *RedundantPduSessionInformation `json:"redundantPduSessionInfo,omitempty"`
-	MaxIntegrityProtectedDataRate   MaxIntegrityProtectedDataRate   `json:"maxIntegrityProtectedDataRate,omitempty"`
-	SmfServiceInstanceId            string                          `json:"smfServiceInstanceId,omitempty"`
-	AddRanTunnelInfo                []QosFlowTunnel                 `json:"addRanTunnelInfo,omitempty"`
-	EnablePauseCharging             *bool                           `json:"enablePauseCharging,omitempty"`
-	UdmGroupId                      string                          `json:"udmGroupId,omitempty"`
-	QosFlowsList                    []QosFlowSetupItem              `json:"qosFlowsList"`
-	HSmfInstanceId                  string                          `json:"hSmfInstanceId,omitempty"`
-	PduSessionType                  PduSessionType                  `json:"pduSessionType"`
-	AnchorSmfOauth2Required         *bool                           `json:"anchorSmfOauth2Required,omitempty"`
-	SmfUri                          string                          `json:"smfUri,omitempty"`
-	SelMode                         DnnSelectionMode                `json:"selMode,omitempty"`
-	EpsPdnCnxInfo                   *EpsPdnCnxInfo                  `json:"epsPdnCnxInfo,omitempty"`
-	InterPlmnApiRoot                string                          `json:"interPlmnApiRoot,omitempty"`
-	PcfSetId                        string                          `json:"pcfSetId,omitempty"`
 	PcfId                           string                          `json:"pcfId,omitempty"`
-	HNwPubKeyId                     *int                            `json:"hNwPubKeyId,omitempty"`
-	RecoveryTime                    string                          `json:"recoveryTime,omitempty"`
-	SatelliteBackhaulCat            SatelliteBackhaulCategory       `json:"satelliteBackhaulCat,omitempty"`
-	PduSessionRef                   string                          `json:"pduSessionRef,omitempty"`
-	HSmfUri                         string                          `json:"hSmfUri,omitempty"`
-	IntraPlmnApiRoot                string                          `json:"intraPlmnApiRoot,omitempty"`
 	SessionAmbr                     Ambr                            `json:"sessionAmbr"`
-	ChargingId                      string                          `json:"chargingId,omitempty"`
+	NefExtBufSupportInd             *bool                           `json:"nefExtBufSupportInd,omitempty"`
 	AddRedRanTunnelInfo             []QosFlowTunnel                 `json:"addRedRanTunnelInfo,omitempty"`
-	NspuSupportInd                  *bool                           `json:"nspuSupportInd,omitempty"`
-	SNssai                          Snssai                          `json:"sNssai"`
+	HSmfUri                         string                          `json:"hSmfUri,omitempty"`
+	HSmfInstanceId                  string                          `json:"hSmfInstanceId,omitempty"`
+	SmfInstanceId                   string                          `json:"smfInstanceId,omitempty"`
+	RecoveryTime                    string                          `json:"recoveryTime,omitempty"`
+	ChargingId                      string                          `json:"chargingId,omitempty"`
+	SelMode                         DnnSelectionMode                `json:"selMode,omitempty"`
+	RoutingIndicator                string                          `json:"routingIndicator,omitempty"`
+	HNwPubKeyId                     *int                            `json:"hNwPubKeyId,omitempty"`
+	SatelliteBackhaulCat            SatelliteBackhaulCategory       `json:"satelliteBackhaulCat,omitempty"`
+	AnchorSmfOauth2Required         *bool                           `json:"anchorSmfOauth2Required,omitempty"`
+	SscMode                         string                          `json:"sscMode,omitempty"`
+	N9fscSupportInd                 *bool                           `json:"n9fscSupportInd,omitempty"`
 	SelectedDnn                     string                          `json:"selectedDnn,omitempty"`
 	PduSessionSmfServiceSetId       string                          `json:"pduSessionSmfServiceSetId,omitempty"`
-	Ipv6Index                       *int                            `json:"ipv6Index,omitempty"`
-	DnAaaAddress                    *IpAddress                      `json:"dnAaaAddress,omitempty"`
-	RoutingIndicator                string                          `json:"routingIndicator,omitempty"`
+	Dnn                             string                          `json:"dnn"`
 	UeIpv6Prefix                    string                          `json:"ueIpv6Prefix,omitempty"`
-	NefExtBufSupportInd             *bool                           `json:"nefExtBufSupportInd,omitempty"`
-	PduSessionSmfBinding            SbiBindingLevel                 `json:"pduSessionSmfBinding,omitempty"`
+	MaxIntegrityProtectedDataRateDl MaxIntegrityProtectedDataRate   `json:"maxIntegrityProtectedDataRateDl,omitempty"`
+	HplmnSnssai                     *Snssai                         `json:"hplmnSnssai,omitempty"`
+	Gpsi                            string                          `json:"gpsi,omitempty"`
+	IntraPlmnApiRoot                string                          `json:"intraPlmnApiRoot,omitempty"`
+	RoamingChargingProfile          *RoamingChargingProfile         `json:"roamingChargingProfile,omitempty"`
 	PduSessionSmfSetId              string                          `json:"pduSessionSmfSetId,omitempty"`
+	SmfServiceInstanceId            string                          `json:"smfServiceInstanceId,omitempty"`
+	ChargingInfo                    *ChargingInformation            `json:"chargingInfo,omitempty"`
+	UdmGroupId                      string                          `json:"udmGroupId,omitempty"`
+	RedundantPduSessionInfo         *RedundantPduSessionInformation `json:"redundantPduSessionInfo,omitempty"`
+	SmfBindingInfo                  string                          `json:"smfBindingInfo,omitempty"`
 	UeIpv4Address                   string                          `json:"ueIpv4Address,omitempty"`
+	ForwardingInd                   *bool                           `json:"forwardingInd,omitempty"`
+	SNssai                          Snssai                          `json:"sNssai"`
+	InterPlmnApiRoot                string                          `json:"interPlmnApiRoot,omitempty"`
+	PcfGroupId                      string                          `json:"pcfGroupId,omitempty"`
+	EpsPdnCnxInfo                   *EpsPdnCnxInfo                  `json:"epsPdnCnxInfo,omitempty"`
+	EpsBearerInfo                   []EpsBearerInfo                 `json:"epsBearerInfo,omitempty"`
+	AddRanTunnelInfo                []QosFlowTunnel                 `json:"addRanTunnelInfo,omitempty"`
+	PduSessionType                  PduSessionType                  `json:"pduSessionType"`
+	SmfUri                          string                          `json:"smfUri,omitempty"`
+	QosFlowsList                    []QosFlowSetupItem              `json:"qosFlowsList"`
+	EnablePauseCharging             *bool                           `json:"enablePauseCharging,omitempty"`
+	MaxIntegrityProtectedDataRate   MaxIntegrityProtectedDataRate   `json:"maxIntegrityProtectedDataRate,omitempty"`
+	HSmfServiceInstanceId           string                          `json:"hSmfServiceInstanceId,omitempty"`
+	PduSessionId                    int                             `json:"pduSessionId"`
+	PcfSetId                        string                          `json:"pcfSetId,omitempty"`
+	PduSessionSmfBinding            SbiBindingLevel                 `json:"pduSessionSmfBinding,omitempty"`
+	UpSecurity                      *UpSecurity                     `json:"upSecurity,omitempty"`
+	DnAaaAddress                    *IpAddress                      `json:"dnAaaAddress,omitempty"`
 	RanTunnelInfo                   *QosFlowTunnel                  `json:"ranTunnelInfo,omitempty"`
 	RedRanTunnelInfo                *QosFlowTunnel                  `json:"redRanTunnelInfo,omitempty"`
-	PduSessionId                    int                             `json:"pduSessionId"`
-	Gpsi                            string                          `json:"gpsi,omitempty"`
-	PcfGroupId                      string                          `json:"pcfGroupId,omitempty"`
-	SmfInstanceId                   string                          `json:"smfInstanceId,omitempty"`
-	EpsBearerInfo                   []EpsBearerInfo                 `json:"epsBearerInfo,omitempty"`
-	UpSecurity                      *UpSecurity                     `json:"upSecurity,omitempty"`
+	PduSessionRef                   string                          `json:"pduSessionRef,omitempty"`
+	AlwaysOnGranted                 *bool                           `json:"alwaysOnGranted,omitempty"`
 	PsaTunnelInfo                   *TunnelInfo                     `json:"psaTunnelInfo,omitempty"`
-	SscMode                         string                          `json:"sscMode,omitempty"`
-	HplmnSnssai                     *Snssai                         `json:"hplmnSnssai,omitempty"`
+	Ipv6Index                       *int                            `json:"ipv6Index,omitempty"`
+	DlsetSupportInd                 *bool                           `json:"dlsetSupportInd,omitempty"`
+	NspuSupportInd                  *bool                           `json:"nspuSupportInd,omitempty"`
 }

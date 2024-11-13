@@ -7,9 +7,16 @@ import (
 	"github.com/pb33f/libopenapi/datamodel/high/base"
 	"github.com/pb33f/libopenapi/datamodel/high/v3"
 	"github.com/pb33f/libopenapi/orderedmap"
+	"github.com/sirupsen/logrus"
 	"os"
 	"strings"
 )
+
+var log *logrus.Entry
+
+func init() {
+	log = logrus.WithFields(logrus.Fields{})
+}
 
 type DataModel struct {
 	id         string
@@ -97,7 +104,14 @@ type Operation struct {
 	desc        string
 	parameters  map[string]Parameter
 	requestBody *RequestBody
-	responses   map[string]Response
+
+	//for responses
+	errorModel        *DataModel
+	successModel      *DataModel
+	errorCodes        []string //with Defined Error
+	problemCodes      []string //with ProblemDetails
+	successCode       string   //success code with a response (only one)
+	emptySuccessCodes []string //success code with empty response
 }
 
 var models map[string]DataModel
@@ -142,18 +156,18 @@ func readSpec(specFile string) {
 	// if anything went wrong when building the v3 model, a slice of errors will be returned
 	if len(errors) > 0 {
 		for i := range errors {
-			fmt.Printf("error: %e\n", errors[i])
+			log.Errorf("error: %+v", errors[i])
 		}
 		panic(fmt.Sprintf("cannot create v3 model from document: %d errors reported",
 			len(errors)))
 	}
 
-	fmt.Printf("Title: %s, Desc: %s\n", v3Model.Model.Info.Title, v3Model.Model.Info.Description)
+	log.Infof("Title: %s, Desc: %s", v3Model.Model.Info.Title, v3Model.Model.Info.Description)
 	// get a count of the number of paths and schemas.
 	paths := v3Model.Model.Paths.PathItems
 	schemas := v3Model.Model.Components.Schemas
 
-	fmt.Printf("There are %d paths and %d schemas in the document", paths.Len(), schemas.Len())
+	log.Infof("There are %d paths and %d schemas in the document", paths.Len(), schemas.Len())
 	createModels(schemas)
 	showPaths(paths)
 	for _, m := range models {
@@ -162,7 +176,7 @@ func readSpec(specFile string) {
 }
 
 func writeEnum(id string, enum *Enum) {
-	fmt.Printf("Define constant values for %s[%s]\n", id, enum.enumType)
+	log.Infof("Define constant values for %s[%s]\n", id, enum.enumType)
 	id = makeModelName(id)
 	prefix := "models/"
 	f, _ := os.Create(prefix + id + ".go")
@@ -204,7 +218,7 @@ func writeModel(m *DataModel) {
 
 	structName := makeModelName(m.id)
 
-	fmt.Printf("Write model %s\n", structName)
+	log.Infof("Write model %s", structName)
 
 	prefix := "models/"
 	f, _ := os.Create(prefix + structName + ".go")
@@ -216,7 +230,7 @@ func writeModel(m *DataModel) {
 
 	for _, p := range m.properties {
 		if p.m == nil {
-			fmt.Printf("model %s has untype attribute %s\n", m.id, p.id)
+			log.Warnf("model %s has untype attribute %s", m.id, p.id)
 			continue
 		}
 
@@ -270,6 +284,38 @@ func createOpId(path string) string {
 	return strings.Join(idParts, "")
 }
 
+func getRepresentativeContentModel(content *orderedmap.Map[string, *v3.MediaType]) *DataModel {
+	if content == nil {
+		return nil
+	}
+	var selectedModel *DataModel = nil
+	for pair := content.First(); pair != nil; pair = pair.Next() {
+		if m := analyzeSchema("", pair.Value().Schema); m != nil {
+			if len(m.goType) == 0 {
+				//return the first model created from inline schema
+				return m
+			} else if !isPrimitive(m.goType) {
+				if selectedModel == nil {
+					selectedModel = m
+				} else {
+					if m.goType != "ProblemDetails" {
+						selectedModel = m
+					}
+				}
+			}
+		}
+	}
+	return selectedModel
+}
+func addNewModel(id string, m *DataModel) *DataModel {
+	newM := new(DataModel)
+	*newM = *m
+	newM.id = id
+	newM.goType = id
+	models[id] = *newM
+	return newM
+}
+
 func showPathItem(path string, item *v3.PathItem) *Operation {
 	var op *v3.Operation
 	var opStr string
@@ -289,7 +335,7 @@ func showPathItem(path string, item *v3.PathItem) *Operation {
 		opStr = "PATCH"
 		op = item.Patch
 	} else {
-		fmt.Printf("Unsupported operation\n")
+		log.Errorf("Unsupported operation on path %s", path)
 		return nil
 	}
 	opModel := &Operation{
@@ -298,61 +344,89 @@ func showPathItem(path string, item *v3.PathItem) *Operation {
 		summary:    op.Summary,
 		desc:       op.Description,
 		parameters: make(map[string]Parameter),
-		responses:  make(map[string]Response),
 	}
+	//create operation id
 	if len(op.OperationId) == 0 {
 		opModel.id = createOpId(opModel.path + "/" + strings.Title(strings.ToLower(opStr)))
 	} else {
 		opModel.id = createOpId(op.OperationId)
 	}
-	//fmt.Printf("%s[%s][%s]: %s\n", path, opStr, op.OperationId, op.Summary)
+
 	//get request body
 	if body := op.RequestBody; body != nil {
-		if body.Content != nil {
-			var selectedModel *DataModel
-			var bodyModels []*DataModel
-
-			for pair := body.Content.First(); pair != nil; pair = pair.Next() {
-				if m := analyzeSchema("", pair.Value().Schema); m != nil {
-					//fmt.Printf("RequestBodyContent [%d] %s is %s[%s]\n", num, pair.Key(), m.goType, m.id)
-					if len(m.goType) == 0 {
-						selectedModel = m
-						selectedModel.id = opModel.id + "Request"
-						selectedModel.goType = selectedModel.id
-						break
-					} else {
-						bodyModels = append(bodyModels, m)
-					}
-				}
-			}
-			if selectedModel == nil && len(bodyModels) > 0 {
-				selectedModel = bodyModels[0]
-			}
-			if selectedModel != nil {
+		if selectedModel := getRepresentativeContentModel(body.Content); selectedModel != nil {
+			if len(selectedModel.goType) == 0 {
 				//add model to the global repo
-				models[selectedModel.id] = *selectedModel
-
-				opModel.requestBody = &RequestBody{
-					desc:    body.Description,
-					content: *selectedModel,
-				}
-				if body.Required != nil {
-					opModel.requestBody.required = *body.Required
-				}
-
-				fmt.Printf("OP %s has body '%s'\n", opModel.id, opModel.requestBody.content.id)
+				modelId := fmt.Sprintf("%sRequest", opModel.id)
+				selectedModel = addNewModel(modelId, selectedModel)
 			}
-		} else {
-			fmt.Printf("Request: '%s' has no content\n", body.Description)
+			opModel.requestBody = &RequestBody{
+				desc:    body.Description,
+				content: *selectedModel,
+			}
+			if body.Required != nil {
+				opModel.requestBody.required = *body.Required
+			}
 		}
-
 	}
 
+	if body := opModel.requestBody; body != nil {
+		log.Infof("OP %s has body '%s[%v]'", opModel.id, body.content.id, body.required)
+	} else {
+		log.Infof("Op: '%s' has no request body", opModel.id)
+	}
+
+	//get responses
+	for pair := op.Responses.Codes.First(); pair != nil; pair = pair.Next() {
+		code := pair.Key()
+		response := pair.Value()
+		if code[0] == '1' {
+			log.Warnf("respone with Information Http Code not processed")
+			continue
+		} else if code[0] == '3' {
+			log.Warnf("respone with redirection Http Code not processed")
+			continue
+		} else if code[0] == '2' { //success response
+			if selectedModel := getRepresentativeContentModel(response.Content); selectedModel != nil {
+				if len(selectedModel.goType) == 0 {
+					//assign model Id and goType then add to the model repo
+					modelId := fmt.Sprintf("%sResponse", opModel.id)
+					opModel.successModel = addNewModel(modelId, selectedModel)
+				} else {
+					opModel.successModel = selectedModel
+				}
+				opModel.successCode = code
+			} else { //add success code with empty response
+				opModel.emptySuccessCodes = append(opModel.emptySuccessCodes, code)
+			}
+
+		} else { //error responses
+			if selectedModel := getRepresentativeContentModel(response.Content); selectedModel != nil {
+				if len(selectedModel.goType) == 0 {
+					//assign model Id and goType then add to the model repo
+					modelId := fmt.Sprintf("%sErrorResponse", opModel.id)
+					selectedModel = addNewModel(modelId, selectedModel)
+				}
+
+				if selectedModel.goType == "ProblemDetails" {
+					opModel.problemCodes = append(opModel.problemCodes, code)
+				} else {
+					opModel.successModel = selectedModel
+					opModel.errorCodes = append(opModel.errorCodes, code)
+				}
+			}
+		}
+	}
+	if opModel.successModel != nil {
+		log.Infof("OP: success response:%s [%s]", opModel.successModel.goType, opModel.successCode)
+	}
+	log.Infof("OP: codes with problem details:%v", opModel.problemCodes)
+	log.Infof("OP: codes with error response:%v", opModel.errorCodes)
+	log.Infof("OP: codes with empty response:%v", opModel.emptySuccessCodes)
 	/*
 		for _, p := range item.Parameters {
 			showParameter(p)
 		}
-		showOperation(opStr, op)
 	*/
 	return opModel
 }
@@ -362,19 +436,19 @@ func showOperation(opStr string, op *v3.Operation) {
 		showParameter(p)
 	}
 	if op.RequestBody == nil {
-		fmt.Printf("Operation has no request body\n")
+		log.Infof("Operation has no request body")
 	} else {
 		showRequestBody(op.RequestBody)
 	}
 	if op.Responses == nil {
-		fmt.Printf("Operation has no response\n")
+		log.Infof("Operation has no response")
 	} else {
 		showResponses(op.Responses)
 	}
 
 	if op.Callbacks != nil {
 		for pair := op.Callbacks.First(); pair != nil; pair = pair.Next() {
-			fmt.Printf("Callback for [%s]: %s\n", op.OperationId, pair.Key())
+			log.Infof("Callback for [%s]: %s", op.OperationId, pair.Key())
 			showCallback(pair.Key(), pair.Value())
 		}
 	}
@@ -386,12 +460,12 @@ func showRequestBody(body *v3.RequestBody) {
 		num := 1
 		for pair := body.Content.First(); pair != nil; pair = pair.Next() {
 			if m := analyzeSchema("", pair.Value().Schema); m != nil {
-				fmt.Printf("RequestBodyContent [%d] %s is %s[%s]\n", num, pair.Key(), m.goType, m.id)
+				log.Infof("RequestBodyContent [%d] %s is %s[%s]", num, pair.Key(), m.goType, m.id)
 				num++
 			}
 		}
 	} else {
-		fmt.Printf("Request: '%s' has no content\n", body.Description)
+		log.Infof("Request: '%s' has no content", body.Description)
 	}
 }
 
@@ -408,7 +482,7 @@ func showResponse(code string, response *v3.Response) {
 	if response.Content != nil {
 		for pair := response.Content.First(); pair != nil; pair = pair.Next() {
 			if m := analyzeSchema("", pair.Value().Schema); m != nil {
-				fmt.Printf("ResponseContent[%d] %s is %s[%s]\n", numContents+1, pair.Key(), m.goType, m.id)
+				log.Infof("ResponseContent[%d] %s is %s[%s]", numContents+1, pair.Key(), m.goType, m.id)
 				numContents++
 			}
 		}
@@ -417,29 +491,29 @@ func showResponse(code string, response *v3.Response) {
 	if response.Headers != nil {
 		numHeaders = response.Headers.Len()
 	}
-	fmt.Printf("Code=%s[content=%d][header=%d]\n", code, numContents, numHeaders)
+	log.Infof("Code=%s[content=%d][header=%d]", code, numContents, numHeaders)
 }
 
 func showParameter(p *v3.Parameter) {
 	var schema *base.Schema
 	if p.Schema == nil {
-		fmt.Printf("Parameter [%s] with no schema not supported\n", p.Name)
+		log.Errorf("Parameter [%s] with no schema not supported", p.Name)
 		return
 	}
 
 	if schema = p.Schema.Schema(); schema == nil {
-		fmt.Printf("Parameter [%s] with no schema not supported\n", p.Name)
+		log.Errorf("Parameter [%s] with no schema not supported", p.Name)
 		return
 	}
 
 	if p.Content != nil && p.Content.Len() > 0 {
 		for pair := p.Content.First(); pair != nil; pair = pair.Next() {
-			fmt.Printf("Parameter [%s] with content %s\n", p.Name, pair.Key())
+			log.Infof("Parameter [%s] with content %s", p.Name, pair.Key())
 		}
-		fmt.Printf("Parameter [%s] with content not supported\n", p.Name)
+		log.Infof("Parameter [%s] with content not supported", p.Name)
 		return
 	}
-	fmt.Printf("Parameter %s in %s\n", p.Name, p.In)
+	log.Infof("Parameter %s in %s", p.Name, p.In)
 }
 
 func showCallback(path string, callback *v3.Callback) {
@@ -463,7 +537,7 @@ func createModels(schemas *orderedmap.Map[string, *base.SchemaProxy]) {
 		schema := schemaValue.Schema()
 
 		if schema == nil {
-			fmt.Printf("EMPTY SCHEMA '%s'\n", schemaName)
+			log.Errorf("EMPTY SCHEMA '%s'\n", schemaName)
 		} else {
 			analyzeSchema(schemaName, schemaValue)
 		}
@@ -524,7 +598,7 @@ func analyzeAnyOf(id string, anyOf []*base.SchemaProxy) *DataModel {
 			return nil
 		}
 
-		fmt.Printf("ANYOF %s has more than one types\n", id)
+		log.Infof("ANYOF %s has more than one types", id)
 		m := &DataModel{
 			id:         id,
 			goType:     id,
@@ -585,7 +659,7 @@ func analyzeSchema(id string, schemaP *base.SchemaProxy) *DataModel {
 	}
 
 	if len(schema.Type) > 1 {
-		fmt.Printf("Schema with multiple types not supported\n")
+		log.Errorf("Schema with multiple types not supported")
 		return nil
 	}
 	var m *DataModel
@@ -603,7 +677,7 @@ func analyzeSchema(id string, schemaP *base.SchemaProxy) *DataModel {
 		} else if len(schema.OneOf) > 0 {
 			m = analyzeOneOf(id, schema.OneOf)
 		} else {
-			//fmt.Printf("UNTYPE schema %s\n", id)
+			//log.Warnf("UNTYPE schema %s", id)
 			return nil
 		}
 	} else {
@@ -626,7 +700,7 @@ func analyzeSchema(id string, schemaP *base.SchemaProxy) *DataModel {
 				} else {
 					m.goType = "bool"
 				}
-				//fmt.Printf("ADDPROP:map[string]%s\n", m.goType)
+				//log.Infof("ADDPROP:map[string]%s", m.goType)
 			} else {
 				m.goType = id
 				for pair := schema.Properties.First(); pair != nil; pair = pair.Next() {
@@ -634,7 +708,7 @@ func analyzeSchema(id string, schemaP *base.SchemaProxy) *DataModel {
 					propSchemaProxy := pair.Value()
 					propSchema := propSchemaProxy.Schema()
 					if propSchema == nil {
-						fmt.Printf("%s has empty attribute %s\n", id, propName)
+						log.Warnf("%s has empty attribute %s", id, propName)
 					} else {
 						p := Property{
 							id:       propName,
@@ -699,10 +773,9 @@ func analyzeSchema(id string, schemaP *base.SchemaProxy) *DataModel {
 			}
 
 		default:
-			fmt.Printf("Not supported type: %s\n", schema.Type[0])
+			log.Errorf("Not supported type: %s", schema.Type[0])
 			return nil
 		}
-		//fmt.Printf("%s: %s\n", id, m.goType)
 	}
 
 	if len(schema.Enum) > 0 {
