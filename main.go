@@ -52,6 +52,9 @@ func (p *Property) isNullable() bool {
 		return true
 	}
 
+	if p.m.goType == "[]byte" {
+		return true
+	}
 	return false
 }
 
@@ -659,7 +662,11 @@ func analyzeSchema(id string, schemaP *base.SchemaProxy) *DataModel {
 				}
 			}
 		case "string":
-			m.goType = "string"
+			if schema.Format == "binary" {
+				m.goType = "[]byte"
+			} else {
+				m.goType = "string"
+			}
 		case "integer":
 			switch schema.Format {
 			case "int32":
@@ -719,7 +726,7 @@ func analyzeSchema(id string, schemaP *base.SchemaProxy) *DataModel {
 	return m
 }
 
-var primitives []string = []string{"bool", "int", "int16", "int32", "int64", "float32", "float64", "string"}
+var primitives []string = []string{"bool", "int", "int16", "int32", "int64", "float32", "float64", "string", "[]byte"}
 
 func isPrimitive(t string) bool {
 	return inList(t, primitives)

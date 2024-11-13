@@ -1,5 +1,5 @@
 package models
 
 type LcsBroadcastAssistanceTypesData struct {
-	LocationAssistanceType string `json:"locationAssistanceType"`
+	LocationAssistanceType []byte `json:"locationAssistanceType"`
 }

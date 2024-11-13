@@ -1,14 +1,14 @@
 package models
 
 type AuthEvent struct {
+	Success                    bool     `json:"success"`
 	AuthRemovalInd             *bool    `json:"authRemovalInd,omitempty"`
 	NfSetId                    string   `json:"nfSetId,omitempty"`
+	ResetIds                   []string `json:"resetIds,omitempty"`
 	DataRestorationCallbackUri string   `json:"dataRestorationCallbackUri,omitempty"`
-	UdrRestartInd              *bool    `json:"udrRestartInd,omitempty"`
-	ServingNetworkName         string   `json:"servingNetworkName"`
-	Success                    bool     `json:"success"`
+	NfInstanceId               string   `json:"nfInstanceId"`
 	TimeStamp                  string   `json:"timeStamp"`
 	AuthType                   AuthType `json:"authType"`
-	ResetIds                   []string `json:"resetIds,omitempty"`
-	NfInstanceId               string   `json:"nfInstanceId"`
+	ServingNetworkName         string   `json:"servingNetworkName"`
+	UdrRestartInd              *bool    `json:"udrRestartInd,omitempty"`
 }

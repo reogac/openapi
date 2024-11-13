@@ -1,21 +1,21 @@
 package models
 
 type AmfEventSubscription struct {
-	Pei                           string        `json:"pei,omitempty"`
+	EventNotifyUri                string        `json:"eventNotifyUri"`
+	Supi                          string        `json:"supi,omitempty"`
 	GroupId                       string        `json:"groupId,omitempty"`
 	ExcludeGpsiList               []string      `json:"excludeGpsiList,omitempty"`
-	IncludeGpsiList               []string      `json:"includeGpsiList,omitempty"`
+	NotifyCorrelationId           string        `json:"notifyCorrelationId"`
 	SubsChangeNotifyUri           string        `json:"subsChangeNotifyUri,omitempty"`
 	Gpsi                          string        `json:"gpsi,omitempty"`
-	AnyUE                         *bool         `json:"anyUE,omitempty"`
-	Options                       *AmfEventMode `json:"options,omitempty"`
 	SourceNfType                  NFType        `json:"sourceNfType,omitempty"`
+	IncludeGpsiList               []string      `json:"includeGpsiList,omitempty"`
+	Pei                           string        `json:"pei,omitempty"`
+	AnyUE                         *bool         `json:"anyUE,omitempty"`
 	EventList                     []AmfEvent    `json:"eventList"`
-	EventNotifyUri                string        `json:"eventNotifyUri"`
 	NfId                          string        `json:"nfId"`
-	Supi                          string        `json:"supi,omitempty"`
-	ExcludeSupiList               []string      `json:"excludeSupiList,omitempty"`
-	NotifyCorrelationId           string        `json:"notifyCorrelationId"`
 	SubsChangeNotifyCorrelationId string        `json:"subsChangeNotifyCorrelationId,omitempty"`
+	ExcludeSupiList               []string      `json:"excludeSupiList,omitempty"`
 	IncludeSupiList               []string      `json:"includeSupiList,omitempty"`
+	Options                       *AmfEventMode `json:"options,omitempty"`
 }

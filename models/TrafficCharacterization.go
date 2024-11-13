@@ -1,6 +1,7 @@
 package models
 
 type TrafficCharacterization struct {
+	UlVol         *int64                 `json:"ulVol,omitempty"`
 	UlVolVariance *float64               `json:"ulVolVariance,omitempty"`
 	DlVol         *int64                 `json:"dlVol,omitempty"`
 	DlVolVariance *float64               `json:"dlVolVariance,omitempty"`
@@ -8,5 +9,4 @@ type TrafficCharacterization struct {
 	Snssai        *Snssai                `json:"snssai,omitempty"`
 	AppId         string                 `json:"appId,omitempty"`
 	FDescs        []IpEthFlowDescription `json:"fDescs,omitempty"`
-	UlVol         *int64                 `json:"ulVol,omitempty"`
 }

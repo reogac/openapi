@@ -1,6 +1,6 @@
 package models
 
 type InterFreqTargetInfo struct {
-	CellIdList    []int `json:"cellIdList,omitempty"`
 	DlCarrierFreq int   `json:"dlCarrierFreq"`
+	CellIdList    []int `json:"cellIdList,omitempty"`
 }

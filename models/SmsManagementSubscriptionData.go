@@ -1,13 +1,13 @@
 package models
 
 type SmsManagementSubscriptionData struct {
-	SupportedFeatures   string     `json:"supportedFeatures,omitempty"`
-	MoSmsSubscribed     *bool      `json:"moSmsSubscribed,omitempty"`
-	MoSmsBarringAll     *bool      `json:"moSmsBarringAll,omitempty"`
 	SharedSmsMngDataIds []string   `json:"sharedSmsMngDataIds,omitempty"`
-	TraceData           *TraceData `json:"traceData,omitempty"`
+	SupportedFeatures   string     `json:"supportedFeatures,omitempty"`
 	MtSmsSubscribed     *bool      `json:"mtSmsSubscribed,omitempty"`
 	MtSmsBarringAll     *bool      `json:"mtSmsBarringAll,omitempty"`
+	MoSmsBarringAll     *bool      `json:"moSmsBarringAll,omitempty"`
 	MtSmsBarringRoaming *bool      `json:"mtSmsBarringRoaming,omitempty"`
+	MoSmsSubscribed     *bool      `json:"moSmsSubscribed,omitempty"`
 	MoSmsBarringRoaming *bool      `json:"moSmsBarringRoaming,omitempty"`
+	TraceData           *TraceData `json:"traceData,omitempty"`
 }

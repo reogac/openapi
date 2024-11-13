@@ -1,26 +1,26 @@
 package models
 
 type ExtAmfEventSubscription struct {
-	SubsChangeNotifyCorrelationId string                              `json:"subsChangeNotifyCorrelationId,omitempty"`
-	ExcludeGpsiList               []string                            `json:"excludeGpsiList,omitempty"`
-	NfId                          string                              `json:"nfId"`
-	EventNotifyUri                string                              `json:"eventNotifyUri"`
-	Gpsi                          string                              `json:"gpsi,omitempty"`
-	AoiStateList                  map[string]AreaOfInterestEventState `json:"aoiStateList,omitempty"`
-	BindingInfo                   []string                            `json:"bindingInfo,omitempty"`
-	Supi                          string                              `json:"supi,omitempty"`
-	NotifyCorrelationId           string                              `json:"notifyCorrelationId"`
-	Options                       *AmfEventMode                       `json:"options,omitempty"`
-	SourceNfType                  NFType                              `json:"sourceNfType,omitempty"`
-	NfConsumerInfo                []string                            `json:"nfConsumerInfo,omitempty"`
-	GroupId                       string                              `json:"groupId,omitempty"`
-	IncludeGpsiList               []string                            `json:"includeGpsiList,omitempty"`
-	SubscribingNfType             NFType                              `json:"subscribingNfType,omitempty"`
-	EventSyncInd                  *bool                               `json:"eventSyncInd,omitempty"`
-	SubsChangeNotifyUri           string                              `json:"subsChangeNotifyUri,omitempty"`
-	AnyUE                         *bool                               `json:"anyUE,omitempty"`
+	Pei                           string                              `json:"pei,omitempty"`
 	ExcludeSupiList               []string                            `json:"excludeSupiList,omitempty"`
 	IncludeSupiList               []string                            `json:"includeSupiList,omitempty"`
-	Pei                           string                              `json:"pei,omitempty"`
+	EventNotifyUri                string                              `json:"eventNotifyUri"`
+	AoiStateList                  map[string]AreaOfInterestEventState `json:"aoiStateList,omitempty"`
+	Options                       *AmfEventMode                       `json:"options,omitempty"`
+	Supi                          string                              `json:"supi,omitempty"`
+	ExcludeGpsiList               []string                            `json:"excludeGpsiList,omitempty"`
+	NotifyCorrelationId           string                              `json:"notifyCorrelationId"`
+	SubscribingNfType             NFType                              `json:"subscribingNfType,omitempty"`
+	AnyUE                         *bool                               `json:"anyUE,omitempty"`
 	EventList                     []AmfEvent                          `json:"eventList"`
+	SubsChangeNotifyCorrelationId string                              `json:"subsChangeNotifyCorrelationId,omitempty"`
+	GroupId                       string                              `json:"groupId,omitempty"`
+	SourceNfType                  NFType                              `json:"sourceNfType,omitempty"`
+	EventSyncInd                  *bool                               `json:"eventSyncInd,omitempty"`
+	IncludeGpsiList               []string                            `json:"includeGpsiList,omitempty"`
+	NfId                          string                              `json:"nfId"`
+	SubsChangeNotifyUri           string                              `json:"subsChangeNotifyUri,omitempty"`
+	Gpsi                          string                              `json:"gpsi,omitempty"`
+	BindingInfo                   []string                            `json:"bindingInfo,omitempty"`
+	NfConsumerInfo                []string                            `json:"nfConsumerInfo,omitempty"`
 }
