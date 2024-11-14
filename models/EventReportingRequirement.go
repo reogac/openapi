@@ -1,15 +1,15 @@
 package models
 type EventReportingRequirement struct {
-	 OffsetPeriod	*int	`json:"offsetPeriod,omitempty"`
+	 AccPerSubset	[]string	`json:"accPerSubset,omitempty"`
+	 EndTs	string	`json:"endTs,omitempty"`
 	 MaxObjectNbr	*int	`json:"maxObjectNbr,omitempty"`
-	 MaxSupiNbr	*int	`json:"maxSupiNbr,omitempty"`
-	 AnaMeta	[]string	`json:"anaMeta,omitempty"`
+	 AnaMetaInd	*AnalyticsMetadataIndication	`json:"anaMetaInd,omitempty"`
 	 HistAnaTimePeriod	*TimeWindow	`json:"histAnaTimePeriod,omitempty"`
 	 Accuracy	Accuracy	`json:"accuracy,omitempty"`
 	 StartTs	string	`json:"startTs,omitempty"`
-	 EndTs	string	`json:"endTs,omitempty"`
+	 OffsetPeriod	*int	`json:"offsetPeriod,omitempty"`
 	 SampRatio	*int	`json:"sampRatio,omitempty"`
+	 MaxSupiNbr	*int	`json:"maxSupiNbr,omitempty"`
 	 TimeAnaNeeded	string	`json:"timeAnaNeeded,omitempty"`
-	 AnaMetaInd	*AnalyticsMetadataIndication	`json:"anaMetaInd,omitempty"`
-	 AccPerSubset	[]string	`json:"accPerSubset,omitempty"`
+	 AnaMeta	[]string	`json:"anaMeta,omitempty"`
 }

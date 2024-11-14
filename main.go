@@ -87,6 +87,10 @@ type Parameter struct {
 	m        DataModel
 }
 
+func (p *Parameter) isNullable() bool {
+	return p.m.isArray || p.m.isMap || p.m.goType == "string" || p.m.goType == "[]byte"
+}
+
 func (p *Parameter) getTypeDefinition() (def string) {
 	if p.m.isArray {
 		def = "[]" + p.m.goType
@@ -108,6 +112,14 @@ func (p *Parameter) getTypeDefinition() (def string) {
 
 func (p *Parameter) getDefinition(capitalize bool) string {
 	return fmt.Sprintf("%s %s", makeParameterName(p.id, capitalize), p.getTypeDefinition())
+}
+
+func (p *Parameter) writeParamCheck() string {
+	pStr := makeParameterName(p.id, false)
+	if p.required && p.isNullable() {
+		return fmt.Sprintf("if len(%s) == 0 {\nerr = fmt.Errorf(\"%s is required\")\nreturn\n}\n", pStr, pStr)
+	}
+	return ""
 }
 
 type Operation struct {
@@ -467,6 +479,15 @@ func writeConsumerApi(f *os.File, op *Operation) {
 	outputArgs = append(outputArgs, "err error")
 	//write function definition
 	fmt.Fprintf(f, "func %s(%s) (%s) {\n", op.id, strings.Join(inputArgs, ","), strings.Join(outputArgs, ","))
+	//write check param required
+	paramChecks := []string{}
+	for _, p := range op.parameters {
+		if check := p.writeParamCheck(); len(check) > 0 {
+			paramChecks = append(paramChecks, check)
+		}
+	}
+
+	fmt.Fprintf(f, strings.Join(paramChecks, "\n"))
 
 	//write check body required
 	if op.requestBody != nil && op.requestBody.required {

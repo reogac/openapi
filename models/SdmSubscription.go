@@ -1,23 +1,23 @@
 package models
 type SdmSubscription struct {
-	 Expires	string	`json:"expires,omitempty"`
+	 ResetIds	[]string	`json:"resetIds,omitempty"`
 	 AmfServiceName	ServiceName	`json:"amfServiceName,omitempty"`
-	 MonitoredResourceUris	[]string	`json:"monitoredResourceUris"`
+	 SubscriptionId	string	`json:"subscriptionId,omitempty"`
+	 ImmediateReport	*bool	`json:"immediateReport,omitempty"`
+	 NfChangeFilter	*bool	`json:"nfChangeFilter,omitempty"`
 	 UniqueSubscription	*bool	`json:"uniqueSubscription,omitempty"`
-	 UdrRestartInd	*bool	`json:"udrRestartInd,omitempty"`
-	 SingleNssai	*Snssai	`json:"singleNssai,omitempty"`
+	 CallbackReference	string	`json:"callbackReference"`
 	 Report	*ImmediateReport	`json:"report,omitempty"`
 	 ContextInfo	*ContextInfo	`json:"contextInfo,omitempty"`
-	 ImmediateReport	*bool	`json:"immediateReport,omitempty"`
+	 ImplicitUnsubscribe	*bool	`json:"implicitUnsubscribe,omitempty"`
+	 Expires	string	`json:"expires,omitempty"`
+	 Dnn	string	`json:"dnn,omitempty"`
 	 SupportedFeatures	string	`json:"supportedFeatures,omitempty"`
-	 NfChangeFilter	*bool	`json:"nfChangeFilter,omitempty"`
-	 ResetIds	[]string	`json:"resetIds,omitempty"`
 	 DataRestorationCallbackUri	string	`json:"dataRestorationCallbackUri,omitempty"`
-	 CallbackReference	string	`json:"callbackReference"`
-	 SubscriptionId	string	`json:"subscriptionId,omitempty"`
+	 UdrRestartInd	*bool	`json:"udrRestartInd,omitempty"`
+	 NfInstanceId	string	`json:"nfInstanceId"`
+	 MonitoredResourceUris	[]string	`json:"monitoredResourceUris"`
+	 SingleNssai	*Snssai	`json:"singleNssai,omitempty"`
 	 PlmnId	*PlmnId	`json:"plmnId,omitempty"`
 	 UeConSmfDataSubFilter	*UeContextInSmfDataSubFilter	`json:"ueConSmfDataSubFilter,omitempty"`
-	 NfInstanceId	string	`json:"nfInstanceId"`
-	 ImplicitUnsubscribe	*bool	`json:"implicitUnsubscribe,omitempty"`
-	 Dnn	string	`json:"dnn,omitempty"`
 }

@@ -1,12 +1,12 @@
 package models
 type ReportingInformation struct {
-	 ImmRep	*bool	`json:"immRep,omitempty"`
-	 NotifMethod	NotificationMethod	`json:"notifMethod,omitempty"`
-	 RepPeriod	*int	`json:"repPeriod,omitempty"`
-	 PartitionCriteria	[]string	`json:"partitionCriteria,omitempty"`
+	 SampRatio	*int	`json:"sampRatio,omitempty"`
 	 NotifFlag	NotificationFlag	`json:"notifFlag,omitempty"`
+	 ImmRep	*bool	`json:"immRep,omitempty"`
 	 MaxReportNbr	*int	`json:"maxReportNbr,omitempty"`
 	 MonDur	string	`json:"monDur,omitempty"`
-	 SampRatio	*int	`json:"sampRatio,omitempty"`
+	 RepPeriod	*int	`json:"repPeriod,omitempty"`
+	 NotifMethod	NotificationMethod	`json:"notifMethod,omitempty"`
+	 PartitionCriteria	[]string	`json:"partitionCriteria,omitempty"`
 	 GrpRepTime	*int	`json:"grpRepTime,omitempty"`
 }

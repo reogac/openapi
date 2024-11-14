@@ -1,5 +1,5 @@
 package models
 type BackupAmfInfo struct {
-	 BackupAmf	string	`json:"backupAmf"`
 	 GuamiList	[]Guami	`json:"guamiList,omitempty"`
+	 BackupAmf	string	`json:"backupAmf"`
 }

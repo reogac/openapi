@@ -1,5 +1,6 @@
 package models
 type MbsSessionSubscription struct {
+	 MbsSessionSubscUri	string	`json:"mbsSessionSubscUri,omitempty"`
 	 MbsSessionId	*MbsSessionId	`json:"mbsSessionId,omitempty"`
 	 AreaSessionId	*int	`json:"areaSessionId,omitempty"`
 	 EventList	[]MbsSessionEvent	`json:"eventList"`
@@ -7,5 +8,4 @@ type MbsSessionSubscription struct {
 	 NotifyCorrelationId	string	`json:"notifyCorrelationId,omitempty"`
 	 ExpiryTime	string	`json:"expiryTime,omitempty"`
 	 NfcInstanceId	string	`json:"nfcInstanceId,omitempty"`
-	 MbsSessionSubscUri	string	`json:"mbsSessionSubscUri,omitempty"`
 }

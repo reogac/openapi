@@ -1,44 +1,44 @@
 package models
 type PduSessionCreatedData struct {
-	 CnTunnelInfo	*TunnelInfo	`json:"cnTunnelInfo,omitempty"`
-	 SessionAmbr	*Ambr	`json:"sessionAmbr,omitempty"`
-	 MaxIntegrityProtectedDataRateDl	MaxIntegrityProtectedDataRate	`json:"maxIntegrityProtectedDataRateDl,omitempty"`
-	 RecoveryTime	string	`json:"recoveryTime,omitempty"`
-	 PduSessionType	PduSessionType	`json:"pduSessionType"`
-	 HcnTunnelInfo	*TunnelInfo	`json:"hcnTunnelInfo,omitempty"`
-	 AdditionalCnTunnelInfo	*TunnelInfo	`json:"additionalCnTunnelInfo,omitempty"`
-	 SNssai	*Snssai	`json:"sNssai,omitempty"`
-	 N1SmInfoToUe	*RefToBinaryData	`json:"n1SmInfoToUe,omitempty"`
-	 HomeProvidedChargingId	string	`json:"homeProvidedChargingId,omitempty"`
-	 UeIpv6InterfaceId	string	`json:"ueIpv6InterfaceId,omitempty"`
-	 IntraPlmnApiRoot	string	`json:"intraPlmnApiRoot,omitempty"`
-	 PduSessionId	*int	`json:"pduSessionId,omitempty"`
-	 UeIpv4Address	string	`json:"ueIpv4Address,omitempty"`
+	 EpsPdnCnxInfo	*EpsPdnCnxInfo	`json:"epsPdnCnxInfo,omitempty"`
 	 EpsBearerInfo	[]EpsBearerInfo	`json:"epsBearerInfo,omitempty"`
-	 HSmfServiceInstanceId	string	`json:"hSmfServiceInstanceId,omitempty"`
-	 SmfServiceInstanceId	string	`json:"smfServiceInstanceId,omitempty"`
-	 NspuSupportInd	*bool	`json:"nspuSupportInd,omitempty"`
 	 SupportedFeatures	string	`json:"supportedFeatures,omitempty"`
 	 AlwaysOnGranted	*bool	`json:"alwaysOnGranted,omitempty"`
-	 NefExtBufSupportInd	*bool	`json:"nefExtBufSupportInd,omitempty"`
+	 UpSecurity	*UpSecurity	`json:"upSecurity,omitempty"`
 	 SmallDataRateControlEnabled	*bool	`json:"smallDataRateControlEnabled,omitempty"`
+	 SscMode	string	`json:"sscMode"`
+	 HSmfInstanceId	string	`json:"hSmfInstanceId,omitempty"`
+	 Ipv6Index	*int	`json:"ipv6Index,omitempty"`
 	 RedundantPduSessionInfo	*RedundantPduSessionInformation	`json:"redundantPduSessionInfo,omitempty"`
+	 MaAcceptedInd	*bool	`json:"maAcceptedInd,omitempty"`
+	 CnTunnelInfo	*TunnelInfo	`json:"cnTunnelInfo,omitempty"`
+	 EnablePauseCharging	*bool	`json:"enablePauseCharging,omitempty"`
+	 MaxIntegrityProtectedDataRate	MaxIntegrityProtectedDataRate	`json:"maxIntegrityProtectedDataRate,omitempty"`
+	 NefExtBufSupportInd	*bool	`json:"nefExtBufSupportInd,omitempty"`
+	 DnaiList	[]string	`json:"dnaiList,omitempty"`
+	 NspuSupportInd	*bool	`json:"nspuSupportInd,omitempty"`
+	 AdditionalCnTunnelInfo	*TunnelInfo	`json:"additionalCnTunnelInfo,omitempty"`
+	 SessionAmbr	*Ambr	`json:"sessionAmbr,omitempty"`
+	 SmfInstanceId	string	`json:"smfInstanceId,omitempty"`
+	 PduSessionId	*int	`json:"pduSessionId,omitempty"`
+	 AdditionalSnssai	*Snssai	`json:"additionalSnssai,omitempty"`
+	 UeIpv4Address	string	`json:"ueIpv4Address,omitempty"`
+	 PduSessionType	PduSessionType	`json:"pduSessionType"`
+	 HcnTunnelInfo	*TunnelInfo	`json:"hcnTunnelInfo,omitempty"`
+	 UeIpv6InterfaceId	string	`json:"ueIpv6InterfaceId,omitempty"`
+	 Ipv6MultiHomingInd	*bool	`json:"ipv6MultiHomingInd,omitempty"`
+	 HomeProvidedChargingId	string	`json:"homeProvidedChargingId,omitempty"`
 	 InterPlmnApiRoot	string	`json:"interPlmnApiRoot,omitempty"`
 	 QosFlowsSetupList	[]QosFlowSetupItem	`json:"qosFlowsSetupList,omitempty"`
-	 AdditionalSnssai	*Snssai	`json:"additionalSnssai,omitempty"`
-	 Gpsi	string	`json:"gpsi,omitempty"`
-	 DnaiList	[]string	`json:"dnaiList,omitempty"`
-	 DnAaaAddress	*IpAddress	`json:"dnAaaAddress,omitempty"`
-	 MaAcceptedInd	*bool	`json:"maAcceptedInd,omitempty"`
-	 Ipv6Index	*int	`json:"ipv6Index,omitempty"`
-	 HSmfInstanceId	string	`json:"hSmfInstanceId,omitempty"`
-	 SmfInstanceId	string	`json:"smfInstanceId,omitempty"`
-	 EpsPdnCnxInfo	*EpsPdnCnxInfo	`json:"epsPdnCnxInfo,omitempty"`
 	 RoamingChargingProfile	*RoamingChargingProfile	`json:"roamingChargingProfile,omitempty"`
-	 Ipv6MultiHomingInd	*bool	`json:"ipv6MultiHomingInd,omitempty"`
-	 SscMode	string	`json:"sscMode"`
-	 EnablePauseCharging	*bool	`json:"enablePauseCharging,omitempty"`
+	 MaxIntegrityProtectedDataRateDl	MaxIntegrityProtectedDataRate	`json:"maxIntegrityProtectedDataRateDl,omitempty"`
+	 Gpsi	string	`json:"gpsi,omitempty"`
+	 HSmfServiceInstanceId	string	`json:"hSmfServiceInstanceId,omitempty"`
+	 SmfServiceInstanceId	string	`json:"smfServiceInstanceId,omitempty"`
+	 DnAaaAddress	*IpAddress	`json:"dnAaaAddress,omitempty"`
 	 UeIpv6Prefix	string	`json:"ueIpv6Prefix,omitempty"`
-	 MaxIntegrityProtectedDataRate	MaxIntegrityProtectedDataRate	`json:"maxIntegrityProtectedDataRate,omitempty"`
-	 UpSecurity	*UpSecurity	`json:"upSecurity,omitempty"`
+	 N1SmInfoToUe	*RefToBinaryData	`json:"n1SmInfoToUe,omitempty"`
+	 IntraPlmnApiRoot	string	`json:"intraPlmnApiRoot,omitempty"`
+	 SNssai	*Snssai	`json:"sNssai,omitempty"`
+	 RecoveryTime	string	`json:"recoveryTime,omitempty"`
 }

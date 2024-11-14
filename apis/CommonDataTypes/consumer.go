@@ -1,5 +1,4 @@
 package CommonDataTypes
-
 const (
-	PATH_ROOT string = ""
+ PATH_ROOT string = ""
 )
