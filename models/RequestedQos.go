@@ -1,6 +1,13 @@
+/*
+This file is generated with a SBI APIs generator tool developed by ETRI
+Generated at Thu Nov 14 22:22:57 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Do not modify
+*/
+
 package models
+
 type RequestedQos struct {
-	 GbrDl	string	`json:"gbrDl,omitempty"`
-	 FiveQi	int	`json:"5qi"`
-	 GbrUl	string	`json:"gbrUl,omitempty"`
+	FiveQi int    `json:"5qi"`
+	GbrUl  string `json:"gbrUl,omitempty"`
+	GbrDl  string `json:"gbrDl,omitempty"`
 }

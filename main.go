@@ -10,6 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"os"
 	"strings"
+	"time"
 )
 
 var log *logrus.Entry
@@ -46,7 +47,7 @@ type Property struct {
 	m        *DataModel
 }
 
-func (p *Property) isNullable() bool {
+func (p *Property) hasEmptyValue() bool {
 	if p.m.isArray {
 		return true
 	}
@@ -59,9 +60,6 @@ func (p *Property) isNullable() bool {
 		return true
 	}
 
-	if p.m.goType == "[]byte" {
-		return true
-	}
 	return false
 }
 
@@ -87,8 +85,8 @@ type Parameter struct {
 	m        DataModel
 }
 
-func (p *Parameter) isNullable() bool {
-	return p.m.isArray || p.m.isMap || p.m.goType == "string" || p.m.goType == "[]byte"
+func (p *Parameter) hasEmptyValue() bool {
+	return p.m.isArray || p.m.isMap || p.m.goType == "string"
 }
 
 func (p *Parameter) getTypeDefinition() (def string) {
@@ -100,7 +98,7 @@ func (p *Parameter) getTypeDefinition() (def string) {
 		if p.required {
 			def = p.m.goType
 		} else {
-			if p.m.goType == "string" || p.m.goType == "[]byte" {
+			if p.m.goType == "string" {
 				def = p.m.goType
 			} else {
 				def = "*" + p.m.goType
@@ -114,12 +112,29 @@ func (p *Parameter) getDefinition(capitalize bool) string {
 	return fmt.Sprintf("%s %s", makeParameterName(p.id, capitalize), p.getTypeDefinition())
 }
 
-func (p *Parameter) writeParamCheck() string {
-	pStr := makeParameterName(p.id, false)
-	if p.required && p.isNullable() {
-		return fmt.Sprintf("if len(%s) == 0 {\nerr = fmt.Errorf(\"%s is required\")\nreturn\n}\n", pStr, pStr)
+func (p *Parameter) writeParamCheck(prefix string) string {
+	var pStr string
+	if len(prefix) > 0 {
+		pStr = prefix + makeParameterName(p.id, true)
+	} else {
+		pStr = makeParameterName(p.id, false)
+	}
+	if p.required {
+		if p.hasEmptyValue() {
+			return fmt.Sprintf("if len(%s) == 0 {\nerr = fmt.Errorf(\"%s is required\")\nreturn\n}\n", pStr, p.id)
+		}
 	}
 	return ""
+}
+
+func (p *Parameter) stringConvertFn(prefix string) string {
+	var pStr string
+	if len(prefix) > 0 {
+		pStr = prefix + makeParameterName(p.id, true)
+	} else {
+		pStr = makeParameterName(p.id, false)
+	}
+	return pStr
 }
 
 type Operation struct {
@@ -220,6 +235,8 @@ func writeEnum(id string, enum *Enum) {
 	f, _ := os.Create(prefix + id + ".go")
 	defer f.Close()
 
+	writeFileHeader(f)
+
 	fmt.Fprintf(f, "package models\n")
 
 	fmt.Fprintf(f, "type %s %s\n", id, enum.enumType)
@@ -260,7 +277,7 @@ func writeModel(m *DataModel) {
 	prefix := "models/"
 	f, _ := os.Create(prefix + structName + ".go")
 	defer f.Close()
-
+	writeFileHeader(f)
 	fmt.Fprintf(f, "package models\n")
 
 	fmt.Fprintf(f, "type %s struct {\n", structName)
@@ -288,7 +305,7 @@ func writeModel(m *DataModel) {
 
 		attr := makeModelName(p.id)
 
-		if p.required || p.isNullable() {
+		if p.required || p.hasEmptyValue() {
 			fmt.Fprintf(f, "\t %s\t%s\t%s\n", attr, goType, p.writeTag())
 		} else {
 			fmt.Fprintf(f, "\t %s\t*%s\t%s\n", attr, goType, p.writeTag())
@@ -361,17 +378,23 @@ func writeApis(title string, rootPath string, operations map[string]Operation) {
 	}
 	fc, _ := os.Create(titleDir + "/consumer.go")
 	defer fc.Close()
+	writeFileHeader(fc)
 	fmt.Fprintf(fc, "package %s\n", title)
 	fmt.Fprintf(fc, "const (\n PATH_ROOT string = \"%s\"\n)\n", getRootPath(rootPath))
 
 	fp, _ := os.Create(titleDir + "/producer.go")
 	defer fp.Close()
+	writeFileHeader(fp)
 	fmt.Fprintf(fp, "package %s\n", title)
-
 	for _, op := range operations {
 		writeConsumerApi(fc, &op)
 		writeProducerApi(fp, &op)
 	}
+}
+
+func writeFileHeader(f *os.File) {
+	timeNow := time.Now().Format(time.UnixDate)
+	fmt.Fprintf(f, "/*\nThis file is generated with a SBI APIs generator tool developed by ETRI\nGenerated at %v by TungTQ<tqtung@etri.re.kr>\nDo not modify\n*/\n\n", timeNow)
 }
 
 func writeProducerApi(f *os.File, op *Operation) {
@@ -442,10 +465,11 @@ func writeConsumerApi(f *os.File, op *Operation) {
 	fmt.Fprintf(f, "//Summary: %s\n", op.summary)
 	fmt.Fprintf(f, "//Description: %s\n", op.desc)
 	fmt.Fprintf(f, "//Path: %s\n", op.path)
-	fmt.Fprintf(f, "//Path Template: %s\n", op.pathTmpl)
+	//fmt.Fprintf(f, "//Path Template: %s\n", op.pathTmpl)
 	fmt.Fprintf(f, "//Path Params: %s\n", strings.Join(op.pathParams, ", "))
 
 	inputArgs := []string{"cli sbi.ConsumerClient"}
+	paramPrefix := ""
 
 	if len(op.parameters) >= 2 {
 		//write data structure to hold parameters
@@ -456,6 +480,7 @@ func writeConsumerApi(f *os.File, op *Operation) {
 		}
 		fmt.Fprintf(f, "}\n")
 		inputArgs = append(inputArgs, fmt.Sprintf("params %s", paramStruct))
+		paramPrefix = "params."
 	} else {
 		for _, p := range op.parameters {
 			inputArgs = append(inputArgs, p.getDefinition(false))
@@ -482,7 +507,7 @@ func writeConsumerApi(f *os.File, op *Operation) {
 	//write check param required
 	paramChecks := []string{}
 	for _, p := range op.parameters {
-		if check := p.writeParamCheck(); len(check) > 0 {
+		if check := p.writeParamCheck(paramPrefix); len(check) > 0 {
 			paramChecks = append(paramChecks, check)
 		}
 	}
@@ -496,6 +521,19 @@ func writeConsumerApi(f *os.File, op *Operation) {
 
 	//write send request
 	fmt.Fprintf(f, "request := sbi.DefaultRequest()\n var response sbi.Response\n")
+
+	//write path
+	if len(op.pathParams) > 0 {
+		pathParams := []string{}
+		for _, pName := range op.pathParams {
+			p, _ := op.parameters[pName]
+			pathParams = append(pathParams, p.stringConvertFn(paramPrefix))
+		}
+		fmt.Fprintf(f, "request.Path= fmt.Sprintf(\"%%s%s\",PATH_ROOT, %s)\n", op.pathTmpl, strings.Join(pathParams, ", "))
+	} else {
+		fmt.Fprintf(f, "request.Path= fmt.Sprintf(\"%%s%s\",PATH_ROOT)\n", op.pathTmpl)
+	}
+
 	fmt.Fprintf(f, "if response, err = cli.Send(request); err !=nil {\n return\n}\n")
 	//write check for response
 	fmt.Fprintf(f, "switch response.StatusCode {\n")
@@ -1046,7 +1084,8 @@ func analyzeSchema(id string, schemaP *base.SchemaProxy) *DataModel {
 			}
 		case "string":
 			if schema.Format == "binary" {
-				m.goType = "[]byte"
+				m.goType = "byte"
+				m.isArray = true
 			} else {
 				m.goType = "string"
 			}
@@ -1108,27 +1147,10 @@ func analyzeSchema(id string, schemaP *base.SchemaProxy) *DataModel {
 	return m
 }
 
-var primitives []string = []string{"bool", "int", "int16", "int32", "int64", "float32", "float64", "string", "[]byte"}
+var primitives []string = []string{"bool", "int", "int16", "int32", "int64", "float32", "float64", "string", "byte"}
 
 func isPrimitive(t string) bool {
 	return inList(t, primitives)
-}
-
-var validParamTypes []string = []string{"bool", "int", "int16", "int32", "int64", "float32", "float64", "string"}
-
-func isValidParameterType(t string) bool {
-	if f := inList(t, validParamTypes); f {
-		return true
-	}
-
-	if t == "[]byte" { //byte array not support
-		return false
-	}
-
-	if len(t) > 0 { //defined data structure
-		return true
-	}
-	return false
 }
 
 func indexInList(item string, list []string) int {

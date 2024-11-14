@@ -1,5 +1,12 @@
+/*
+This file is generated with a SBI APIs generator tool developed by ETRI
+Generated at Thu Nov 14 22:22:54 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Do not modify
+*/
+
 package models
+
 type GbaAuthenticationInfoResult struct {
-	 SupportedFeatures	string	`json:"supportedFeatures,omitempty"`
-	 ThreeGAkaAv	*ThreeGAkaAv	`json:"3gAkaAv,omitempty"`
+	ThreeGAkaAv       *ThreeGAkaAv `json:"3gAkaAv,omitempty"`
+	SupportedFeatures string       `json:"supportedFeatures,omitempty"`
 }

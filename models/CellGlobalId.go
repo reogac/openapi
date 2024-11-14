@@ -1,6 +1,13 @@
+/*
+This file is generated with a SBI APIs generator tool developed by ETRI
+Generated at Thu Nov 14 22:23:01 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Do not modify
+*/
+
 package models
+
 type CellGlobalId struct {
-	 CellId	string	`json:"cellId"`
-	 PlmnId	PlmnId	`json:"plmnId"`
-	 Lac	string	`json:"lac"`
+	PlmnId PlmnId `json:"plmnId"`
+	Lac    string `json:"lac"`
+	CellId string `json:"cellId"`
 }

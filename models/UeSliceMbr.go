@@ -1,6 +1,13 @@
+/*
+This file is generated with a SBI APIs generator tool developed by ETRI
+Generated at Thu Nov 14 22:22:56 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Do not modify
+*/
+
 package models
+
 type UeSliceMbr struct {
-	 ServingSnssai	Snssai	`json:"servingSnssai"`
-	 MappedHomeSnssai	*Snssai	`json:"mappedHomeSnssai,omitempty"`
-	 SliceMbr	map[string]SliceMbr	`json:"sliceMbr"`
+	SliceMbr         map[string]SliceMbr `json:"sliceMbr"`
+	ServingSnssai    Snssai              `json:"servingSnssai"`
+	MappedHomeSnssai *Snssai             `json:"mappedHomeSnssai,omitempty"`
 }

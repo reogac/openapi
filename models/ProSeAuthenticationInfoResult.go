@@ -1,7 +1,14 @@
+/*
+This file is generated with a SBI APIs generator tool developed by ETRI
+Generated at Thu Nov 14 22:22:54 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Do not modify
+*/
+
 package models
+
 type ProSeAuthenticationInfoResult struct {
-	 ProseAuthenticationVectors	[]AvEapAkaPrime	`json:"proseAuthenticationVectors,omitempty"`
-	 Supi	string	`json:"supi,omitempty"`
-	 SupportedFeatures	string	`json:"supportedFeatures,omitempty"`
-	 AuthType	AuthType	`json:"authType"`
+	AuthType                   AuthType        `json:"authType"`
+	ProseAuthenticationVectors []AvEapAkaPrime `json:"proseAuthenticationVectors,omitempty"`
+	Supi                       string          `json:"supi,omitempty"`
+	SupportedFeatures          string          `json:"supportedFeatures,omitempty"`
 }

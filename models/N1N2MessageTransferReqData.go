@@ -1,22 +1,29 @@
+/*
+This file is generated with a SBI APIs generator tool developed by ETRI
+Generated at Thu Nov 14 22:23:01 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Do not modify
+*/
+
 package models
+
 type N1N2MessageTransferReqData struct {
-	 PduSessionId	*int	`json:"pduSessionId,omitempty"`
-	 SmfReallocationInd	*bool	`json:"smfReallocationInd,omitempty"`
-	 SupportedFeatures	string	`json:"supportedFeatures,omitempty"`
-	 TargetAccess	AccessType	`json:"targetAccess,omitempty"`
-	 N1MessageContainer	*N1MessageContainer	`json:"n1MessageContainer,omitempty"`
-	 MtData	*RefToBinaryData	`json:"mtData,omitempty"`
-	 N1n2FailureTxfNotifURI	string	`json:"n1n2FailureTxfNotifURI,omitempty"`
-	 AreaOfValidity	*AreaOfValidity	`json:"areaOfValidity,omitempty"`
-	 MaAcceptedInd	*bool	`json:"maAcceptedInd,omitempty"`
-	 ExtBufSupport	*bool	`json:"extBufSupport,omitempty"`
-	 NfId	string	`json:"nfId,omitempty"`
-	 LastMsgIndication	*bool	`json:"lastMsgIndication,omitempty"`
-	 FiveQi	*int	`json:"5qi,omitempty"`
-	 Arp	*Arp	`json:"arp,omitempty"`
-	 OldGuami	*Guami	`json:"oldGuami,omitempty"`
-	 SkipInd	*bool	`json:"skipInd,omitempty"`
-	 Ppi	*int	`json:"ppi,omitempty"`
-	 N2InfoContainer	*N2InfoContainer	`json:"n2InfoContainer,omitempty"`
-	 LcsCorrelationId	string	`json:"lcsCorrelationId,omitempty"`
+	SkipInd                *bool               `json:"skipInd,omitempty"`
+	NfId                   string              `json:"nfId,omitempty"`
+	Arp                    *Arp                `json:"arp,omitempty"`
+	FiveQi                 *int                `json:"5qi,omitempty"`
+	N1n2FailureTxfNotifURI string              `json:"n1n2FailureTxfNotifURI,omitempty"`
+	OldGuami               *Guami              `json:"oldGuami,omitempty"`
+	ExtBufSupport          *bool               `json:"extBufSupport,omitempty"`
+	MtData                 *RefToBinaryData    `json:"mtData,omitempty"`
+	PduSessionId           *int                `json:"pduSessionId,omitempty"`
+	LcsCorrelationId       string              `json:"lcsCorrelationId,omitempty"`
+	TargetAccess           AccessType          `json:"targetAccess,omitempty"`
+	N1MessageContainer     *N1MessageContainer `json:"n1MessageContainer,omitempty"`
+	N2InfoContainer        *N2InfoContainer    `json:"n2InfoContainer,omitempty"`
+	MaAcceptedInd          *bool               `json:"maAcceptedInd,omitempty"`
+	AreaOfValidity         *AreaOfValidity     `json:"areaOfValidity,omitempty"`
+	SupportedFeatures      string              `json:"supportedFeatures,omitempty"`
+	LastMsgIndication      *bool               `json:"lastMsgIndication,omitempty"`
+	Ppi                    *int                `json:"ppi,omitempty"`
+	SmfReallocationInd     *bool               `json:"smfReallocationInd,omitempty"`
 }

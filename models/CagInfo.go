@@ -1,5 +1,12 @@
+/*
+This file is generated with a SBI APIs generator tool developed by ETRI
+Generated at Thu Nov 14 22:23:01 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Do not modify
+*/
+
 package models
+
 type CagInfo struct {
-	 AllowedCagList	[]string	`json:"allowedCagList"`
-	 CagOnlyIndicator	*bool	`json:"cagOnlyIndicator,omitempty"`
+	AllowedCagList   []string `json:"allowedCagList"`
+	CagOnlyIndicator *bool    `json:"cagOnlyIndicator,omitempty"`
 }

@@ -1,4 +1,11 @@
+/*
+This file is generated with a SBI APIs generator tool developed by ETRI
+Generated at Thu Nov 14 22:23:00 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Do not modify
+*/
+
 package models
+
 type StringMatchingRule struct {
-	 StringMatchingConditions	[]StringMatchingCondition	`json:"stringMatchingConditions,omitempty"`
+	StringMatchingConditions []StringMatchingCondition `json:"stringMatchingConditions,omitempty"`
 }

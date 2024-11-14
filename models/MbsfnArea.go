@@ -1,5 +1,12 @@
+/*
+This file is generated with a SBI APIs generator tool developed by ETRI
+Generated at Thu Nov 14 22:23:00 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Do not modify
+*/
+
 package models
+
 type MbsfnArea struct {
-	 MbsfnAreaId	*int	`json:"mbsfnAreaId,omitempty"`
-	 CarrierFrequency	*int	`json:"carrierFrequency,omitempty"`
+	MbsfnAreaId      *int `json:"mbsfnAreaId,omitempty"`
+	CarrierFrequency *int `json:"carrierFrequency,omitempty"`
 }

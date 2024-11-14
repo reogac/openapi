@@ -1,7 +1,14 @@
+/*
+This file is generated with a SBI APIs generator tool developed by ETRI
+Generated at Thu Nov 14 22:22:59 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Do not modify
+*/
+
 package models
+
 type QosFlowNotifyItem struct {
-	 CurrentQosProfileIndex	*int	`json:"currentQosProfileIndex,omitempty"`
-	 NullQoSProfileIndex	*bool	`json:"nullQoSProfileIndex,omitempty"`
-	 Qfi	int	`json:"qfi"`
-	 NotificationCause	NotificationCause	`json:"notificationCause"`
+	Qfi                    int               `json:"qfi"`
+	NotificationCause      NotificationCause `json:"notificationCause"`
+	CurrentQosProfileIndex *int              `json:"currentQosProfileIndex,omitempty"`
+	NullQoSProfileIndex    *bool             `json:"nullQoSProfileIndex,omitempty"`
 }
