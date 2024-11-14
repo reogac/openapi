@@ -1,6 +1,5 @@
 package models
-
 type RequestedRuleData struct {
-	RefPccRuleIds []string `json:"refPccRuleIds"`
-	ReqData       []string `json:"reqData"`
+	 ReqData	[]string	`json:"reqData"`
+	 RefPccRuleIds	[]string	`json:"refPccRuleIds"`
 }

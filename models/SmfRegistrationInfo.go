@@ -1,5 +1,4 @@
 package models
-
 type SmfRegistrationInfo struct {
-	SmfRegistrationList []SmfRegistration `json:"smfRegistrationList"`
+	 SmfRegistrationList	[]SmfRegistration	`json:"smfRegistrationList"`
 }

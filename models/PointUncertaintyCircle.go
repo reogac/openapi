@@ -1,7 +1,6 @@
 package models
-
 type PointUncertaintyCircle struct {
-	Point       GeographicalCoordinates `json:"point"`
-	Uncertainty float64                 `json:"uncertainty"`
-	Shape       SupportedGADShapes      `json:"shape"`
+	 Shape	SupportedGADShapes	`json:"shape"`
+	 Point	GeographicalCoordinates	`json:"point"`
+	 Uncertainty	float64	`json:"uncertainty"`
 }

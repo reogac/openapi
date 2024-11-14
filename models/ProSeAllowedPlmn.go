@@ -1,6 +1,5 @@
 package models
-
 type ProSeAllowedPlmn struct {
-	ProseDirectAllowed []string `json:"proseDirectAllowed,omitempty"`
-	VisitedPlmn        PlmnId   `json:"visitedPlmn"`
+	 VisitedPlmn	PlmnId	`json:"visitedPlmn"`
+	 ProseDirectAllowed	[]string	`json:"proseDirectAllowed,omitempty"`
 }

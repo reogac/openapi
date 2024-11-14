@@ -1,5 +1,4 @@
 package models
-
 type ModificationNotification struct {
-	NotifyItems []NotifyItem `json:"notifyItems"`
+	 NotifyItems	[]NotifyItem	`json:"notifyItems"`
 }

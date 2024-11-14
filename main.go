@@ -73,31 +73,47 @@ func (p *Property) writeTag() string {
 	}
 }
 
-type Header struct {
-	required bool
-	m        DataModel
-}
-
 type RequestBody struct {
 	required bool
 	content  DataModel
 	desc     string
 }
 
-type Response struct {
-	headers map[string]Header
-	content DataModel
-}
-
 type Parameter struct {
 	id       string
 	in       string
+	desc     string
 	required bool
 	m        DataModel
 }
 
+func (p *Parameter) getTypeDefinition() (def string) {
+	if p.m.isArray {
+		def = "[]" + p.m.goType
+	} else if p.m.isMap {
+		def = "map[string]" + p.m.goType
+	} else {
+		if p.required {
+			def = p.m.goType
+		} else {
+			if p.m.goType == "string" || p.m.goType == "[]byte" {
+				def = p.m.goType
+			} else {
+				def = "*" + p.m.goType
+			}
+		}
+	}
+	return
+}
+
+func (p *Parameter) getDefinition(capitalize bool) string {
+	return fmt.Sprintf("%s %s", makeParameterName(p.id, capitalize), p.getTypeDefinition())
+}
+
 type Operation struct {
 	path        string
+	pathTmpl    string
+	pathParams  []string
 	method      string
 	id          string
 	summary     string
@@ -134,6 +150,10 @@ func main() {
 	}
 }
 
+func makeTitle(t string) string {
+	return makeModelName(t)
+}
+
 func readSpec(specFile string) {
 	config := &datamodel.DocumentConfiguration{
 		AllowFileReferences:   true,
@@ -161,7 +181,8 @@ func readSpec(specFile string) {
 		panic(fmt.Sprintf("cannot create v3 model from document: %d errors reported",
 			len(errors)))
 	}
-
+	title := v3Model.Model.Info.Title
+	title = makeTitle(title)
 	log.Infof("Title: %s, Desc: %s", v3Model.Model.Info.Title, v3Model.Model.Info.Description)
 	// get a count of the number of paths and schemas.
 	paths := v3Model.Model.Paths.PathItems
@@ -169,10 +190,15 @@ func readSpec(specFile string) {
 
 	log.Infof("There are %d paths and %d schemas in the document", paths.Len(), schemas.Len())
 	createModels(schemas)
-	showPaths(paths)
+	operations := readPaths(paths)
 	for _, m := range models {
 		writeModel(&m)
 	}
+	var rootPath string
+	if servers := v3Model.Model.Servers; len(servers) > 0 {
+		rootPath = servers[0].URL
+	}
+	writeApis(title, rootPath, operations)
 }
 
 func writeEnum(id string, enum *Enum) {
@@ -180,7 +206,6 @@ func writeEnum(id string, enum *Enum) {
 	id = makeModelName(id)
 	prefix := "models/"
 	f, _ := os.Create(prefix + id + ".go")
-
 	defer f.Close()
 
 	fmt.Fprintf(f, "package models\n")
@@ -260,15 +285,235 @@ func writeModel(m *DataModel) {
 	fmt.Fprintf(f, "}\n")
 }
 
-func showPaths(paths *orderedmap.Map[string, *v3.PathItem]) {
+func getRootPath(p string) string {
+	parts := strings.Split(p, "/")
+	if len(parts) > 1 {
+		return strings.Join(parts[1:], "/")
+	}
+	return ""
+}
+
+func buildRoute(orgRoute string, params []string) (newRoute, routeTemplate string, foundParams []string, err error) {
+	parts := strings.Split(orgRoute, "/")
+	pathParams := []string{} //params in route
+	newParts := []string{}   //for forming the route
+	tmplParts := []string{}  //for forming route template
+
+	for _, part := range parts {
+		if param, ok := getPathParam(part); ok { //found a path param
+			pathParams = append(pathParams, param)
+			tmplParts = append(newParts, "%s")
+			newParts = append(newParts, ":"+param)
+		} else {
+			newParts = append(newParts, part)
+			tmplParts = append(tmplParts, part)
+		}
+	}
+	if len(params) != len(pathParams) {
+		err = fmt.Errorf("Num params not matched")
+		return
+	}
+
+	for _, param := range params {
+		if inList(param, pathParams) {
+			foundParams = append(foundParams, param)
+		} else {
+			err = fmt.Errorf("param %s not in path", param)
+			return
+		}
+	}
+
+	newRoute = strings.Join(newParts, "/")
+	routeTemplate = strings.Join(tmplParts, "/")
+	return
+}
+
+func getPathParam(str string) (outParam string, ok bool) {
+	if l := len(str); l >= 3 {
+		if str[0] == '{' && str[l-1] == '}' {
+			ok = true
+			outParam = str[1 : l-1]
+			return
+		}
+	}
+	ok = false
+	return
+}
+
+func writeApis(title string, rootPath string, operations map[string]Operation) {
+	titleDir := "apis/" + title
+	os.RemoveAll(titleDir)
+	if err := os.Mkdir(titleDir, 0755); err != nil {
+		log.Errorf("Fail to create Api directory for %s: %+v", title, err)
+		return
+	}
+	fc, _ := os.Create(titleDir + "/consumer.go")
+	defer fc.Close()
+	fmt.Fprintf(fc, "package %s\n", title)
+	fmt.Fprintf(fc, "const (\n PATH_ROOT string = \"%s\"\n)\n", getRootPath(rootPath))
+
+	fp, _ := os.Create(titleDir + "/producer.go")
+	defer fp.Close()
+	fmt.Fprintf(fp, "package %s\n", title)
+
+	for _, op := range operations {
+		writeConsumerApi(fc, &op)
+		writeProducerApi(fp, &op)
+	}
+}
+
+func writeProducerApi(f *os.File, op *Operation) {
+
+	//write function definition
+	fmt.Fprintf(f, "func On%s(ctx sbi.RequestContext, handler any) (response sbi.Response) {\n", op.id)
+	fmt.Fprintf(f, "prod := handler.(Producer)\n")
+	fmt.Fprintf(f, "var err error\n")
+
+	//write parameter extracting
+	inputs := []string{}
+
+	//write request decoding
+	if op.requestBody != nil {
+		body := op.requestBody.content.goType
+		if op.requestBody.required {
+			fmt.Fprintf(f, "body := new(models.%s)\n", body)
+			fmt.Fprintf(f, "err = ctx.DecodeRequest(body)\n")
+		} else {
+			fmt.Fprintf(f, "var body*models.%s\n", body)
+			fmt.Fprintf(f, "if ctx.HaveRequestBody() {\n")
+
+			fmt.Fprintf(f, "body := new(models.%s)\n", body)
+			fmt.Fprintf(f, "err = ctx.DecodeRequest(body)\n")
+
+			fmt.Fprintf(f, "}\n")
+		}
+		inputs = append(inputs, "body")
+	}
+	//write calling application handler
+	fmt.Fprintf(f, "if err == nil {\n")
+	fmt.Fprintf(f, "response.SetBody(400, models.NewSimpleProblem(400, err.Error()))\n")
+	fmt.Fprintf(f, "}else{\n")
+	outputs := []string{}
+	checkOutputs := []string{}
+
+	if op.successModel != nil {
+		outputs = append(outputs, "rsp")
+		tmp := fmt.Sprintf("if rsp != nil {\nresponse.SetBody(%s, rsp)\nreturn\n}\n", op.successCode)
+		checkOutputs = append(checkOutputs, tmp)
+	}
+
+	if len(op.errorCodes) > 0 && op.errorModel != nil {
+		outputs = append(outputs, "ersp")
+		var errCode string
+		if len(op.errorCodes) == 1 {
+			errCode = op.errorCodes[0]
+		} else {
+			errCode = fmt.Sprintf("models.StatusFrom%s(ersp)", op.errorModel.goType)
+		}
+		tmp := fmt.Sprintf("if ersp != nil {\nresponse.SetBody(%s, ersp)\nreturn\n}\n", errCode)
+		checkOutputs = append(checkOutputs, tmp)
+	}
+	if len(op.problemCodes) > 0 {
+		outputs = append(outputs, "prob")
+		tmp := fmt.Sprintf("if prob != nil {\nresponse.SetBody(models.GetProblemDetailCode(prob), prob)\nreturn\n}\n")
+		checkOutputs = append(checkOutputs, tmp)
+	}
+
+	fmt.Fprintf(f, "%s := Handle%s(%s)\n", strings.Join(outputs, ","), op.id, strings.Join(inputs, ","))
+	fmt.Fprintf(f, strings.Join(checkOutputs, ""))
+	fmt.Fprintf(f, "}\n")
+
+	fmt.Fprintf(f, "return\n}\n")
+}
+
+func writeConsumerApi(f *os.File, op *Operation) {
+	fmt.Fprintf(f, "//Summary: %s\n", op.summary)
+	fmt.Fprintf(f, "//Description: %s\n", op.desc)
+	fmt.Fprintf(f, "//Path: %s\n", op.path)
+	fmt.Fprintf(f, "//Path Template: %s\n", op.pathTmpl)
+	fmt.Fprintf(f, "//Path Params: %s\n", strings.Join(op.pathParams, ", "))
+
+	inputArgs := []string{"cli sbi.ConsumerClient"}
+
+	if len(op.parameters) >= 2 {
+		//write data structure to hold parameters
+		paramStruct := fmt.Sprintf("%sParams", op.id)
+		fmt.Fprintf(f, "type %s struct {\n", paramStruct)
+		for _, p := range op.parameters {
+			fmt.Fprintf(f, "%s\n", p.getDefinition(true))
+		}
+		fmt.Fprintf(f, "}\n")
+		inputArgs = append(inputArgs, fmt.Sprintf("params %s", paramStruct))
+	} else {
+		for _, p := range op.parameters {
+			inputArgs = append(inputArgs, p.getDefinition(false))
+		}
+	}
+
+	if op.requestBody != nil {
+		body := op.requestBody.content.id
+		inputArgs = append(inputArgs, fmt.Sprintf("body *models.%s", body))
+	}
+
+	outputArgs := []string{}
+	if op.successModel != nil {
+		outputArgs = append(outputArgs, fmt.Sprintf("rsp *models.%s", op.successModel.goType))
+	}
+
+	if len(op.errorCodes) > 0 && op.errorModel != nil {
+		outputArgs = append(outputArgs, fmt.Sprintf("ersp *models.%s", op.errorModel.goType))
+	}
+
+	outputArgs = append(outputArgs, "err error")
+	//write function definition
+	fmt.Fprintf(f, "func %s(%s) (%s) {\n", op.id, strings.Join(inputArgs, ","), strings.Join(outputArgs, ","))
+
+	//write check body required
+	if op.requestBody != nil && op.requestBody.required {
+		fmt.Fprintf(f, "if body == nil {\n err = fmt.Errorf(\"body is required\")\nreturn\n}\n")
+	}
+
+	//write send request
+	fmt.Fprintf(f, "request := sbi.DefaultRequest()\n var response sbi.Response\n")
+	fmt.Fprintf(f, "if response, err = cli.Send(request); err !=nil {\n return\n}\n")
+	//write check for response
+	fmt.Fprintf(f, "switch response.StatusCode {\n")
+	if op.successModel != nil {
+		fmt.Fprintf(f, "case %s:\n", op.successCode)
+		fmt.Fprintf(f, "rsp = new(%s)\n response.Body=rsp\nerr = cli.DecodeResponse(response)\n", op.successModel.goType)
+	}
+	if len(op.emptySuccessCodes) > 0 {
+		fmt.Fprintf(f, "case %s:\nreturn\n", strings.Join(op.emptySuccessCodes, ","))
+	}
+
+	if len(op.errorCodes) > 0 && op.errorModel != nil {
+		fmt.Fprintf(f, "case %s:\n", strings.Join(op.errorCodes, ","))
+		fmt.Fprintf(f, "ersp = new(%s)\n response.Body=ersp\nerr = cli.DecodeResponse(response)\n", op.errorModel.goType)
+	}
+
+	if len(op.problemCodes) > 0 {
+		fmt.Fprintf(f, "case %s:\n", strings.Join(op.problemCodes, ","))
+		fmt.Fprintf(f, "prob := new(ProblemDetails)\n response.Body=prob\nif err = cli.DecodeResponse(response); err == nil {\nerr=sbi.ErrorFromProblemDetails(prob)\n}\n")
+	}
+
+	fmt.Fprintf(f, "default:\nerr=fmt.Errorf(\"%%d, %%s\",response.StatusCode, response.Status)\n}\n")
+	fmt.Fprintf(f, "return\n}\n")
+}
+
+func readPaths(paths *orderedmap.Map[string, *v3.PathItem]) map[string]Operation {
+	operations := make(map[string]Operation)
 	for pathPair := paths.First(); pathPair != nil; pathPair = pathPair.Next() {
 		// get the name of the schema
 		pathName := pathPair.Key()
 
 		// get the schema object from the map
 		pathItem := pathPair.Value()
-		showPathItem(pathName, pathItem)
+		op := readPathItem(pathName, pathItem)
+		if op != nil {
+			operations[op.id] = *op
+		}
 	}
+	return operations
 }
 
 func createOpId(path string) string {
@@ -316,7 +561,7 @@ func addNewModel(id string, m *DataModel) *DataModel {
 	return newM
 }
 
-func showPathItem(path string, item *v3.PathItem) *Operation {
+func readPathItem(path string, item *v3.PathItem) *Operation {
 	var op *v3.Operation
 	var opStr string
 	if item.Get != nil {
@@ -339,7 +584,6 @@ func showPathItem(path string, item *v3.PathItem) *Operation {
 		return nil
 	}
 	opModel := &Operation{
-		path:       path,
 		method:     opStr,
 		summary:    op.Summary,
 		desc:       op.Description,
@@ -350,6 +594,54 @@ func showPathItem(path string, item *v3.PathItem) *Operation {
 		opModel.id = createOpId(opModel.path + "/" + strings.Title(strings.ToLower(opStr)))
 	} else {
 		opModel.id = createOpId(op.OperationId)
+	}
+
+	//parse parameters
+	parameters := make(map[string]*v3.Parameter)
+	for _, p := range item.Parameters {
+		parameters[p.Name] = p
+	}
+	for _, p := range op.Parameters {
+		parameters[p.Name] = p
+	}
+
+	pathParams := []string{}
+	for id, p := range parameters {
+		var m *DataModel
+		if m = analyzeSchema("", p.Schema); m == nil {
+			//try to get it from content
+			if p.Content != nil {
+				for pair := p.Content.First(); pair != nil; pair = pair.Next() {
+					if m = analyzeSchema("", pair.Value().Schema); m != nil {
+						break
+					}
+				}
+			}
+		}
+
+		if len(m.goType) == 0 {
+			log.Errorf("Parameter %s of operation %s has inline-object type which is not supported", id, opModel.id)
+			return nil
+		}
+
+		tmpP := Parameter{
+			id:   id,
+			m:    *m,
+			in:   p.In,
+			desc: p.Description,
+		}
+		if p.Required != nil {
+			tmpP.required = *p.Required
+		}
+		opModel.parameters[tmpP.id] = tmpP
+		if tmpP.in == "path" {
+			pathParams = append(pathParams, tmpP.id)
+		}
+	}
+	var err error
+	if opModel.path, opModel.pathTmpl, opModel.pathParams, err = buildRoute(path, pathParams); err != nil {
+		log.Errorf("Fail to build route template for the operation %s: %+v", opModel.id, err)
+		return nil
 	}
 
 	//get request body
@@ -411,7 +703,7 @@ func showPathItem(path string, item *v3.PathItem) *Operation {
 				if selectedModel.goType == "ProblemDetails" {
 					opModel.problemCodes = append(opModel.problemCodes, code)
 				} else {
-					opModel.successModel = selectedModel
+					opModel.errorModel = selectedModel
 					opModel.errorCodes = append(opModel.errorCodes, code)
 				}
 			}
@@ -423,11 +715,7 @@ func showPathItem(path string, item *v3.PathItem) *Operation {
 	log.Infof("OP: codes with problem details:%v", opModel.problemCodes)
 	log.Infof("OP: codes with error response:%v", opModel.errorCodes)
 	log.Infof("OP: codes with empty response:%v", opModel.emptySuccessCodes)
-	/*
-		for _, p := range item.Parameters {
-			showParameter(p)
-		}
-	*/
+
 	return opModel
 }
 
@@ -518,7 +806,7 @@ func showParameter(p *v3.Parameter) {
 
 func showCallback(path string, callback *v3.Callback) {
 	for pair := callback.Expression.First(); pair != nil; pair = pair.Next() {
-		showPathItem(pair.Key(), pair.Value())
+		readPathItem(pair.Key(), pair.Value())
 	}
 }
 
@@ -805,14 +1093,64 @@ func isPrimitive(t string) bool {
 	return inList(t, primitives)
 }
 
-func inList(item string, list []string) bool {
-	for _, s := range list {
-		if item == s {
-			return true
-		}
+var validParamTypes []string = []string{"bool", "int", "int16", "int32", "int64", "float32", "float64", "string"}
+
+func isValidParameterType(t string) bool {
+	if f := inList(t, validParamTypes); f {
+		return true
+	}
+
+	if t == "[]byte" { //byte array not support
+		return false
+	}
+
+	if len(t) > 0 { //defined data structure
+		return true
 	}
 	return false
 }
+
+func indexInList(item string, list []string) int {
+	for i, s := range list {
+		if item == s {
+			return i
+		}
+	}
+	return -1
+}
+
+func inList(item string, list []string) bool {
+	return indexInList(item, list) != -1
+}
+
+func makeParameterName(s string, capitalize bool) string {
+	if len(s) == 0 {
+		return ""
+	}
+
+	parts := strings.FieldsFunc(s, func(c rune) bool {
+		return c == ' ' || c == '-' || c == '_'
+	})
+	out := ""
+	for i, p := range parts {
+		if i == 0 {
+			if p[0] == '5' {
+				out = "five" + p[1:]
+			} else if p[0] == '3' {
+				out = "three" + p[1:]
+			} else {
+				out = strings.ToLower(string(p[0])) + p[1:]
+			}
+			if capitalize {
+				out = strings.Title(out)
+			}
+		} else {
+			out = out + strings.Title(p)
+		}
+	}
+	return out
+}
+
 func makeModelName(s string) string {
 	if len(s) == 0 {
 		return ""

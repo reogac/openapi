@@ -1,5 +1,4 @@
 package models
-
 type AmfDeregInfo struct {
-	DeregReason DeregistrationReason `json:"deregReason"`
+	 DeregReason	DeregistrationReason	`json:"deregReason"`
 }

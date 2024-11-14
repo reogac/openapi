@@ -1,5 +1,4 @@
 package models
-
 type StringMatchingRule struct {
-	StringMatchingConditions []StringMatchingCondition `json:"stringMatchingConditions,omitempty"`
+	 StringMatchingConditions	[]StringMatchingCondition	`json:"stringMatchingConditions,omitempty"`
 }

@@ -1,6 +1,5 @@
 package models
-
 type GeoServiceArea struct {
-	CivicAddressList   []CivicAddress   `json:"civicAddressList,omitempty"`
-	GeographicAreaList []GeographicArea `json:"geographicAreaList,omitempty"`
+	 GeographicAreaList	[]GeographicArea	`json:"geographicAreaList,omitempty"`
+	 CivicAddressList	[]CivicAddress	`json:"civicAddressList,omitempty"`
 }

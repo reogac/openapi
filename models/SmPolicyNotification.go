@@ -1,6 +1,5 @@
 package models
-
 type SmPolicyNotification struct {
-	SmPolicyDecision *SmPolicyDecision `json:"smPolicyDecision,omitempty"`
-	ResourceUri      string            `json:"resourceUri,omitempty"`
+	 ResourceUri	string	`json:"resourceUri,omitempty"`
+	 SmPolicyDecision	*SmPolicyDecision	`json:"smPolicyDecision,omitempty"`
 }

@@ -1,6 +1,5 @@
 package models
-
 type EbiArpMapping struct {
-	Arp         Arp `json:"arp"`
-	EpsBearerId int `json:"epsBearerId"`
+	 EpsBearerId	int	`json:"epsBearerId"`
+	 Arp	Arp	`json:"arp"`
 }

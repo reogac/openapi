@@ -1,6 +1,5 @@
 package models
-
 type Tmgi struct {
-	PlmnId       PlmnId `json:"plmnId"`
-	MbsServiceId string `json:"mbsServiceId"`
+	 MbsServiceId	string	`json:"mbsServiceId"`
+	 PlmnId	PlmnId	`json:"plmnId"`
 }

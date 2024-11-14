@@ -1,5 +1,4 @@
 package models
-
 type SupiInfo struct {
-	SupiList []string `json:"supiList"`
+	 SupiList	[]string	`json:"supiList"`
 }

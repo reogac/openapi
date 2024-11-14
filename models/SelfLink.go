@@ -1,5 +1,4 @@
 package models
-
 type SelfLink struct {
-	Self Link `json:"self"`
+	 Self	Link	`json:"self"`
 }

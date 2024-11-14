@@ -1,5 +1,4 @@
 package models
-
 type TacInfo struct {
-	TacList []string `json:"tacList"`
+	 TacList	[]string	`json:"tacList"`
 }

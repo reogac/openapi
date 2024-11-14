@@ -1,5 +1,4 @@
 package models
-
 type BridgeManagementContainer struct {
-	BridgeManCont string `json:"bridgeManCont"`
+	 BridgeManCont	string	`json:"bridgeManCont"`
 }

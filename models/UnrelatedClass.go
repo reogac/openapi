@@ -1,6 +1,5 @@
 package models
-
 type UnrelatedClass struct {
-	ServiceTypeUnrelatedClasses []ServiceTypeUnrelatedClass `json:"serviceTypeUnrelatedClasses,omitempty"`
-	DefaultUnrelatedClass       DefaultUnrelatedClass       `json:"defaultUnrelatedClass"`
+	 DefaultUnrelatedClass	DefaultUnrelatedClass	`json:"defaultUnrelatedClass"`
+	 ServiceTypeUnrelatedClasses	[]ServiceTypeUnrelatedClass	`json:"serviceTypeUnrelatedClasses,omitempty"`
 }

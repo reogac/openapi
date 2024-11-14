@@ -1,15 +1,14 @@
 package models
-
 type QosMonitoringData struct {
-	RepThreshUl     *int     `json:"repThreshUl,omitempty"`
-	RepPeriod       *int     `json:"repPeriod,omitempty"`
-	NotifyUri       string   `json:"notifyUri,omitempty"`
-	NotifyCorreId   string   `json:"notifyCorreId,omitempty"`
-	RepThreshDl     *int     `json:"repThreshDl,omitempty"`
-	ReqQosMonParams []string `json:"reqQosMonParams"`
-	RepFreqs        []string `json:"repFreqs"`
-	RepThreshRp     *int     `json:"repThreshRp,omitempty"`
-	WaitTime        *int     `json:"waitTime,omitempty"`
-	DirectNotifInd  *bool    `json:"directNotifInd,omitempty"`
-	QmId            string   `json:"qmId"`
+	 RepThreshRp	*int	`json:"repThreshRp,omitempty"`
+	 WaitTime	*int	`json:"waitTime,omitempty"`
+	 NotifyUri	string	`json:"notifyUri,omitempty"`
+	 NotifyCorreId	string	`json:"notifyCorreId,omitempty"`
+	 QmId	string	`json:"qmId"`
+	 ReqQosMonParams	[]string	`json:"reqQosMonParams"`
+	 RepThreshUl	*int	`json:"repThreshUl,omitempty"`
+	 DirectNotifInd	*bool	`json:"directNotifInd,omitempty"`
+	 RepFreqs	[]string	`json:"repFreqs"`
+	 RepThreshDl	*int	`json:"repThreshDl,omitempty"`
+	 RepPeriod	*int	`json:"repPeriod,omitempty"`
 }

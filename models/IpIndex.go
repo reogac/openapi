@@ -1,6 +1,5 @@
 package models
-
 type IpIndex struct {
-	Int    *int   `json:"int,omitempty"`
-	String string `json:"string,omitempty"`
+	 String	string	`json:"string,omitempty"`
+	 Int	*int	`json:"int,omitempty"`
 }

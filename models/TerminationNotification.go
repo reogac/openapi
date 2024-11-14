@@ -1,6 +1,5 @@
 package models
-
 type TerminationNotification struct {
-	ResourceUri string                        `json:"resourceUri"`
-	Cause       PolicyAssociationReleaseCause `json:"cause"`
+	 Cause	PolicyAssociationReleaseCause	`json:"cause"`
+	 ResourceUri	string	`json:"resourceUri"`
 }

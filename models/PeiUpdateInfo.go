@@ -1,5 +1,4 @@
 package models
-
 type PeiUpdateInfo struct {
-	Pei string `json:"pei"`
+	 Pei	string	`json:"pei"`
 }

@@ -1,6 +1,5 @@
 package models
-
 type PcfSelectionAssistanceInfo struct {
-	SingleNssai Snssai `json:"singleNssai"`
-	Dnn         string `json:"dnn"`
+	 Dnn	string	`json:"dnn"`
+	 SingleNssai	Snssai	`json:"singleNssai"`
 }

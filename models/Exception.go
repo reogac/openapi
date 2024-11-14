@@ -1,7 +1,6 @@
 package models
-
 type Exception struct {
-	ExcepId    ExceptionId    `json:"excepId"`
-	ExcepLevel *int           `json:"excepLevel,omitempty"`
-	ExcepTrend ExceptionTrend `json:"excepTrend,omitempty"`
+	 ExcepLevel	*int	`json:"excepLevel,omitempty"`
+	 ExcepTrend	ExceptionTrend	`json:"excepTrend,omitempty"`
+	 ExcepId	ExceptionId	`json:"excepId"`
 }

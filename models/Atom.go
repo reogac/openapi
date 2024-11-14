@@ -1,6 +1,5 @@
 package models
-
 type Atom struct {
-	Attr     string `json:"attr"`
-	Negative *bool  `json:"negative,omitempty"`
+	 Negative	*bool	`json:"negative,omitempty"`
+	 Attr	string	`json:"attr"`
 }
