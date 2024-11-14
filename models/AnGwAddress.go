@@ -1,12 +1,12 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Thu Nov 14 22:22:57 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Thu Nov 14 22:56:41 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
 package models
 
 type AnGwAddress struct {
-	AnGwIpv6Addr string `json:"anGwIpv6Addr,omitempty"`
 	AnGwIpv4Addr string `json:"anGwIpv4Addr,omitempty"`
+	AnGwIpv6Addr string `json:"anGwIpv6Addr,omitempty"`
 }

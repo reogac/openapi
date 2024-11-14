@@ -1,47 +1,11 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Thu Nov 14 22:22:57 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Thu Nov 14 22:56:41 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
 package NpcfSMPolicyControlAPI
 
-func OnDeleteSMPolicy(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-	body := new(models.SmPolicyDeleteData)
-	err = ctx.DecodeRequest(body)
-	if err == nil {
-		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
-	} else {
-		prob := HandleDeleteSMPolicy(body)
-		if prob != nil {
-			response.SetBody(models.GetProblemDetailCode(prob), prob)
-			return
-		}
-	}
-	return
-}
-func OnCreateSMPolicy(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-	body := new(models.SmPolicyContextData)
-	err = ctx.DecodeRequest(body)
-	if err == nil {
-		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
-	} else {
-		rsp, prob := HandleCreateSMPolicy(body)
-		if rsp != nil {
-			response.SetBody(201, rsp)
-			return
-		}
-		if prob != nil {
-			response.SetBody(models.GetProblemDetailCode(prob), prob)
-			return
-		}
-	}
-	return
-}
 func OnGetSMPolicy(ctx sbi.RequestContext, handler any) (response sbi.Response) {
 	prod := handler.(Producer)
 	var err error
@@ -71,6 +35,42 @@ func OnUpdateSMPolicy(ctx sbi.RequestContext, handler any) (response sbi.Respons
 		rsp, prob := HandleUpdateSMPolicy(body)
 		if rsp != nil {
 			response.SetBody(200, rsp)
+			return
+		}
+		if prob != nil {
+			response.SetBody(models.GetProblemDetailCode(prob), prob)
+			return
+		}
+	}
+	return
+}
+func OnDeleteSMPolicy(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+	body := new(models.SmPolicyDeleteData)
+	err = ctx.DecodeRequest(body)
+	if err == nil {
+		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
+	} else {
+		prob := HandleDeleteSMPolicy(body)
+		if prob != nil {
+			response.SetBody(models.GetProblemDetailCode(prob), prob)
+			return
+		}
+	}
+	return
+}
+func OnCreateSMPolicy(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+	body := new(models.SmPolicyContextData)
+	err = ctx.DecodeRequest(body)
+	if err == nil {
+		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
+	} else {
+		rsp, prob := HandleCreateSMPolicy(body)
+		if rsp != nil {
+			response.SetBody(201, rsp)
 			return
 		}
 		if prob != nil {

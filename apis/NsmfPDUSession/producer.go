@@ -1,98 +1,11 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Thu Nov 14 22:22:59 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Thu Nov 14 22:56:43 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
 package NsmfPDUSession
 
-func OnPostPduSessions(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-	body := new(models.PostPduSessionsRequest)
-	err = ctx.DecodeRequest(body)
-	if err == nil {
-		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
-	} else {
-		rsp, ersp, prob := HandlePostPduSessions(body)
-		if rsp != nil {
-			response.SetBody(201, rsp)
-			return
-		}
-		if ersp != nil {
-			response.SetBody(models.StatusFromPostPduSessionsErrorResponse(ersp), ersp)
-			return
-		}
-		if prob != nil {
-			response.SetBody(models.GetProblemDetailCode(prob), prob)
-			return
-		}
-	}
-	return
-}
-func OnReleasePduSession(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-	var body *models.ReleasePduSessionRequest
-	if ctx.HaveRequestBody() {
-		body := new(models.ReleasePduSessionRequest)
-		err = ctx.DecodeRequest(body)
-	}
-	if err == nil {
-		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
-	} else {
-		rsp, prob := HandleReleasePduSession(body)
-		if rsp != nil {
-			response.SetBody(200, rsp)
-			return
-		}
-		if prob != nil {
-			response.SetBody(models.GetProblemDetailCode(prob), prob)
-			return
-		}
-	}
-	return
-}
-func OnTransferMoData(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-	body := new(models.TransferMoDataRequest)
-	err = ctx.DecodeRequest(body)
-	if err == nil {
-		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
-	} else {
-		prob := HandleTransferMoData(body)
-		if prob != nil {
-			response.SetBody(models.GetProblemDetailCode(prob), prob)
-			return
-		}
-	}
-	return
-}
-func OnPostSmContexts(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-	body := new(models.PostSmContextsRequest)
-	err = ctx.DecodeRequest(body)
-	if err == nil {
-		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
-	} else {
-		rsp, ersp, prob := HandlePostSmContexts(body)
-		if rsp != nil {
-			response.SetBody(201, rsp)
-			return
-		}
-		if ersp != nil {
-			response.SetBody(models.StatusFromPostSmContextsErrorResponse(ersp), ersp)
-			return
-		}
-		if prob != nil {
-			response.SetBody(models.GetProblemDetailCode(prob), prob)
-			return
-		}
-	}
-	return
-}
 func OnRetrieveSmContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
 	prod := handler.(Producer)
 	var err error
@@ -163,26 +76,6 @@ func OnReleaseSmContext(ctx sbi.RequestContext, handler any) (response sbi.Respo
 	}
 	return
 }
-func OnSendMoData(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-	body := new(models.SendMoDataRequest)
-	err = ctx.DecodeRequest(body)
-	if err == nil {
-		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
-	} else {
-		ersp, prob := HandleSendMoData(body)
-		if ersp != nil {
-			response.SetBody(models.StatusFromExtProblemDetails(ersp), ersp)
-			return
-		}
-		if prob != nil {
-			response.SetBody(models.GetProblemDetailCode(prob), prob)
-			return
-		}
-	}
-	return
-}
 func OnUpdatePduSession(ctx sbi.RequestContext, handler any) (response sbi.Response) {
 	prod := handler.(Producer)
 	var err error
@@ -207,6 +100,29 @@ func OnUpdatePduSession(ctx sbi.RequestContext, handler any) (response sbi.Respo
 	}
 	return
 }
+func OnReleasePduSession(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+	var body *models.ReleasePduSessionRequest
+	if ctx.HaveRequestBody() {
+		body := new(models.ReleasePduSessionRequest)
+		err = ctx.DecodeRequest(body)
+	}
+	if err == nil {
+		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
+	} else {
+		rsp, prob := HandleReleasePduSession(body)
+		if rsp != nil {
+			response.SetBody(200, rsp)
+			return
+		}
+		if prob != nil {
+			response.SetBody(models.GetProblemDetailCode(prob), prob)
+			return
+		}
+	}
+	return
+}
 func OnRetrievePduSession(ctx sbi.RequestContext, handler any) (response sbi.Response) {
 	prod := handler.(Producer)
 	var err error
@@ -218,6 +134,90 @@ func OnRetrievePduSession(ctx sbi.RequestContext, handler any) (response sbi.Res
 		rsp, prob := HandleRetrievePduSession(body)
 		if rsp != nil {
 			response.SetBody(200, rsp)
+			return
+		}
+		if prob != nil {
+			response.SetBody(models.GetProblemDetailCode(prob), prob)
+			return
+		}
+	}
+	return
+}
+func OnTransferMoData(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+	body := new(models.TransferMoDataRequest)
+	err = ctx.DecodeRequest(body)
+	if err == nil {
+		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
+	} else {
+		prob := HandleTransferMoData(body)
+		if prob != nil {
+			response.SetBody(models.GetProblemDetailCode(prob), prob)
+			return
+		}
+	}
+	return
+}
+func OnPostSmContexts(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+	body := new(models.PostSmContextsRequest)
+	err = ctx.DecodeRequest(body)
+	if err == nil {
+		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
+	} else {
+		rsp, ersp, prob := HandlePostSmContexts(body)
+		if rsp != nil {
+			response.SetBody(201, rsp)
+			return
+		}
+		if ersp != nil {
+			response.SetBody(models.StatusFromPostSmContextsErrorResponse(ersp), ersp)
+			return
+		}
+		if prob != nil {
+			response.SetBody(models.GetProblemDetailCode(prob), prob)
+			return
+		}
+	}
+	return
+}
+func OnSendMoData(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+	body := new(models.SendMoDataRequest)
+	err = ctx.DecodeRequest(body)
+	if err == nil {
+		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
+	} else {
+		ersp, prob := HandleSendMoData(body)
+		if ersp != nil {
+			response.SetBody(models.StatusFromExtProblemDetails(ersp), ersp)
+			return
+		}
+		if prob != nil {
+			response.SetBody(models.GetProblemDetailCode(prob), prob)
+			return
+		}
+	}
+	return
+}
+func OnPostPduSessions(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+	body := new(models.PostPduSessionsRequest)
+	err = ctx.DecodeRequest(body)
+	if err == nil {
+		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
+	} else {
+		rsp, ersp, prob := HandlePostPduSessions(body)
+		if rsp != nil {
+			response.SetBody(201, rsp)
+			return
+		}
+		if ersp != nil {
+			response.SetBody(models.StatusFromPostPduSessionsErrorResponse(ersp), ersp)
 			return
 		}
 		if prob != nil {

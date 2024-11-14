@@ -1,31 +1,31 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Thu Nov 14 22:22:55 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Thu Nov 14 22:56:39 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
 package models
 
 type SmfRegistration struct {
-	SingleNssai                 Snssai             `json:"singleNssai"`
-	PgwFqdn                     string             `json:"pgwFqdn,omitempty"`
+	EmergencyServices           *bool              `json:"emergencyServices,omitempty"`
 	RegistrationReason          RegistrationReason `json:"registrationReason,omitempty"`
-	PcfId                       string             `json:"pcfId,omitempty"`
+	RegistrationTime            string             `json:"registrationTime,omitempty"`
+	SmfSetId                    string             `json:"smfSetId,omitempty"`
+	SupportedFeatures           string             `json:"supportedFeatures,omitempty"`
 	PduSessionId                int                `json:"pduSessionId"`
 	Dnn                         string             `json:"dnn,omitempty"`
 	PlmnId                      PlmnId             `json:"plmnId"`
-	EpdgInd                     *bool              `json:"epdgInd,omitempty"`
+	PgwFqdn                     string             `json:"pgwFqdn,omitempty"`
 	ContextInfo                 *ContextInfo       `json:"contextInfo,omitempty"`
-	DataRestorationCallbackUri  string             `json:"dataRestorationCallbackUri,omitempty"`
+	PcfId                       string             `json:"pcfId,omitempty"`
 	SmfInstanceId               string             `json:"smfInstanceId"`
-	EmergencyServices           *bool              `json:"emergencyServices,omitempty"`
-	PgwIpAddr                   *IpAddress         `json:"pgwIpAddr,omitempty"`
-	UdrRestartInd               *bool              `json:"udrRestartInd,omitempty"`
-	SmfSetId                    string             `json:"smfSetId,omitempty"`
-	PcscfRestorationCallbackUri string             `json:"pcscfRestorationCallbackUri,omitempty"`
-	DeregCallbackUri            string             `json:"deregCallbackUri,omitempty"`
-	RegistrationTime            string             `json:"registrationTime,omitempty"`
+	DataRestorationCallbackUri  string             `json:"dataRestorationCallbackUri,omitempty"`
 	ResetIds                    []string           `json:"resetIds,omitempty"`
+	UdrRestartInd               *bool              `json:"udrRestartInd,omitempty"`
+	SingleNssai                 Snssai             `json:"singleNssai"`
+	PgwIpAddr                   *IpAddress         `json:"pgwIpAddr,omitempty"`
+	EpdgInd                     *bool              `json:"epdgInd,omitempty"`
+	DeregCallbackUri            string             `json:"deregCallbackUri,omitempty"`
 	LastSynchronizationTime     string             `json:"lastSynchronizationTime,omitempty"`
-	SupportedFeatures           string             `json:"supportedFeatures,omitempty"`
+	PcscfRestorationCallbackUri string             `json:"pcscfRestorationCallbackUri,omitempty"`
 }

@@ -1,11 +1,27 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Thu Nov 14 22:22:54 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Thu Nov 14 22:56:38 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
 package NudmUEAU
 
+func OnDeleteAuth(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+	body := new(models.AuthEvent)
+	err = ctx.DecodeRequest(body)
+	if err == nil {
+		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
+	} else {
+		prob := HandleDeleteAuth(body)
+		if prob != nil {
+			response.SetBody(models.GetProblemDetailCode(prob), prob)
+			return
+		}
+	}
+	return
+}
 func OnGenerateGbaAv(ctx sbi.RequestContext, handler any) (response sbi.Response) {
 	prod := handler.(Producer)
 	var err error
@@ -117,22 +133,6 @@ func OnGenerateAv(ctx sbi.RequestContext, handler any) (response sbi.Response) {
 			response.SetBody(200, rsp)
 			return
 		}
-		if prob != nil {
-			response.SetBody(models.GetProblemDetailCode(prob), prob)
-			return
-		}
-	}
-	return
-}
-func OnDeleteAuth(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-	body := new(models.AuthEvent)
-	err = ctx.DecodeRequest(body)
-	if err == nil {
-		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
-	} else {
-		prob := HandleDeleteAuth(body)
 		if prob != nil {
 			response.SetBody(models.GetProblemDetailCode(prob), prob)
 			return

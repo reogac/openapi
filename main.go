@@ -168,7 +168,7 @@ func main() {
 		"TS29512_Npcf_SMPolicyControl.yaml",
 		"TS29525_Npcf_UEPolicyControl.yaml",
 		"TS29502_Nsmf_PDUSession.yaml",
-		"TS29571_CommonData.yaml",
+		//"TS29571_CommonData.yaml",
 		"TS29518_Namf_Communication.yaml",
 		"TS29509_Nausf_UEAuthentication.yaml",
 	}
@@ -650,7 +650,7 @@ func readPathItem(path string, item *v3.PathItem) *Operation {
 	}
 	//create operation id
 	if len(op.OperationId) == 0 {
-		opModel.id = createOpId(opModel.path + "/" + strings.Title(strings.ToLower(opStr)))
+		opModel.id = createOpId(path + "/" + strings.Title(strings.ToLower(opStr)))
 	} else {
 		opModel.id = createOpId(op.OperationId)
 	}
@@ -769,11 +769,11 @@ func readPathItem(path string, item *v3.PathItem) *Operation {
 		}
 	}
 	if opModel.successModel != nil {
-		log.Infof("OP: success response:%s [%s]", opModel.successModel.goType, opModel.successCode)
+		log.Infof("OP %s: success response:%s [%s]", opModel.id, opModel.successModel.goType, opModel.successCode)
 	}
-	log.Infof("OP: codes with problem details:%v", opModel.problemCodes)
-	log.Infof("OP: codes with error response:%v", opModel.errorCodes)
-	log.Infof("OP: codes with empty response:%v", opModel.emptySuccessCodes)
+	log.Infof("OP %s: codes with problem details:%v", opModel.id, opModel.problemCodes)
+	log.Infof("OP %s: codes with error response:%v", opModel.id, opModel.errorCodes)
+	log.Infof("OP %s: codes with empty response:%v", opModel.id, opModel.emptySuccessCodes)
 
 	return opModel
 }

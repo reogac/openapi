@@ -1,6 +1,6 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Thu Nov 14 22:22:54 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Thu Nov 14 22:56:38 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
@@ -9,6 +9,50 @@ package NudmUEAU
 const (
 	PATH_ROOT string = "nudm-ueau/v1"
 )
+
+// Summary: Deletes the authentication result in the UDM
+// Description:
+// Path: /:supi/auth-events/:authEventId
+// Path Params: supi, authEventId
+type DeleteAuthParams struct {
+	Supi        string
+	AuthEventId string
+}
+
+func DeleteAuth(cli sbi.ConsumerClient, params DeleteAuthParams, body *models.AuthEvent) (err error) {
+	if len(params.Supi) == 0 {
+		err = fmt.Errorf("supi is required")
+		return
+	}
+
+	if len(params.AuthEventId) == 0 {
+		err = fmt.Errorf("authEventId is required")
+		return
+	}
+	if body == nil {
+		err = fmt.Errorf("body is required")
+		return
+	}
+	request := sbi.DefaultRequest()
+	var response sbi.Response
+	request.Path = fmt.Sprintf("%s/:supi/auth-events/:authEventId", PATH_ROOT, params.Supi, params.AuthEventId)
+	if response, err = cli.Send(request); err != nil {
+		return
+	}
+	switch response.StatusCode {
+	case 204:
+		return
+	case 400, 404, 500, 503:
+		prob := new(ProblemDetails)
+		response.Body = prob
+		if err = cli.DecodeResponse(response); err == nil {
+			err = sbi.ErrorFromProblemDetails(prob)
+		}
+	default:
+		err = fmt.Errorf("%d, %s", response.StatusCode, response.Status)
+	}
+	return
+}
 
 // Summary: Generate authentication data for the UE in GBA domain
 // Description:
@@ -123,12 +167,12 @@ func GenerateAuthData(cli sbi.ConsumerClient, supiOrSuci string, body *models.Au
 // Path: /:supiOrSuci/security-information-rg
 // Path Params: supiOrSuci
 type GetRgAuthDataParams struct {
+	SupiOrSuci        string
+	AuthenticatedInd  bool
 	SupportedFeatures string
 	PlmnId            *PlmnId
 	IfNoneMatch       string
 	IfModifiedSince   string
-	SupiOrSuci        string
-	AuthenticatedInd  bool
 }
 
 func GetRgAuthData(cli sbi.ConsumerClient, params GetRgAuthDataParams) (rsp *models.RgAuthCtx, err error) {
@@ -230,50 +274,6 @@ func GenerateAv(cli sbi.ConsumerClient, params GenerateAvParams, body *models.Hs
 		response.Body = rsp
 		err = cli.DecodeResponse(response)
 	case 400, 403, 404, 500, 501, 503:
-		prob := new(ProblemDetails)
-		response.Body = prob
-		if err = cli.DecodeResponse(response); err == nil {
-			err = sbi.ErrorFromProblemDetails(prob)
-		}
-	default:
-		err = fmt.Errorf("%d, %s", response.StatusCode, response.Status)
-	}
-	return
-}
-
-// Summary: Deletes the authentication result in the UDM
-// Description:
-// Path: /:supi/auth-events/:authEventId
-// Path Params: supi, authEventId
-type DeleteAuthParams struct {
-	Supi        string
-	AuthEventId string
-}
-
-func DeleteAuth(cli sbi.ConsumerClient, params DeleteAuthParams, body *models.AuthEvent) (err error) {
-	if len(params.Supi) == 0 {
-		err = fmt.Errorf("supi is required")
-		return
-	}
-
-	if len(params.AuthEventId) == 0 {
-		err = fmt.Errorf("authEventId is required")
-		return
-	}
-	if body == nil {
-		err = fmt.Errorf("body is required")
-		return
-	}
-	request := sbi.DefaultRequest()
-	var response sbi.Response
-	request.Path = fmt.Sprintf("%s/:supi/auth-events/:authEventId", PATH_ROOT, params.Supi, params.AuthEventId)
-	if response, err = cli.Send(request); err != nil {
-		return
-	}
-	switch response.StatusCode {
-	case 204:
-		return
-	case 400, 404, 500, 503:
 		prob := new(ProblemDetails)
 		response.Body = prob
 		if err = cli.DecodeResponse(response); err == nil {

@@ -1,20 +1,42 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Thu Nov 14 22:23:01 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Thu Nov 14 22:56:44 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
 package NamfCommunication
 
-func OnReleaseUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+func OnCreateUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
 	prod := handler.(Producer)
 	var err error
-	body := new(models.UEContextRelease)
+	body := new(models.CreateUEContextRequest)
 	err = ctx.DecodeRequest(body)
 	if err == nil {
 		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
 	} else {
-		prob := HandleReleaseUEContext(body)
+		rsp, ersp, prob := HandleCreateUEContext(body)
+		if rsp != nil {
+			response.SetBody(201, rsp)
+			return
+		}
+		if ersp != nil {
+			response.SetBody(models.StatusFromUeContextCreateError(ersp), ersp)
+			return
+		}
+		if prob != nil {
+			response.SetBody(models.GetProblemDetailCode(prob), prob)
+			return
+		}
+	}
+	return
+}
+func OnN1N2MessageUnSubscribe(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+	if err == nil {
+		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
+	} else {
+		prob := HandleN1N2MessageUnSubscribe()
 		if prob != nil {
 			response.SetBody(models.GetProblemDetailCode(prob), prob)
 			return
@@ -46,19 +68,35 @@ func OnNonUeN2MessageTransfer(ctx sbi.RequestContext, handler any) (response sbi
 	}
 	return
 }
-func OnRelocateUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+func OnUEContextTransfer(ctx sbi.RequestContext, handler any) (response sbi.Response) {
 	prod := handler.(Producer)
 	var err error
-	body := new(models.RelocateUEContextRequest)
+	body := new(models.UEContextTransferRequest)
 	err = ctx.DecodeRequest(body)
 	if err == nil {
 		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
 	} else {
-		rsp, prob := HandleRelocateUEContext(body)
+		rsp, prob := HandleUEContextTransfer(body)
 		if rsp != nil {
-			response.SetBody(201, rsp)
+			response.SetBody(200, rsp)
 			return
 		}
+		if prob != nil {
+			response.SetBody(models.GetProblemDetailCode(prob), prob)
+			return
+		}
+	}
+	return
+}
+func OnCancelRelocateUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+	body := new(models.CancelRelocateUEContextRequest)
+	err = ctx.DecodeRequest(body)
+	if err == nil {
+		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
+	} else {
+		prob := HandleCancelRelocateUEContext(body)
 		if prob != nil {
 			response.SetBody(models.GetProblemDetailCode(prob), prob)
 			return
@@ -81,84 +119,6 @@ func OnN1N2MessageTransfer(ctx sbi.RequestContext, handler any) (response sbi.Re
 		}
 		if ersp != nil {
 			response.SetBody(models.StatusFromN1N2MessageTransferError(ersp), ersp)
-			return
-		}
-		if prob != nil {
-			response.SetBody(models.GetProblemDetailCode(prob), prob)
-			return
-		}
-	}
-	return
-}
-func OnNonUeN2InfoUnSubscribe(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-	if err == nil {
-		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
-	} else {
-		prob := HandleNonUeN2InfoUnSubscribe()
-		if prob != nil {
-			response.SetBody(models.GetProblemDetailCode(prob), prob)
-			return
-		}
-	}
-	return
-}
-func OnAMFStatusChangeSubscribeModfy(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-	body := new(models.SubscriptionData)
-	err = ctx.DecodeRequest(body)
-	if err == nil {
-		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
-	} else {
-		rsp, prob := HandleAMFStatusChangeSubscribeModfy(body)
-		if rsp != nil {
-			response.SetBody(200, rsp)
-			return
-		}
-		if prob != nil {
-			response.SetBody(models.GetProblemDetailCode(prob), prob)
-			return
-		}
-	}
-	return
-}
-func OnNonUeN2InfoSubscribe(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-	body := new(models.NonUeN2InfoSubscriptionCreateData)
-	err = ctx.DecodeRequest(body)
-	if err == nil {
-		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
-	} else {
-		rsp, prob := HandleNonUeN2InfoSubscribe(body)
-		if rsp != nil {
-			response.SetBody(201, rsp)
-			return
-		}
-		if prob != nil {
-			response.SetBody(models.GetProblemDetailCode(prob), prob)
-			return
-		}
-	}
-	return
-}
-func OnCreateUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-	body := new(models.CreateUEContextRequest)
-	err = ctx.DecodeRequest(body)
-	if err == nil {
-		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
-	} else {
-		rsp, ersp, prob := HandleCreateUEContext(body)
-		if rsp != nil {
-			response.SetBody(201, rsp)
-			return
-		}
-		if ersp != nil {
-			response.SetBody(models.StatusFromUeContextCreateError(ersp), ersp)
 			return
 		}
 		if prob != nil {
@@ -192,55 +152,19 @@ func OnEBIAssignment(ctx sbi.RequestContext, handler any) (response sbi.Response
 	}
 	return
 }
-func OnUEContextTransfer(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+func OnRelocateUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
 	prod := handler.(Producer)
 	var err error
-	body := new(models.UEContextTransferRequest)
+	body := new(models.RelocateUEContextRequest)
 	err = ctx.DecodeRequest(body)
 	if err == nil {
 		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
 	} else {
-		rsp, prob := HandleUEContextTransfer(body)
+		rsp, prob := HandleRelocateUEContext(body)
 		if rsp != nil {
-			response.SetBody(200, rsp)
+			response.SetBody(201, rsp)
 			return
 		}
-		if prob != nil {
-			response.SetBody(models.GetProblemDetailCode(prob), prob)
-			return
-		}
-	}
-	return
-}
-func OnRegistrationStatusUpdate(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-	body := new(models.UeRegStatusUpdateReqData)
-	err = ctx.DecodeRequest(body)
-	if err == nil {
-		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
-	} else {
-		rsp, prob := HandleRegistrationStatusUpdate(body)
-		if rsp != nil {
-			response.SetBody(200, rsp)
-			return
-		}
-		if prob != nil {
-			response.SetBody(models.GetProblemDetailCode(prob), prob)
-			return
-		}
-	}
-	return
-}
-func OnCancelRelocateUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-	body := new(models.CancelRelocateUEContextRequest)
-	err = ctx.DecodeRequest(body)
-	if err == nil {
-		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
-	} else {
-		prob := HandleCancelRelocateUEContext(body)
 		if prob != nil {
 			response.SetBody(models.GetProblemDetailCode(prob), prob)
 			return
@@ -268,13 +192,13 @@ func OnN1N2MessageSubscribe(ctx sbi.RequestContext, handler any) (response sbi.R
 	}
 	return
 }
-func OnN1N2MessageUnSubscribe(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+func OnNonUeN2InfoUnSubscribe(ctx sbi.RequestContext, handler any) (response sbi.Response) {
 	prod := handler.(Producer)
 	var err error
 	if err == nil {
 		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
 	} else {
-		prob := HandleN1N2MessageUnSubscribe()
+		prob := HandleNonUeN2InfoUnSubscribe()
 		if prob != nil {
 			response.SetBody(models.GetProblemDetailCode(prob), prob)
 			return
@@ -291,6 +215,82 @@ func OnAMFStatusChangeSubscribe(ctx sbi.RequestContext, handler any) (response s
 		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
 	} else {
 		rsp, prob := HandleAMFStatusChangeSubscribe(body)
+		if rsp != nil {
+			response.SetBody(201, rsp)
+			return
+		}
+		if prob != nil {
+			response.SetBody(models.GetProblemDetailCode(prob), prob)
+			return
+		}
+	}
+	return
+}
+func OnAMFStatusChangeSubscribeModfy(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+	body := new(models.SubscriptionData)
+	err = ctx.DecodeRequest(body)
+	if err == nil {
+		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
+	} else {
+		rsp, prob := HandleAMFStatusChangeSubscribeModfy(body)
+		if rsp != nil {
+			response.SetBody(200, rsp)
+			return
+		}
+		if prob != nil {
+			response.SetBody(models.GetProblemDetailCode(prob), prob)
+			return
+		}
+	}
+	return
+}
+func OnReleaseUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+	body := new(models.UEContextRelease)
+	err = ctx.DecodeRequest(body)
+	if err == nil {
+		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
+	} else {
+		prob := HandleReleaseUEContext(body)
+		if prob != nil {
+			response.SetBody(models.GetProblemDetailCode(prob), prob)
+			return
+		}
+	}
+	return
+}
+func OnRegistrationStatusUpdate(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+	body := new(models.UeRegStatusUpdateReqData)
+	err = ctx.DecodeRequest(body)
+	if err == nil {
+		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
+	} else {
+		rsp, prob := HandleRegistrationStatusUpdate(body)
+		if rsp != nil {
+			response.SetBody(200, rsp)
+			return
+		}
+		if prob != nil {
+			response.SetBody(models.GetProblemDetailCode(prob), prob)
+			return
+		}
+	}
+	return
+}
+func OnNonUeN2InfoSubscribe(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+	body := new(models.NonUeN2InfoSubscriptionCreateData)
+	err = ctx.DecodeRequest(body)
+	if err == nil {
+		response.SetBody(400, models.NewSimpleProblem(400, err.Error()))
+	} else {
+		rsp, prob := HandleNonUeN2InfoSubscribe(body)
 		if rsp != nil {
 			response.SetBody(201, rsp)
 			return

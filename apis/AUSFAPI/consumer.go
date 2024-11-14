@@ -1,6 +1,6 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Thu Nov 14 22:23:02 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Thu Nov 14 22:56:45 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
@@ -12,25 +12,87 @@ const (
 
 // Summary:
 // Description:
-// Path: /prose-authentications
+// Path: /prose-authentications/:authCtxId/prose-auth
+// Path Params: authCtxId
+func ProseAuth(cli sbi.ConsumerClient, authCtxId string, body *models.ProSeEapSession) (rsp *models.ProseAuthResponse, err error) {
+	if len(authCtxId) == 0 {
+		err = fmt.Errorf("authCtxId is required")
+		return
+	}
+	request := sbi.DefaultRequest()
+	var response sbi.Response
+	request.Path = fmt.Sprintf("%s/prose-authentications/%s/prose-auth", PATH_ROOT, authCtxId)
+	if response, err = cli.Send(request); err != nil {
+		return
+	}
+	switch response.StatusCode {
+	case 200:
+		rsp = new(ProseAuthResponse)
+		response.Body = rsp
+		err = cli.DecodeResponse(response)
+	case 400, 500:
+		prob := new(ProblemDetails)
+		response.Body = prob
+		if err = cli.DecodeResponse(response); err == nil {
+			err = sbi.ErrorFromProblemDetails(prob)
+		}
+	default:
+		err = fmt.Errorf("%d, %s", response.StatusCode, response.Status)
+	}
+	return
+}
+
+// Summary:
+// Description:
+// Path: /ue-authentications
 // Path Params:
-func Post(cli sbi.ConsumerClient, body *models.ProSeAuthenticationInfo) (rsp *models.ProSeAuthenticationCtx, err error) {
+func UeAuthenticationsPost(cli sbi.ConsumerClient, body *models.AuthenticationInfo) (rsp *models.UEAuthenticationCtx, err error) {
 	if body == nil {
 		err = fmt.Errorf("body is required")
 		return
 	}
 	request := sbi.DefaultRequest()
 	var response sbi.Response
-	request.Path = fmt.Sprintf("%s/prose-authentications", PATH_ROOT)
+	request.Path = fmt.Sprintf("%s/ue-authentications", PATH_ROOT)
 	if response, err = cli.Send(request); err != nil {
 		return
 	}
 	switch response.StatusCode {
 	case 201:
-		rsp = new(ProSeAuthenticationCtx)
+		rsp = new(UEAuthenticationCtx)
 		response.Body = rsp
 		err = cli.DecodeResponse(response)
-	case 400, 403, 404, 500:
+	case 400, 403, 404, 500, 501:
+		prob := new(ProblemDetails)
+		response.Body = prob
+		if err = cli.DecodeResponse(response); err == nil {
+			err = sbi.ErrorFromProblemDetails(prob)
+		}
+	default:
+		err = fmt.Errorf("%d, %s", response.StatusCode, response.Status)
+	}
+	return
+}
+
+// Summary:
+// Description:
+// Path: /ue-authentications/deregister
+// Path Params:
+func UeAuthenticationsDeregisterPost(cli sbi.ConsumerClient, body *models.DeregistrationInfo) (err error) {
+	if body == nil {
+		err = fmt.Errorf("body is required")
+		return
+	}
+	request := sbi.DefaultRequest()
+	var response sbi.Response
+	request.Path = fmt.Sprintf("%s/ue-authentications/deregister", PATH_ROOT)
+	if response, err = cli.Send(request); err != nil {
+		return
+	}
+	switch response.StatusCode {
+	case 204:
+		return
+	case 404:
 		prob := new(ProblemDetails)
 		response.Body = prob
 		if err = cli.DecodeResponse(response); err == nil {
@@ -46,7 +108,7 @@ func Post(cli sbi.ConsumerClient, body *models.ProSeAuthenticationInfo) (rsp *mo
 // Description:
 // Path: /ue-authentications/:authCtxId/5g-aka-confirmation
 // Path Params: authCtxId
-func Put(cli sbi.ConsumerClient, authCtxId string, body *models.ConfirmationData) (rsp *models.ConfirmationDataResponse, err error) {
+func UeAuthentications5gAkaConfirmationPut(cli sbi.ConsumerClient, authCtxId string, body *models.ConfirmationData) (rsp *models.ConfirmationDataResponse, err error) {
 	if len(authCtxId) == 0 {
 		err = fmt.Errorf("authCtxId is required")
 		return
@@ -108,25 +170,57 @@ func EapAuthMethod(cli sbi.ConsumerClient, authCtxId string, body *models.EapSes
 
 // Summary:
 // Description:
-// Path: /prose-authentications/:authCtxId/prose-auth
-// Path Params: authCtxId
-func ProseAuth(cli sbi.ConsumerClient, authCtxId string, body *models.ProSeEapSession) (rsp *models.ProseAuthResponse, err error) {
-	if len(authCtxId) == 0 {
-		err = fmt.Errorf("authCtxId is required")
+// Path: /rg-authentications
+// Path Params:
+func RgAuthenticationsPost(cli sbi.ConsumerClient, body *models.RgAuthenticationInfo) (rsp *models.RgAuthCtx, err error) {
+	if body == nil {
+		err = fmt.Errorf("body is required")
 		return
 	}
 	request := sbi.DefaultRequest()
 	var response sbi.Response
-	request.Path = fmt.Sprintf("%s/prose-authentications/%s/prose-auth", PATH_ROOT, authCtxId)
+	request.Path = fmt.Sprintf("%s/rg-authentications", PATH_ROOT)
 	if response, err = cli.Send(request); err != nil {
 		return
 	}
 	switch response.StatusCode {
-	case 200:
-		rsp = new(ProseAuthResponse)
+	case 201:
+		rsp = new(RgAuthCtx)
 		response.Body = rsp
 		err = cli.DecodeResponse(response)
-	case 400, 500:
+	case 403, 400, 404:
+		prob := new(ProblemDetails)
+		response.Body = prob
+		if err = cli.DecodeResponse(response); err == nil {
+			err = sbi.ErrorFromProblemDetails(prob)
+		}
+	default:
+		err = fmt.Errorf("%d, %s", response.StatusCode, response.Status)
+	}
+	return
+}
+
+// Summary:
+// Description:
+// Path: /prose-authentications
+// Path Params:
+func ProseAuthenticationsPost(cli sbi.ConsumerClient, body *models.ProSeAuthenticationInfo) (rsp *models.ProSeAuthenticationCtx, err error) {
+	if body == nil {
+		err = fmt.Errorf("body is required")
+		return
+	}
+	request := sbi.DefaultRequest()
+	var response sbi.Response
+	request.Path = fmt.Sprintf("%s/prose-authentications", PATH_ROOT)
+	if response, err = cli.Send(request); err != nil {
+		return
+	}
+	switch response.StatusCode {
+	case 201:
+		rsp = new(ProSeAuthenticationCtx)
+		response.Body = rsp
+		err = cli.DecodeResponse(response)
+	case 400, 403, 404, 500:
 		prob := new(ProblemDetails)
 		response.Body = prob
 		if err = cli.DecodeResponse(response); err == nil {
