@@ -1,29 +1,29 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Fri Nov 15 22:09:29 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Fri Nov 15 22:12:02 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
 package models
 
 type AccessTokenReq struct {
-	RequesterSnssaiList  []Snssai    `json:"requesterSnssaiList,omitempty"`
-	RequesterSnpnList    []PlmnIdNid `json:"requesterSnpnList,omitempty"`
-	TargetSnpn           *PlmnIdNid  `json:"targetSnpn,omitempty"`
-	NfInstanceId         string      `json:"nfInstanceId"`
 	RequesterPlmn        *PlmnId     `json:"requesterPlmn,omitempty"`
 	RequesterPlmnList    []PlmnId    `json:"requesterPlmnList,omitempty"`
-	RequesterFqdn        string      `json:"requesterFqdn,omitempty"`
-	TargetPlmn           *PlmnId     `json:"targetPlmn,omitempty"`
-	TargetNfType         NFType      `json:"targetNfType,omitempty"`
-	HnrfAccessTokenUri   string      `json:"hnrfAccessTokenUri,omitempty"`
-	SourceNfInstanceId   string      `json:"sourceNfInstanceId,omitempty"`
 	TargetNfSetId        string      `json:"targetNfSetId,omitempty"`
 	TargetNfServiceSetId string      `json:"targetNfServiceSetId,omitempty"`
+	HnrfAccessTokenUri   string      `json:"hnrfAccessTokenUri,omitempty"`
+	NfInstanceId         string      `json:"nfInstanceId"`
+	TargetNfType         NFType      `json:"targetNfType,omitempty"`
+	TargetSnpn           *PlmnIdNid  `json:"targetSnpn,omitempty"`
+	TargetNsiList        []string    `json:"targetNsiList,omitempty"`
+	SourceNfInstanceId   string      `json:"sourceNfInstanceId,omitempty"`
 	GrantType            GrantType   `json:"grant_type"`
 	NfType               NFType      `json:"nfType,omitempty"`
 	Scope                string      `json:"scope"`
+	RequesterSnssaiList  []Snssai    `json:"requesterSnssaiList,omitempty"`
+	RequesterFqdn        string      `json:"requesterFqdn,omitempty"`
 	TargetNfInstanceId   string      `json:"targetNfInstanceId,omitempty"`
+	RequesterSnpnList    []PlmnIdNid `json:"requesterSnpnList,omitempty"`
+	TargetPlmn           *PlmnId     `json:"targetPlmn,omitempty"`
 	TargetSnssaiList     []Snssai    `json:"targetSnssaiList,omitempty"`
-	TargetNsiList        []string    `json:"targetNsiList,omitempty"`
 }

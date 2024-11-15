@@ -1,3 +1,9 @@
+/*
+This file is generated with a SBI APIs generator tool developed by ETRI
+Generated at Fri Nov 15 22:11:54 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Do not modify
+*/
+
 package NudmUEAU
 
 import (
@@ -6,6 +12,12 @@ import (
 )
 
 var _routes = []sbi.Route{
+	{
+		Label:   "ConfirmAuth",
+		Method:  http.MethodPost,
+		Path:    "/:supi/auth-events",
+		Handler: "OnConfirmAuth",
+	},
 	{
 		Label:   "GenerateAv",
 		Method:  http.MethodPost,
@@ -41,12 +53,6 @@ var _routes = []sbi.Route{
 		Method:  http.MethodGet,
 		Path:    "/:supiOrSuci/security-information-rg",
 		Handler: "OnGetRgAuthData",
-	},
-	{
-		Label:   "ConfirmAuth",
-		Method:  http.MethodPost,
-		Path:    "/:supi/auth-events",
-		Handler: "OnConfirmAuth",
 	},
 }
 

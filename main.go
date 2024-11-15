@@ -602,7 +602,7 @@ func writeApis(title string, rootPath string, operations map[string]Operation) {
 	//write routes.go
 	fr, _ := os.Create(titleDir + "/routes.go")
 	defer fr.Close()
-	writeFileHeader(fc)
+	writeFileHeader(fr)
 	fmt.Fprintf(fr, "package %s\n", title)
 	fmt.Fprintf(fr, "import (\n\"%s\"\n\"net/http\")\n", sbiPackage)
 

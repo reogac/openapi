@@ -1,16 +1,16 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Fri Nov 15 22:09:28 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Fri Nov 15 22:12:01 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
 package models
 
 type RatFreqInformation struct {
-	RatType         RatType           `json:"ratType,omitempty"`
-	SvcExpThreshold *ThresholdLevel   `json:"svcExpThreshold,omitempty"`
-	MatchingDir     MatchingDirection `json:"matchingDir,omitempty"`
 	AllFreq         *bool             `json:"allFreq,omitempty"`
 	AllRat          *bool             `json:"allRat,omitempty"`
 	Freq            *int              `json:"freq,omitempty"`
+	RatType         RatType           `json:"ratType,omitempty"`
+	SvcExpThreshold *ThresholdLevel   `json:"svcExpThreshold,omitempty"`
+	MatchingDir     MatchingDirection `json:"matchingDir,omitempty"`
 }

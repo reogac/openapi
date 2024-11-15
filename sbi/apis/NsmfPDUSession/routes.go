@@ -1,3 +1,9 @@
+/*
+This file is generated with a SBI APIs generator tool developed by ETRI
+Generated at Fri Nov 15 22:12:00 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Do not modify
+*/
+
 package NsmfPDUSession
 
 import (
@@ -7,28 +13,10 @@ import (
 
 var _routes = []sbi.Route{
 	{
-		Label:   "SendMoData",
+		Label:   "ReleasePduSession",
 		Method:  http.MethodPost,
-		Path:    "/sm-contexts/:smContextRef/send-mo-data",
-		Handler: "OnSendMoData",
-	},
-	{
-		Label:   "UpdatePduSession",
-		Method:  http.MethodPost,
-		Path:    "/pdu-sessions/:pduSessionRef/modify",
-		Handler: "OnUpdatePduSession",
-	},
-	{
-		Label:   "TransferMoData",
-		Method:  http.MethodPost,
-		Path:    "/pdu-sessions/:pduSessionRef/transfer-mo-data",
-		Handler: "OnTransferMoData",
-	},
-	{
-		Label:   "PostSmContexts",
-		Method:  http.MethodPost,
-		Path:    "/sm-contexts",
-		Handler: "OnPostSmContexts",
+		Path:    "/pdu-sessions/:pduSessionRef/release",
+		Handler: "OnReleasePduSession",
 	},
 	{
 		Label:   "RetrieveSmContext",
@@ -49,16 +37,34 @@ var _routes = []sbi.Route{
 		Handler: "OnReleaseSmContext",
 	},
 	{
+		Label:   "UpdatePduSession",
+		Method:  http.MethodPost,
+		Path:    "/pdu-sessions/:pduSessionRef/modify",
+		Handler: "OnUpdatePduSession",
+	},
+	{
+		Label:   "TransferMoData",
+		Method:  http.MethodPost,
+		Path:    "/pdu-sessions/:pduSessionRef/transfer-mo-data",
+		Handler: "OnTransferMoData",
+	},
+	{
+		Label:   "PostSmContexts",
+		Method:  http.MethodPost,
+		Path:    "/sm-contexts",
+		Handler: "OnPostSmContexts",
+	},
+	{
+		Label:   "SendMoData",
+		Method:  http.MethodPost,
+		Path:    "/sm-contexts/:smContextRef/send-mo-data",
+		Handler: "OnSendMoData",
+	},
+	{
 		Label:   "PostPduSessions",
 		Method:  http.MethodPost,
 		Path:    "/pdu-sessions",
 		Handler: "OnPostPduSessions",
-	},
-	{
-		Label:   "ReleasePduSession",
-		Method:  http.MethodPost,
-		Path:    "/pdu-sessions/:pduSessionRef/release",
-		Handler: "OnReleasePduSession",
 	},
 	{
 		Label:   "RetrievePduSession",

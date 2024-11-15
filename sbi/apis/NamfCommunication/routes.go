@@ -1,3 +1,9 @@
+/*
+This file is generated with a SBI APIs generator tool developed by ETRI
+Generated at Fri Nov 15 22:12:01 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Do not modify
+*/
+
 package NamfCommunication
 
 import (
@@ -7,10 +13,22 @@ import (
 
 var _routes = []sbi.Route{
 	{
-		Label:   "N1N2MessageTransfer",
+		Label:   "UEContextTransfer",
 		Method:  http.MethodPost,
-		Path:    "/ue-contexts/:ueContextId/n1-n2-messages",
-		Handler: "OnN1N2MessageTransfer",
+		Path:    "/ue-contexts/:ueContextId/transfer",
+		Handler: "OnUEContextTransfer",
+	},
+	{
+		Label:   "RegistrationStatusUpdate",
+		Method:  http.MethodPost,
+		Path:    "/ue-contexts/:ueContextId/transfer-update",
+		Handler: "OnRegistrationStatusUpdate",
+	},
+	{
+		Label:   "RelocateUEContext",
+		Method:  http.MethodPost,
+		Path:    "/ue-contexts/:ueContextId/relocate",
+		Handler: "OnRelocateUEContext",
 	},
 	{
 		Label:   "N1N2MessageSubscribe",
@@ -19,34 +37,16 @@ var _routes = []sbi.Route{
 		Handler: "OnN1N2MessageSubscribe",
 	},
 	{
-		Label:   "N1N2MessageUnSubscribe",
-		Method:  http.MethodGet,
-		Path:    "/ue-contexts/:ueContextId/n1-n2-messages/subscriptions/:subscriptionId",
-		Handler: "OnN1N2MessageUnSubscribe",
-	},
-	{
-		Label:   "AMFStatusChangeSubscribeModfy",
-		Method:  http.MethodGet,
-		Path:    "/subscriptions/:subscriptionId",
-		Handler: "OnAMFStatusChangeSubscribeModfy",
-	},
-	{
-		Label:   "CreateUEContext",
-		Method:  http.MethodGet,
-		Path:    "/ue-contexts/:ueContextId",
-		Handler: "OnCreateUEContext",
-	},
-	{
-		Label:   "UEContextTransfer",
+		Label:   "NonUeN2MessageTransfer",
 		Method:  http.MethodPost,
-		Path:    "/ue-contexts/:ueContextId/transfer",
-		Handler: "OnUEContextTransfer",
+		Path:    "/non-ue-n2-messages/transfer",
+		Handler: "OnNonUeN2MessageTransfer",
 	},
 	{
-		Label:   "CancelRelocateUEContext",
+		Label:   "ReleaseUEContext",
 		Method:  http.MethodPost,
-		Path:    "/ue-contexts/:ueContextId/cancel-relocate",
-		Handler: "OnCancelRelocateUEContext",
+		Path:    "/ue-contexts/:ueContextId/release",
+		Handler: "OnReleaseUEContext",
 	},
 	{
 		Label:   "NonUeN2InfoUnSubscribe",
@@ -61,22 +61,28 @@ var _routes = []sbi.Route{
 		Handler: "OnAMFStatusChangeSubscribe",
 	},
 	{
-		Label:   "RegistrationStatusUpdate",
-		Method:  http.MethodPost,
-		Path:    "/ue-contexts/:ueContextId/transfer-update",
-		Handler: "OnRegistrationStatusUpdate",
+		Label:   "AMFStatusChangeSubscribeModfy",
+		Method:  http.MethodGet,
+		Path:    "/subscriptions/:subscriptionId",
+		Handler: "OnAMFStatusChangeSubscribeModfy",
 	},
 	{
-		Label:   "NonUeN2InfoSubscribe",
+		Label:   "N1N2MessageTransfer",
 		Method:  http.MethodPost,
-		Path:    "/non-ue-n2-messages/subscriptions",
-		Handler: "OnNonUeN2InfoSubscribe",
+		Path:    "/ue-contexts/:ueContextId/n1-n2-messages",
+		Handler: "OnN1N2MessageTransfer",
 	},
 	{
-		Label:   "ReleaseUEContext",
+		Label:   "CancelRelocateUEContext",
 		Method:  http.MethodPost,
-		Path:    "/ue-contexts/:ueContextId/release",
-		Handler: "OnReleaseUEContext",
+		Path:    "/ue-contexts/:ueContextId/cancel-relocate",
+		Handler: "OnCancelRelocateUEContext",
+	},
+	{
+		Label:   "N1N2MessageUnSubscribe",
+		Method:  http.MethodGet,
+		Path:    "/ue-contexts/:ueContextId/n1-n2-messages/subscriptions/:subscriptionId",
+		Handler: "OnN1N2MessageUnSubscribe",
 	},
 	{
 		Label:   "EBIAssignment",
@@ -85,16 +91,16 @@ var _routes = []sbi.Route{
 		Handler: "OnEBIAssignment",
 	},
 	{
-		Label:   "RelocateUEContext",
+		Label:   "NonUeN2InfoSubscribe",
 		Method:  http.MethodPost,
-		Path:    "/ue-contexts/:ueContextId/relocate",
-		Handler: "OnRelocateUEContext",
+		Path:    "/non-ue-n2-messages/subscriptions",
+		Handler: "OnNonUeN2InfoSubscribe",
 	},
 	{
-		Label:   "NonUeN2MessageTransfer",
-		Method:  http.MethodPost,
-		Path:    "/non-ue-n2-messages/transfer",
-		Handler: "OnNonUeN2MessageTransfer",
+		Label:   "CreateUEContext",
+		Method:  http.MethodGet,
+		Path:    "/ue-contexts/:ueContextId",
+		Handler: "OnCreateUEContext",
 	},
 }
 

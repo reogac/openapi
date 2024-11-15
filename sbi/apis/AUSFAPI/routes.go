@@ -1,3 +1,9 @@
+/*
+This file is generated with a SBI APIs generator tool developed by ETRI
+Generated at Fri Nov 15 22:12:02 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Do not modify
+*/
+
 package AUSFAPI
 
 import (
@@ -6,18 +12,6 @@ import (
 )
 
 var _routes = []sbi.Route{
-	{
-		Label:   "UeAuthentications5gAkaConfirmationPut",
-		Method:  http.MethodGet,
-		Path:    "/ue-authentications/:authCtxId/5g-aka-confirmation",
-		Handler: "OnUeAuthentications5gAkaConfirmationPut",
-	},
-	{
-		Label:   "EapAuthMethod",
-		Method:  http.MethodPost,
-		Path:    "/ue-authentications/:authCtxId/eap-session",
-		Handler: "OnEapAuthMethod",
-	},
 	{
 		Label:   "RgAuthenticationsPost",
 		Method:  http.MethodPost,
@@ -47,6 +41,18 @@ var _routes = []sbi.Route{
 		Method:  http.MethodPost,
 		Path:    "/ue-authentications/deregister",
 		Handler: "OnUeAuthenticationsDeregisterPost",
+	},
+	{
+		Label:   "UeAuthentications5gAkaConfirmationPut",
+		Method:  http.MethodGet,
+		Path:    "/ue-authentications/:authCtxId/5g-aka-confirmation",
+		Handler: "OnUeAuthentications5gAkaConfirmationPut",
+	},
+	{
+		Label:   "EapAuthMethod",
+		Method:  http.MethodPost,
+		Path:    "/ue-authentications/:authCtxId/eap-session",
+		Handler: "OnEapAuthMethod",
 	},
 }
 

@@ -1,6 +1,6 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Fri Nov 15 22:09:29 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Fri Nov 15 22:12:02 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
@@ -15,6 +15,44 @@ import (
 const (
 	PATH_ROOT string = "nausf-auth/v1"
 )
+
+// Summary:
+// Description:
+// Path: /ue-authentications/:authCtxId/eap-session
+// Path Params: authCtxId
+func EapAuthMethod(cli sbi.ConsumerClient, authCtxId string, body *models.EapSession) (rsp *models.EapAuthMethodResponse, err error) {
+
+	request := sbi.DefaultRequest()
+
+	request.Method = http.MethodPost
+	if len(authCtxId) == 0 {
+		err = fmt.Errorf("authCtxId is required")
+		return
+	}
+	request.Body = body
+
+	request.Path = fmt.Sprintf("%s/ue-authentications/%s/eap-session", PATH_ROOT, authCtxId)
+	var response sbi.Response
+	if response, err = cli.Send(request); err != nil {
+		return
+	}
+
+	switch response.StatusCode {
+	case 200:
+		rsp = new(EapAuthMethodResponse)
+		response.Body = rsp
+		err = cli.DecodeResponse(response)
+	case 400, 500:
+		prob := new(ProblemDetails)
+		response.Body = prob
+		if err = cli.DecodeResponse(response); err == nil {
+			err = sbi.ErrorFromProblemDetails(prob)
+		}
+	default:
+		err = fmt.Errorf("%d, %s", response.StatusCode, response.Status)
+	}
+	return
+}
 
 // Summary:
 // Description:
@@ -241,47 +279,3 @@ func UeAuthentications5gAkaConfirmationPut(cli sbi.ConsumerClient, authCtxId str
 	}
 	return
 }
-
-// Summary:
-// Description:
-// Path: /ue-authentications/:authCtxId/eap-session
-// Path Params: authCtxId
-func EapAuthMethod(cli sbi.ConsumerClient, authCtxId string, body *models.EapSession) (rsp *models.EapAuthMethodResponse, err error) {
-
-	request := sbi.DefaultRequest()
-
-	request.Method = http.MethodPost
-	if len(authCtxId) == 0 {
-		err = fmt.Errorf("authCtxId is required")
-		return
-	}
-	request.Body = body
-
-	request.Path = fmt.Sprintf("%s/ue-authentications/%s/eap-session", PATH_ROOT, authCtxId)
-	var response sbi.Response
-	if response, err = cli.Send(request); err != nil {
-		return
-	}
-
-	switch response.StatusCode {
-	case 200:
-		rsp = new(EapAuthMethodResponse)
-		response.Body = rsp
-		err = cli.DecodeResponse(response)
-	case 400, 500:
-		prob := new(ProblemDetails)
-		response.Body = prob
-		if err = cli.DecodeResponse(response); err == nil {
-			err = sbi.ErrorFromProblemDetails(prob)
-		}
-	default:
-		err = fmt.Errorf("%d, %s", response.StatusCode, response.Status)
-	}
-	return
-}
-
-/*
-This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Fri Nov 15 22:09:29 KST 2024 by TungTQ<tqtung@etri.re.kr>
-Do not modify
-*/

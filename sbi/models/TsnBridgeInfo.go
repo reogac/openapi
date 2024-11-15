@@ -1,14 +1,14 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Fri Nov 15 22:09:25 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Fri Nov 15 22:11:57 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
 package models
 
 type TsnBridgeInfo struct {
+	DsttAddr      string `json:"dsttAddr,omitempty"`
 	DsttPortNum   *int   `json:"dsttPortNum,omitempty"`
 	DsttResidTime *int   `json:"dsttResidTime,omitempty"`
 	BridgeId      *int   `json:"bridgeId,omitempty"`
-	DsttAddr      string `json:"dsttAddr,omitempty"`
 }

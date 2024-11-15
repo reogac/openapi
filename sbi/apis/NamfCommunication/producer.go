@@ -1,6 +1,6 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Fri Nov 15 22:09:28 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Fri Nov 15 22:12:01 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
@@ -11,212 +11,6 @@ import (
 	"sbi"
 	"sbi/models"
 )
-
-func OnRegistrationStatusUpdate(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-
-	// read 'ueContextId'
-	var ueContextId string
-	ueContextId = ctx.Param("ueContextId")
-	if len(ueContextId) == 0 {
-		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
-		return
-	}
-
-	// decode request body
-	body := new(models.UeRegStatusUpdateReqData)
-	if err = ctx.DecodeRequest(body); err != nil {
-		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
-		return
-	}
-
-	// call application handler
-	rsp, prob := prod.HandleRegistrationStatusUpdate(ueContextId, body)
-
-	// check for success response
-	if rsp != nil {
-		response.SetBody(200, rsp)
-		return
-	}
-
-	// check for problem
-	if prob != nil {
-		response.SetBody(models.ProblemDetailsCode(prob), prob)
-		return
-	}
-	return
-}
-
-func OnNonUeN2InfoSubscribe(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-
-	// decode request body
-	body := new(models.NonUeN2InfoSubscriptionCreateData)
-	if err = ctx.DecodeRequest(body); err != nil {
-		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
-		return
-	}
-
-	// call application handler
-	rsp, prob := prod.HandleNonUeN2InfoSubscribe(body)
-
-	// check for success response
-	if rsp != nil {
-		response.SetBody(201, rsp)
-		return
-	}
-
-	// check for problem
-	if prob != nil {
-		response.SetBody(models.ProblemDetailsCode(prob), prob)
-		return
-	}
-	return
-}
-
-func OnReleaseUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-
-	// read 'ueContextId'
-	var ueContextId string
-	ueContextId = ctx.Param("ueContextId")
-	if len(ueContextId) == 0 {
-		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
-		return
-	}
-
-	// decode request body
-	body := new(models.UEContextRelease)
-	if err = ctx.DecodeRequest(body); err != nil {
-		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
-		return
-	}
-
-	// call application handler
-	prob := prod.HandleReleaseUEContext(ueContextId, body)
-
-	// check for problem
-	if prob != nil {
-		response.SetBody(models.ProblemDetailsCode(prob), prob)
-		return
-	}
-	return
-}
-
-func OnEBIAssignment(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-
-	// read 'ueContextId'
-	var ueContextId string
-	ueContextId = ctx.Param("ueContextId")
-	if len(ueContextId) == 0 {
-		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
-		return
-	}
-
-	// decode request body
-	body := new(models.AssignEbiData)
-	if err = ctx.DecodeRequest(body); err != nil {
-		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
-		return
-	}
-
-	// call application handler
-	rsp, ersp, prob := prod.HandleEBIAssignment(ueContextId, body)
-
-	// check for success response
-	if rsp != nil {
-		response.SetBody(200, rsp)
-		return
-	}
-
-	// check for defined error
-	if ersp != nil {
-		response.SetBody(models.StatusFromAssignEbiError(ersp), ersp)
-		return
-	}
-
-	// check for problem
-	if prob != nil {
-		response.SetBody(models.ProblemDetailsCode(prob), prob)
-		return
-	}
-	return
-}
-
-func OnRelocateUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-
-	// read 'ueContextId'
-	var ueContextId string
-	ueContextId = ctx.Param("ueContextId")
-	if len(ueContextId) == 0 {
-		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
-		return
-	}
-
-	// decode request body
-	body := new(models.RelocateUEContextRequest)
-	if err = ctx.DecodeRequest(body); err != nil {
-		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
-		return
-	}
-
-	// call application handler
-	rsp, prob := prod.HandleRelocateUEContext(ueContextId, body)
-
-	// check for success response
-	if rsp != nil {
-		response.SetBody(201, rsp)
-		return
-	}
-
-	// check for problem
-	if prob != nil {
-		response.SetBody(models.ProblemDetailsCode(prob), prob)
-		return
-	}
-	return
-}
-
-func OnNonUeN2MessageTransfer(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-
-	// decode request body
-	body := new(models.NonUeN2MessageTransferRequest)
-	if err = ctx.DecodeRequest(body); err != nil {
-		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
-		return
-	}
-
-	// call application handler
-	rsp, ersp, prob := prod.HandleNonUeN2MessageTransfer(body)
-
-	// check for success response
-	if rsp != nil {
-		response.SetBody(200, rsp)
-		return
-	}
-
-	// check for defined error
-	if ersp != nil {
-		response.SetBody(models.StatusFromN2InformationTransferError(ersp), ersp)
-		return
-	}
-
-	// check for problem
-	if prob != nil {
-		response.SetBody(models.ProblemDetailsCode(prob), prob)
-		return
-	}
-	return
-}
 
 func OnN1N2MessageTransfer(ctx sbi.RequestContext, handler any) (response sbi.Response) {
 	prod := handler.(Producer)
@@ -251,215 +45,6 @@ func OnN1N2MessageTransfer(ctx sbi.RequestContext, handler any) (response sbi.Re
 		response.SetBody(models.StatusFromN1N2MessageTransferError(ersp), ersp)
 		return
 	}
-
-	// check for problem
-	if prob != nil {
-		response.SetBody(models.ProblemDetailsCode(prob), prob)
-		return
-	}
-	return
-}
-
-func OnN1N2MessageSubscribe(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-
-	// read 'ueContextId'
-	var ueContextId string
-	ueContextId = ctx.Param("ueContextId")
-	if len(ueContextId) == 0 {
-		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
-		return
-	}
-
-	// decode request body
-	body := new(models.UeN1N2InfoSubscriptionCreateData)
-	if err = ctx.DecodeRequest(body); err != nil {
-		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
-		return
-	}
-
-	// call application handler
-	rsp, prob := prod.HandleN1N2MessageSubscribe(ueContextId, body)
-
-	// check for success response
-	if rsp != nil {
-		response.SetBody(201, rsp)
-		return
-	}
-
-	// check for problem
-	if prob != nil {
-		response.SetBody(models.ProblemDetailsCode(prob), prob)
-		return
-	}
-	return
-}
-
-func OnN1N2MessageUnSubscribe(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var params N1N2MessageUnSubscribeParams
-
-	// read 'ueContextId'
-	params.UeContextId = ctx.Param("ueContextId")
-	if len(params.UeContextId) == 0 {
-		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
-		return
-	}
-
-	// read 'subscriptionId'
-	params.SubscriptionId = ctx.Param("subscriptionId")
-	if len(params.SubscriptionId) == 0 {
-		response.SetBody(400, models.CreateProblemDetails(400, "subscriptionId is required"))
-		return
-	}
-
-	// call application handler
-	prob := prod.HandleN1N2MessageUnSubscribe(&params)
-
-	// check for problem
-	if prob != nil {
-		response.SetBody(models.ProblemDetailsCode(prob), prob)
-		return
-	}
-	return
-}
-
-func OnAMFStatusChangeSubscribeModfy(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-
-	// read 'subscriptionId'
-	var subscriptionId string
-	subscriptionId = ctx.Param("subscriptionId")
-	if len(subscriptionId) == 0 {
-		response.SetBody(400, models.CreateProblemDetails(400, "subscriptionId is required"))
-		return
-	}
-
-	// decode request body
-	body := new(models.SubscriptionData)
-	if err = ctx.DecodeRequest(body); err != nil {
-		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
-		return
-	}
-
-	// call application handler
-	rsp, prob := prod.HandleAMFStatusChangeSubscribeModfy(subscriptionId, body)
-
-	// check for success response
-	if rsp != nil {
-		response.SetBody(200, rsp)
-		return
-	}
-
-	// check for problem
-	if prob != nil {
-		response.SetBody(models.ProblemDetailsCode(prob), prob)
-		return
-	}
-	return
-}
-
-func OnCreateUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-
-	// read 'ueContextId'
-	var ueContextId string
-	ueContextId = ctx.Param("ueContextId")
-	if len(ueContextId) == 0 {
-		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
-		return
-	}
-
-	// decode request body
-	body := new(models.CreateUEContextRequest)
-	if err = ctx.DecodeRequest(body); err != nil {
-		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
-		return
-	}
-
-	// call application handler
-	rsp, ersp, prob := prod.HandleCreateUEContext(ueContextId, body)
-
-	// check for success response
-	if rsp != nil {
-		response.SetBody(201, rsp)
-		return
-	}
-
-	// check for defined error
-	if ersp != nil {
-		response.SetBody(models.StatusFromUeContextCreateError(ersp), ersp)
-		return
-	}
-
-	// check for problem
-	if prob != nil {
-		response.SetBody(models.ProblemDetailsCode(prob), prob)
-		return
-	}
-	return
-}
-
-func OnUEContextTransfer(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-
-	// read 'ueContextId'
-	var ueContextId string
-	ueContextId = ctx.Param("ueContextId")
-	if len(ueContextId) == 0 {
-		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
-		return
-	}
-
-	// decode request body
-	body := new(models.UEContextTransferRequest)
-	if err = ctx.DecodeRequest(body); err != nil {
-		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
-		return
-	}
-
-	// call application handler
-	rsp, prob := prod.HandleUEContextTransfer(ueContextId, body)
-
-	// check for success response
-	if rsp != nil {
-		response.SetBody(200, rsp)
-		return
-	}
-
-	// check for problem
-	if prob != nil {
-		response.SetBody(models.ProblemDetailsCode(prob), prob)
-		return
-	}
-	return
-}
-
-func OnCancelRelocateUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-
-	// read 'ueContextId'
-	var ueContextId string
-	ueContextId = ctx.Param("ueContextId")
-	if len(ueContextId) == 0 {
-		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
-		return
-	}
-
-	// decode request body
-	body := new(models.CancelRelocateUEContextRequest)
-	if err = ctx.DecodeRequest(body); err != nil {
-		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
-		return
-	}
-
-	// call application handler
-	prob := prod.HandleCancelRelocateUEContext(ueContextId, body)
 
 	// check for problem
 	if prob != nil {
@@ -519,34 +104,449 @@ func OnAMFStatusChangeSubscribe(ctx sbi.RequestContext, handler any) (response s
 	return
 }
 
+func OnAMFStatusChangeSubscribeModfy(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+
+	// read 'subscriptionId'
+	var subscriptionId string
+	subscriptionId = ctx.Param("subscriptionId")
+	if len(subscriptionId) == 0 {
+		response.SetBody(400, models.CreateProblemDetails(400, "subscriptionId is required"))
+		return
+	}
+
+	// decode request body
+	body := new(models.SubscriptionData)
+	if err = ctx.DecodeRequest(body); err != nil {
+		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
+		return
+	}
+
+	// call application handler
+	rsp, prob := prod.HandleAMFStatusChangeSubscribeModfy(subscriptionId, body)
+
+	// check for success response
+	if rsp != nil {
+		response.SetBody(200, rsp)
+		return
+	}
+
+	// check for problem
+	if prob != nil {
+		response.SetBody(models.ProblemDetailsCode(prob), prob)
+		return
+	}
+	return
+}
+
+func OnEBIAssignment(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+
+	// read 'ueContextId'
+	var ueContextId string
+	ueContextId = ctx.Param("ueContextId")
+	if len(ueContextId) == 0 {
+		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
+		return
+	}
+
+	// decode request body
+	body := new(models.AssignEbiData)
+	if err = ctx.DecodeRequest(body); err != nil {
+		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
+		return
+	}
+
+	// call application handler
+	rsp, ersp, prob := prod.HandleEBIAssignment(ueContextId, body)
+
+	// check for success response
+	if rsp != nil {
+		response.SetBody(200, rsp)
+		return
+	}
+
+	// check for defined error
+	if ersp != nil {
+		response.SetBody(models.StatusFromAssignEbiError(ersp), ersp)
+		return
+	}
+
+	// check for problem
+	if prob != nil {
+		response.SetBody(models.ProblemDetailsCode(prob), prob)
+		return
+	}
+	return
+}
+
+func OnCancelRelocateUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+
+	// read 'ueContextId'
+	var ueContextId string
+	ueContextId = ctx.Param("ueContextId")
+	if len(ueContextId) == 0 {
+		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
+		return
+	}
+
+	// decode request body
+	body := new(models.CancelRelocateUEContextRequest)
+	if err = ctx.DecodeRequest(body); err != nil {
+		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
+		return
+	}
+
+	// call application handler
+	prob := prod.HandleCancelRelocateUEContext(ueContextId, body)
+
+	// check for problem
+	if prob != nil {
+		response.SetBody(models.ProblemDetailsCode(prob), prob)
+		return
+	}
+	return
+}
+
+func OnN1N2MessageUnSubscribe(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var params N1N2MessageUnSubscribeParams
+
+	// read 'ueContextId'
+	params.UeContextId = ctx.Param("ueContextId")
+	if len(params.UeContextId) == 0 {
+		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
+		return
+	}
+
+	// read 'subscriptionId'
+	params.SubscriptionId = ctx.Param("subscriptionId")
+	if len(params.SubscriptionId) == 0 {
+		response.SetBody(400, models.CreateProblemDetails(400, "subscriptionId is required"))
+		return
+	}
+
+	// call application handler
+	prob := prod.HandleN1N2MessageUnSubscribe(&params)
+
+	// check for problem
+	if prob != nil {
+		response.SetBody(models.ProblemDetailsCode(prob), prob)
+		return
+	}
+	return
+}
+
+func OnCreateUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+
+	// read 'ueContextId'
+	var ueContextId string
+	ueContextId = ctx.Param("ueContextId")
+	if len(ueContextId) == 0 {
+		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
+		return
+	}
+
+	// decode request body
+	body := new(models.CreateUEContextRequest)
+	if err = ctx.DecodeRequest(body); err != nil {
+		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
+		return
+	}
+
+	// call application handler
+	rsp, ersp, prob := prod.HandleCreateUEContext(ueContextId, body)
+
+	// check for success response
+	if rsp != nil {
+		response.SetBody(201, rsp)
+		return
+	}
+
+	// check for defined error
+	if ersp != nil {
+		response.SetBody(models.StatusFromUeContextCreateError(ersp), ersp)
+		return
+	}
+
+	// check for problem
+	if prob != nil {
+		response.SetBody(models.ProblemDetailsCode(prob), prob)
+		return
+	}
+	return
+}
+
+func OnNonUeN2InfoSubscribe(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+
+	// decode request body
+	body := new(models.NonUeN2InfoSubscriptionCreateData)
+	if err = ctx.DecodeRequest(body); err != nil {
+		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
+		return
+	}
+
+	// call application handler
+	rsp, prob := prod.HandleNonUeN2InfoSubscribe(body)
+
+	// check for success response
+	if rsp != nil {
+		response.SetBody(201, rsp)
+		return
+	}
+
+	// check for problem
+	if prob != nil {
+		response.SetBody(models.ProblemDetailsCode(prob), prob)
+		return
+	}
+	return
+}
+
+func OnNonUeN2MessageTransfer(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+
+	// decode request body
+	body := new(models.NonUeN2MessageTransferRequest)
+	if err = ctx.DecodeRequest(body); err != nil {
+		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
+		return
+	}
+
+	// call application handler
+	rsp, ersp, prob := prod.HandleNonUeN2MessageTransfer(body)
+
+	// check for success response
+	if rsp != nil {
+		response.SetBody(200, rsp)
+		return
+	}
+
+	// check for defined error
+	if ersp != nil {
+		response.SetBody(models.StatusFromN2InformationTransferError(ersp), ersp)
+		return
+	}
+
+	// check for problem
+	if prob != nil {
+		response.SetBody(models.ProblemDetailsCode(prob), prob)
+		return
+	}
+	return
+}
+
+func OnReleaseUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+
+	// read 'ueContextId'
+	var ueContextId string
+	ueContextId = ctx.Param("ueContextId")
+	if len(ueContextId) == 0 {
+		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
+		return
+	}
+
+	// decode request body
+	body := new(models.UEContextRelease)
+	if err = ctx.DecodeRequest(body); err != nil {
+		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
+		return
+	}
+
+	// call application handler
+	prob := prod.HandleReleaseUEContext(ueContextId, body)
+
+	// check for problem
+	if prob != nil {
+		response.SetBody(models.ProblemDetailsCode(prob), prob)
+		return
+	}
+	return
+}
+
+func OnUEContextTransfer(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+
+	// read 'ueContextId'
+	var ueContextId string
+	ueContextId = ctx.Param("ueContextId")
+	if len(ueContextId) == 0 {
+		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
+		return
+	}
+
+	// decode request body
+	body := new(models.UEContextTransferRequest)
+	if err = ctx.DecodeRequest(body); err != nil {
+		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
+		return
+	}
+
+	// call application handler
+	rsp, prob := prod.HandleUEContextTransfer(ueContextId, body)
+
+	// check for success response
+	if rsp != nil {
+		response.SetBody(200, rsp)
+		return
+	}
+
+	// check for problem
+	if prob != nil {
+		response.SetBody(models.ProblemDetailsCode(prob), prob)
+		return
+	}
+	return
+}
+
+func OnRegistrationStatusUpdate(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+
+	// read 'ueContextId'
+	var ueContextId string
+	ueContextId = ctx.Param("ueContextId")
+	if len(ueContextId) == 0 {
+		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
+		return
+	}
+
+	// decode request body
+	body := new(models.UeRegStatusUpdateReqData)
+	if err = ctx.DecodeRequest(body); err != nil {
+		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
+		return
+	}
+
+	// call application handler
+	rsp, prob := prod.HandleRegistrationStatusUpdate(ueContextId, body)
+
+	// check for success response
+	if rsp != nil {
+		response.SetBody(200, rsp)
+		return
+	}
+
+	// check for problem
+	if prob != nil {
+		response.SetBody(models.ProblemDetailsCode(prob), prob)
+		return
+	}
+	return
+}
+
+func OnRelocateUEContext(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+
+	// read 'ueContextId'
+	var ueContextId string
+	ueContextId = ctx.Param("ueContextId")
+	if len(ueContextId) == 0 {
+		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
+		return
+	}
+
+	// decode request body
+	body := new(models.RelocateUEContextRequest)
+	if err = ctx.DecodeRequest(body); err != nil {
+		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
+		return
+	}
+
+	// call application handler
+	rsp, prob := prod.HandleRelocateUEContext(ueContextId, body)
+
+	// check for success response
+	if rsp != nil {
+		response.SetBody(201, rsp)
+		return
+	}
+
+	// check for problem
+	if prob != nil {
+		response.SetBody(models.ProblemDetailsCode(prob), prob)
+		return
+	}
+	return
+}
+
+func OnN1N2MessageSubscribe(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+
+	// read 'ueContextId'
+	var ueContextId string
+	ueContextId = ctx.Param("ueContextId")
+	if len(ueContextId) == 0 {
+		response.SetBody(400, models.CreateProblemDetails(400, "ueContextId is required"))
+		return
+	}
+
+	// decode request body
+	body := new(models.UeN1N2InfoSubscriptionCreateData)
+	if err = ctx.DecodeRequest(body); err != nil {
+		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
+		return
+	}
+
+	// call application handler
+	rsp, prob := prod.HandleN1N2MessageSubscribe(ueContextId, body)
+
+	// check for success response
+	if rsp != nil {
+		response.SetBody(201, rsp)
+		return
+	}
+
+	// check for problem
+	if prob != nil {
+		response.SetBody(models.ProblemDetailsCode(prob), prob)
+		return
+	}
+	return
+}
+
 type Producer interface {
-	HandleRegistrationStatusUpdate(string, *models.UeRegStatusUpdateReqData) (*models.UeRegStatusUpdateRspData, *models.ProblemDetails)
-
-	HandleNonUeN2InfoSubscribe(*models.NonUeN2InfoSubscriptionCreateData) (*models.NonUeN2InfoSubscriptionCreatedData, *models.ProblemDetails)
-
-	HandleReleaseUEContext(string, *models.UEContextRelease) *models.ProblemDetails
-
-	HandleEBIAssignment(string, *models.AssignEbiData) (*models.AssignedEbiData, *AssignEbiError, *models.ProblemDetails)
-
-	HandleRelocateUEContext(string, *models.RelocateUEContextRequest) (*models.UeContextRelocatedData, *models.ProblemDetails)
-
-	HandleNonUeN2MessageTransfer(*models.NonUeN2MessageTransferRequest) (*models.N2InformationTransferRspData, *N2InformationTransferError, *models.ProblemDetails)
-
 	HandleN1N2MessageTransfer(string, *models.N1N2MessageTransferRequest) (*models.N1N2MessageTransferRspData, *N1N2MessageTransferError, *models.ProblemDetails)
-
-	HandleN1N2MessageSubscribe(string, *models.UeN1N2InfoSubscriptionCreateData) (*models.UeN1N2InfoSubscriptionCreatedData, *models.ProblemDetails)
-
-	HandleN1N2MessageUnSubscribe(*N1N2MessageUnSubscribeParams) *models.ProblemDetails
-
-	HandleAMFStatusChangeSubscribeModfy(string, *models.SubscriptionData) (*models.SubscriptionData, *models.ProblemDetails)
-
-	HandleCreateUEContext(string, *models.CreateUEContextRequest) (*models.CreateUEContextResponse, *UeContextCreateError, *models.ProblemDetails)
-
-	HandleUEContextTransfer(string, *models.UEContextTransferRequest) (*models.UEContextTransferResponse, *models.ProblemDetails)
-
-	HandleCancelRelocateUEContext(string, *models.CancelRelocateUEContextRequest) *models.ProblemDetails
 
 	HandleNonUeN2InfoUnSubscribe(string) *models.ProblemDetails
 
 	HandleAMFStatusChangeSubscribe(*models.SubscriptionData) (*models.SubscriptionData, *models.ProblemDetails)
+
+	HandleAMFStatusChangeSubscribeModfy(string, *models.SubscriptionData) (*models.SubscriptionData, *models.ProblemDetails)
+
+	HandleEBIAssignment(string, *models.AssignEbiData) (*models.AssignedEbiData, *AssignEbiError, *models.ProblemDetails)
+
+	HandleCancelRelocateUEContext(string, *models.CancelRelocateUEContextRequest) *models.ProblemDetails
+
+	HandleN1N2MessageUnSubscribe(*N1N2MessageUnSubscribeParams) *models.ProblemDetails
+
+	HandleCreateUEContext(string, *models.CreateUEContextRequest) (*models.CreateUEContextResponse, *UeContextCreateError, *models.ProblemDetails)
+
+	HandleNonUeN2InfoSubscribe(*models.NonUeN2InfoSubscriptionCreateData) (*models.NonUeN2InfoSubscriptionCreatedData, *models.ProblemDetails)
+
+	HandleNonUeN2MessageTransfer(*models.NonUeN2MessageTransferRequest) (*models.N2InformationTransferRspData, *N2InformationTransferError, *models.ProblemDetails)
+
+	HandleReleaseUEContext(string, *models.UEContextRelease) *models.ProblemDetails
+
+	HandleUEContextTransfer(string, *models.UEContextTransferRequest) (*models.UEContextTransferResponse, *models.ProblemDetails)
+
+	HandleRegistrationStatusUpdate(string, *models.UeRegStatusUpdateReqData) (*models.UeRegStatusUpdateRspData, *models.ProblemDetails)
+
+	HandleRelocateUEContext(string, *models.RelocateUEContextRequest) (*models.UeContextRelocatedData, *models.ProblemDetails)
+
+	HandleN1N2MessageSubscribe(string, *models.UeN1N2InfoSubscriptionCreateData) (*models.UeN1N2InfoSubscriptionCreatedData, *models.ProblemDetails)
 }
