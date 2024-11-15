@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/pb33f/libopenapi"
 	"github.com/pb33f/libopenapi/datamodel"
@@ -8,6 +9,7 @@ import (
 	"github.com/pb33f/libopenapi/datamodel/high/v3"
 	"github.com/pb33f/libopenapi/orderedmap"
 	"github.com/sirupsen/logrus"
+	"io"
 	"os"
 	"strings"
 	"time"
@@ -89,6 +91,38 @@ func (p *Parameter) hasEmptyValue() bool {
 	return p.m.isArray || p.m.isMap || p.m.goType == "string"
 }
 
+func (p *Parameter) isPrimitive() bool {
+	return isPrimitive(p.m.goType)
+}
+
+func (p *Parameter) getName(capitalize bool) string {
+	if len(p.id) == 0 {
+		return ""
+	}
+
+	parts := strings.FieldsFunc(p.id, func(c rune) bool {
+		return c == ' ' || c == '-' || c == '_'
+	})
+	out := ""
+	for i, part := range parts {
+		if i == 0 {
+			if part[0] == '5' {
+				out = "five" + part[1:]
+			} else if part[0] == '3' {
+				out = "three" + part[1:]
+			} else {
+				out = strings.ToLower(string(part[0])) + part[1:]
+			}
+			if capitalize {
+				out = strings.Title(out)
+			}
+		} else {
+			out = out + strings.Title(part)
+		}
+	}
+	return out
+}
+
 func (p *Parameter) getTypeDefinition() (def string) {
 	if p.m.isArray {
 		def = "[]" + p.m.goType
@@ -96,43 +130,164 @@ func (p *Parameter) getTypeDefinition() (def string) {
 		def = "map[string]" + p.m.goType
 	} else {
 		if p.required {
-			def = p.m.goType
+			if p.isPrimitive() {
+				def = p.m.goType
+			} else { //struct type
+				def = "*" + p.m.goType
+			}
 		} else {
 			if p.m.goType == "string" {
 				def = p.m.goType
-			} else {
+			} else { //other primitive types or struct
 				def = "*" + p.m.goType
 			}
 		}
 	}
 	return
 }
-
-func (p *Parameter) getDefinition(capitalize bool) string {
-	return fmt.Sprintf("%s %s", makeParameterName(p.id, capitalize), p.getTypeDefinition())
+func (p *Parameter) isStringType() bool {
+	if p.m.isArray || p.m.isMap {
+		return false
+	}
+	return p.m.goType == "string"
 }
 
-func (p *Parameter) writeParamCheck(prefix string) string {
-	var pStr string
-	if len(prefix) > 0 {
-		pStr = prefix + makeParameterName(p.id, true)
-	} else {
-		pStr = makeParameterName(p.id, false)
+func (p *Parameter) TypeName() string {
+	goType := strings.Title(p.m.goType)
+	if p.m.isArray {
+		return "ArrayOf" + goType
+	} else if p.m.isMap {
+		return "MapOf" + goType
 	}
-	if p.required {
-		if p.hasEmptyValue() {
-			return fmt.Sprintf("if len(%s) == 0 {\nerr = fmt.Errorf(\"%s is required\")\nreturn\n}\n", pStr, p.id)
+	return goType
+}
+
+func (p *Parameter) getDefinition(capitalize bool) string {
+	return fmt.Sprintf("%s %s", p.getName(capitalize), p.getTypeDefinition())
+}
+
+//write code for checking nil value of a parameter and add to the request
+func (p *Parameter) writeParamCheck(prefix string) string {
+	lines := []string{}
+
+	var varStr string
+	inStruct := len(prefix) > 0
+
+	if inStruct {
+		varStr = prefix + p.getName(true)
+	} else {
+		varStr = p.getName(false)
+	}
+
+	pointer := ""
+	if def := p.getTypeDefinition(); def[0] == '*' { //is var definition has a pointer?
+		pointer = "*"
+	}
+	convertStr := varStr
+
+	if !p.isStringType() {
+		convertStr = fmt.Sprintf("models.%sToString(%s%s)", p.TypeName(), pointer, varStr)
+	}
+	var paramAdder string
+
+	if p.in != "path" {
+		if p.in == "header" {
+			paramAdder = fmt.Sprintf("request.AddHeader(\"%s\", %s)", p.id, convertStr)
+		} else {
+			paramAdder = fmt.Sprintf("request.AddParam(\"%s\", %s)", p.id, convertStr)
 		}
 	}
-	return ""
+	if p.required { //required param
+		if p.hasEmptyValue() {
+			lines = append(lines, fmt.Sprintf("if len(%s) == 0 {\nerr = fmt.Errorf(\"%s is required\")\nreturn\n}", varStr, p.id))
+		} else if !p.isPrimitive() { //struct type
+			lines = append(lines, fmt.Sprintf("if %s == nil {\nerr = fmt.Errorf(\"%s is required\")\nreturn\n}", varStr, p.id))
+		}
+		lines = append(lines, paramAdder)
+	} else { //optional param
+		if p.hasEmptyValue() {
+			lines = append(lines, fmt.Sprintf("if len(%s) > 0 {", varStr))
+			lines = append(lines, paramAdder)
+			lines = append(lines, fmt.Sprintf("}"))
+
+		} else {
+			lines = append(lines, fmt.Sprintf("if %s != nil {", varStr))
+			lines = append(lines, paramAdder)
+			lines = append(lines, fmt.Sprintf("}"))
+		}
+	}
+	return strings.Join(lines, "\n")
+}
+
+func (p *Parameter) writeExtractParam(prefix string) string {
+	out := []string{}
+
+	var varStr string
+
+	paramName := p.getName(false)
+
+	out = append(out, fmt.Sprintf("\n// read '%s'", p.id))
+
+	inStruct := len(prefix) > 0
+	if inStruct {
+		varStr = prefix + p.getName(true)
+	} else {
+		//write parameter definition
+		out = append(out, fmt.Sprintf("var %s", p.getDefinition(false)))
+		varStr = paramName
+	}
+	//get parameter string from request
+	var convertFn, tempStr string
+
+	if p.isStringType() {
+		out = append(out, fmt.Sprintf("%s = ctx.Param(\"%s\")", varStr, p.id))
+		tempStr = varStr
+	} else {
+		tempStr = paramName + "Str"
+		convertFn = fmt.Sprintf("models.%sFromString(%s)", p.TypeName(), tempStr)
+		out = append(out, fmt.Sprintf("%s := ctx.Param(\"%s\")", tempStr, p.id))
+	}
+
+	//check for non empty string and convert if neccessary
+	if p.required {
+		errBlock := fmt.Sprintf("\nresponse.SetBody(400, models.CreateProblemDetails(400, \"%s is required\"))\nreturn\n", p.id)
+		out = append(out, fmt.Sprintf("if len(%s) == 0 {%s}\n", tempStr, errBlock))
+		//convert from string
+		if !p.isStringType() {
+			errBlock = fmt.Sprintf("\nresponse.SetBody(400, models.CreateProblemDetails(400, fmt.Sprintf(\"parse %s failed: %%+v\", err)))\nreturn\n", p.id)
+			out = append(out, fmt.Sprintf("if %s, err = %s; err != nil {%s}\n", varStr, convertFn, errBlock))
+		}
+	} else {
+		//convert from string
+		if !p.isStringType() {
+			errBlock := fmt.Sprintf("\nresponse.SetBody(400, models.CreateProblemDetails(400, fmt.Sprintf(\"parse %s failed: %%+v\", err)))\nreturn\n", p.id)
+			// optional primitive param needs a tmp var to keep converted value
+			parsingBlock := ""
+			convertVar := varStr
+			if p.isPrimitive() {
+				convertVar = paramName + "Tmp"
+				parsingBlock = fmt.Sprintf("var %s %s\n", convertVar, p.m.goType)
+			}
+
+			parsingBlock = fmt.Sprintf("%sif %s, err = %s; err != nil {%s}\n", parsingBlock, convertVar, convertFn, errBlock)
+
+			if p.isPrimitive() {
+				parsingBlock = fmt.Sprintf("%s%s=&%s\n", parsingBlock, varStr, convertVar)
+			}
+
+			out = append(out, fmt.Sprintf("if len(%s) > 0 {\n%s}\n", tempStr, parsingBlock))
+		}
+	}
+
+	return strings.Join(out, "\n")
 }
 
 func (p *Parameter) stringConvertFn(prefix string) string {
 	var pStr string
 	if len(prefix) > 0 {
-		pStr = prefix + makeParameterName(p.id, true)
+		pStr = prefix + p.getName(true)
 	} else {
-		pStr = makeParameterName(p.id, false)
+		pStr = p.getName(false)
 	}
 	return pStr
 }
@@ -158,6 +313,8 @@ type Operation struct {
 }
 
 var models map[string]DataModel
+var sbiRoot string = "sbi"
+var sbiPackage string = "sbi"
 
 func main() {
 	specs := []string{
@@ -231,7 +388,7 @@ func readSpec(specFile string) {
 func writeEnum(id string, enum *Enum) {
 	log.Infof("Define constant values for %s[%s]\n", id, enum.enumType)
 	id = makeModelName(id)
-	prefix := "models/"
+	prefix := sbiRoot + "/models/"
 	f, _ := os.Create(prefix + id + ".go")
 	defer f.Close()
 
@@ -274,7 +431,8 @@ func writeModel(m *DataModel) {
 
 	log.Infof("Write model %s", structName)
 
-	prefix := "models/"
+	prefix := sbiRoot + "/models/"
+
 	f, _ := os.Create(prefix + structName + ".go")
 	defer f.Close()
 	writeFileHeader(f)
@@ -370,7 +528,7 @@ func getPathParam(str string) (outParam string, ok bool) {
 }
 
 func writeApis(title string, rootPath string, operations map[string]Operation) {
-	titleDir := "apis/" + title
+	titleDir := sbiRoot + "/apis/" + title
 	os.RemoveAll(titleDir)
 	if err := os.Mkdir(titleDir, 0755); err != nil {
 		log.Errorf("Fail to create Api directory for %s: %+v", title, err)
@@ -380,16 +538,46 @@ func writeApis(title string, rootPath string, operations map[string]Operation) {
 	defer fc.Close()
 	writeFileHeader(fc)
 	fmt.Fprintf(fc, "package %s\n", title)
+	fmt.Fprintf(fc, "import (\n \"%s/models\"\n\"%s\"\n)\n", sbiPackage, sbiPackage)
 	fmt.Fprintf(fc, "const (\n PATH_ROOT string = \"%s\"\n)\n", getRootPath(rootPath))
+
+	for _, op := range operations {
+		writeConsumerApi(fc, &op)
+	}
 
 	fp, _ := os.Create(titleDir + "/producer.go")
 	defer fp.Close()
 	writeFileHeader(fp)
 	fmt.Fprintf(fp, "package %s\n", title)
+
+	prodMethods := [][]byte{}
+	prodMethodInfs := []string{}
+	prodMethodImpls := []string{}
+	useFmt := false
 	for _, op := range operations {
-		writeConsumerApi(fc, &op)
-		writeProducerApi(fp, &op)
+		buf := new(bytes.Buffer)
+		inf, impl, f := writeProducerApi(buf, &op, title)
+		prodMethods = append(prodMethods, buf.Bytes())
+		prodMethodInfs = append(prodMethodInfs, inf)
+		prodMethodImpls = append(prodMethodImpls, impl)
+		if f {
+			useFmt = true
+		}
 	}
+	if !useFmt {
+		fmt.Fprintf(fp, "import (\n \"%s/models\"\n\"%s\"\n)\n", sbiPackage, sbiPackage)
+	} else {
+		fmt.Fprintf(fp, "import (\n\"fmt\"\n\"%s/models\"\n\"%s\"\n)\n", sbiPackage, sbiPackage)
+	}
+	for _, method := range prodMethods {
+		fp.Write(method)
+		fmt.Fprintf(fp, "\n\n")
+	}
+
+	fmt.Fprintf(fp, "type Producer interface {\n%s\n}\n", strings.Join(prodMethodInfs, "\n"))
+	fi, _ := os.Create(titleDir + "/impl.go")
+	defer fi.Close()
+	fmt.Fprintf(fi, "package yourpkg\n\nimport \"%s/models\"\n\n/*\n%s\n*/", sbiPackage, strings.Join(prodMethodImpls, "\n\n"))
 }
 
 func writeFileHeader(f *os.File) {
@@ -397,68 +585,126 @@ func writeFileHeader(f *os.File) {
 	fmt.Fprintf(f, "/*\nThis file is generated with a SBI APIs generator tool developed by ETRI\nGenerated at %v by TungTQ<tqtung@etri.re.kr>\nDo not modify\n*/\n\n", timeNow)
 }
 
-func writeProducerApi(f *os.File, op *Operation) {
+func writeProducerApi(f io.Writer, op *Operation, pkg string) (methodInf, methodImpl string, useFmt bool) {
 
 	//write function definition
 	fmt.Fprintf(f, "func On%s(ctx sbi.RequestContext, handler any) (response sbi.Response) {\n", op.id)
 	fmt.Fprintf(f, "prod := handler.(Producer)\n")
-	fmt.Fprintf(f, "var err error\n")
+
+	defineErr := false //should err be define?
+	if op.requestBody != nil {
+		defineErr = true
+	} else {
+		for _, p := range op.parameters {
+			if !p.isStringType() {
+				defineErr = true
+			}
+		}
+	}
+
+	if defineErr {
+		fmt.Fprintf(f, "var err error\n")
+		useFmt = true //use fmt package to write error
+	}
 
 	//write parameter extracting
-	inputs := []string{}
+	inputArgs := []string{}
+	inputArgDefs := []string{}     //input argument definitions
+	inputArgLongDefs := []string{} //input argument definitions with variables
+	paramPrefix := ""
+
+	if len(op.parameters) >= 2 {
+		//write data structure to hold parameters
+		paramStruct := op.id + "Params"
+		fmt.Fprintf(f, "var params %s\n", paramStruct)
+		inputArgs = append(inputArgs, "&params")
+		inputArgDefs = append(inputArgDefs, "*"+paramStruct)
+		inputArgLongDefs = append(inputArgLongDefs, fmt.Sprintf("params *%s.%s", pkg, paramStruct))
+		paramPrefix = "params."
+	} else {
+		for _, p := range op.parameters {
+			inputArgs = append(inputArgs, p.getName(false))
+			inputArgDefs = append(inputArgDefs, p.getTypeDefinition())
+			inputArgLongDefs = append(inputArgLongDefs, p.getDefinition(false))
+		}
+	}
+
+	for _, p := range op.parameters {
+		fmt.Fprintf(f, "%s\n", p.writeExtractParam(paramPrefix))
+	}
 
 	//write request decoding
 	if op.requestBody != nil {
+		fmt.Fprintf(f, "\n// decode request body\n")
+
 		body := op.requestBody.content.goType
 		if op.requestBody.required {
 			fmt.Fprintf(f, "body := new(models.%s)\n", body)
-			fmt.Fprintf(f, "err = ctx.DecodeRequest(body)\n")
+			fmt.Fprintf(f, "if err = ctx.DecodeRequest(body); err != nil {\n")
+			fmt.Fprintf(f, "response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf(\"Fail to decode request body: %%+v\", err)))\nreturn\n")
+			fmt.Fprintf(f, "}\n")
 		} else {
 			fmt.Fprintf(f, "var body*models.%s\n", body)
 			fmt.Fprintf(f, "if ctx.HaveRequestBody() {\n")
 
-			fmt.Fprintf(f, "body := new(models.%s)\n", body)
-			fmt.Fprintf(f, "err = ctx.DecodeRequest(body)\n")
+			fmt.Fprintf(f, "body = new(models.%s)\n", body)
+			fmt.Fprintf(f, "if err = ctx.DecodeRequest(body); err !=nil {\n")
+			fmt.Fprintf(f, "response.SetBody(400, models.NewSimpleProblem(400,fmt.Sprintf(\"Fail to decode request body: %%+v\", err)))\nreturn\n")
+			fmt.Fprintf(f, "}\n")
 
 			fmt.Fprintf(f, "}\n")
 		}
-		inputs = append(inputs, "body")
+
+		inputArgs = append(inputArgs, "body")
+		inputArgDefs = append(inputArgDefs, "*models."+body)
+		inputArgLongDefs = append(inputArgLongDefs, "body *models."+body)
 	}
 	//write calling application handler
-	fmt.Fprintf(f, "if err == nil {\n")
-	fmt.Fprintf(f, "response.SetBody(400, models.NewSimpleProblem(400, err.Error()))\n")
-	fmt.Fprintf(f, "}else{\n")
 	outputs := []string{}
+	outputDefs := []string{}     //output definitions
+	outputLongDefs := []string{} //output definitions with variables
 	checkOutputs := []string{}
 
 	if op.successModel != nil {
 		outputs = append(outputs, "rsp")
-		tmp := fmt.Sprintf("if rsp != nil {\nresponse.SetBody(%s, rsp)\nreturn\n}\n", op.successCode)
+		outputDefs = append(outputDefs, "*models."+op.successModel.goType)
+		outputLongDefs = append(outputLongDefs, "rsp *models."+op.successModel.goType)
+		tmp := fmt.Sprintf("\n// check for success response\n if rsp != nil {\nresponse.SetBody(%s, rsp)\nreturn\n}\n", op.successCode)
 		checkOutputs = append(checkOutputs, tmp)
 	}
 
 	if len(op.errorCodes) > 0 && op.errorModel != nil {
 		outputs = append(outputs, "ersp")
+		outputDefs = append(outputDefs, "*"+op.errorModel.goType)
+		outputLongDefs = append(outputLongDefs, "ersp *"+op.errorModel.goType)
+
 		var errCode string
 		if len(op.errorCodes) == 1 {
 			errCode = op.errorCodes[0]
 		} else {
 			errCode = fmt.Sprintf("models.StatusFrom%s(ersp)", op.errorModel.goType)
 		}
-		tmp := fmt.Sprintf("if ersp != nil {\nresponse.SetBody(%s, ersp)\nreturn\n}\n", errCode)
+		tmp := fmt.Sprintf("\n// check for defined error\n if ersp != nil {\nresponse.SetBody(%s, ersp)\nreturn\n}\n", errCode)
 		checkOutputs = append(checkOutputs, tmp)
 	}
 	if len(op.problemCodes) > 0 {
 		outputs = append(outputs, "prob")
-		tmp := fmt.Sprintf("if prob != nil {\nresponse.SetBody(models.GetProblemDetailCode(prob), prob)\nreturn\n}\n")
+		outputDefs = append(outputDefs, "*models.ProblemDetails")
+		outputLongDefs = append(outputLongDefs, "prob *models.ProblemDetails")
+		tmp := fmt.Sprintf("\n // check for problem\n if prob != nil {\nresponse.SetBody(models.ProblemDetailsCode(prob), prob)\nreturn\n}\n")
 		checkOutputs = append(checkOutputs, tmp)
 	}
 
-	fmt.Fprintf(f, "%s := Handle%s(%s)\n", strings.Join(outputs, ","), op.id, strings.Join(inputs, ","))
+	fmt.Fprintf(f, "\n// call application handler\n")
+	fmt.Fprintf(f, "%s := prod.Handle%s(%s)\n", strings.Join(outputs, ","), op.id, strings.Join(inputArgs, ","))
+
+	methodImpl = fmt.Sprintf("func Handle%s(%s)(%s){\n\treturn\n}", op.id, strings.Join(inputArgLongDefs, ","), strings.Join(outputLongDefs, ","))
+	methodInf = fmt.Sprintf("Handle%s(%s)(%s)\n", op.id, strings.Join(inputArgDefs, ","), strings.Join(outputDefs, ","))
+
 	fmt.Fprintf(f, strings.Join(checkOutputs, ""))
-	fmt.Fprintf(f, "}\n")
 
 	fmt.Fprintf(f, "return\n}\n")
+	return
 }
 
 func writeConsumerApi(f *os.File, op *Operation) {
@@ -504,7 +750,11 @@ func writeConsumerApi(f *os.File, op *Operation) {
 	outputArgs = append(outputArgs, "err error")
 	//write function definition
 	fmt.Fprintf(f, "func %s(%s) (%s) {\n", op.id, strings.Join(inputArgs, ","), strings.Join(outputArgs, ","))
-	//write check param required
+
+	//write send request
+	fmt.Fprintf(f, "\nrequest := sbi.DefaultRequest()\n")
+
+	//write adding params to request
 	paramChecks := []string{}
 	for _, p := range op.parameters {
 		if check := p.writeParamCheck(paramPrefix); len(check) > 0 {
@@ -515,12 +765,12 @@ func writeConsumerApi(f *os.File, op *Operation) {
 	fmt.Fprintf(f, strings.Join(paramChecks, "\n"))
 
 	//write check body required
-	if op.requestBody != nil && op.requestBody.required {
-		fmt.Fprintf(f, "if body == nil {\n err = fmt.Errorf(\"body is required\")\nreturn\n}\n")
+	if op.requestBody != nil {
+		if op.requestBody.required {
+			fmt.Fprintf(f, "if body == nil {\n err = fmt.Errorf(\"body is required\")\nreturn\n}\n")
+		}
+		fmt.Fprintf(f, "request.Body = body\n")
 	}
-
-	//write send request
-	fmt.Fprintf(f, "request := sbi.DefaultRequest()\n var response sbi.Response\n")
 
 	//write path
 	if len(op.pathParams) > 0 {
@@ -529,12 +779,14 @@ func writeConsumerApi(f *os.File, op *Operation) {
 			p, _ := op.parameters[pName]
 			pathParams = append(pathParams, p.stringConvertFn(paramPrefix))
 		}
-		fmt.Fprintf(f, "request.Path= fmt.Sprintf(\"%%s%s\",PATH_ROOT, %s)\n", op.pathTmpl, strings.Join(pathParams, ", "))
+		fmt.Fprintf(f, "\nrequest.Path= fmt.Sprintf(\"%%s%s\",PATH_ROOT, %s)\n", op.pathTmpl, strings.Join(pathParams, ", "))
 	} else {
-		fmt.Fprintf(f, "request.Path= fmt.Sprintf(\"%%s%s\",PATH_ROOT)\n", op.pathTmpl)
+		fmt.Fprintf(f, "\nrequest.Path= fmt.Sprintf(\"%%s%s\",PATH_ROOT)\n", op.pathTmpl)
 	}
 
-	fmt.Fprintf(f, "if response, err = cli.Send(request); err !=nil {\n return\n}\n")
+	fmt.Fprintf(f, "var response sbi.Response\n")
+	fmt.Fprintf(f, "if response, err = cli.Send(request); err !=nil {\n return\n}\n\n")
+
 	//write check for response
 	fmt.Fprintf(f, "switch response.StatusCode {\n")
 	if op.successModel != nil {
@@ -1164,34 +1416,6 @@ func indexInList(item string, list []string) int {
 
 func inList(item string, list []string) bool {
 	return indexInList(item, list) != -1
-}
-
-func makeParameterName(s string, capitalize bool) string {
-	if len(s) == 0 {
-		return ""
-	}
-
-	parts := strings.FieldsFunc(s, func(c rune) bool {
-		return c == ' ' || c == '-' || c == '_'
-	})
-	out := ""
-	for i, p := range parts {
-		if i == 0 {
-			if p[0] == '5' {
-				out = "five" + p[1:]
-			} else if p[0] == '3' {
-				out = "three" + p[1:]
-			} else {
-				out = strings.ToLower(string(p[0])) + p[1:]
-			}
-			if capitalize {
-				out = strings.Title(out)
-			}
-		} else {
-			out = out + strings.Title(p)
-		}
-	}
-	return out
 }
 
 func makeModelName(s string) string {
