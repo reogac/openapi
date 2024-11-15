@@ -166,7 +166,7 @@ func (p *Parameter) getDefinition(capitalize bool) string {
 	return fmt.Sprintf("%s %s", p.getName(capitalize), p.getTypeDefinition())
 }
 
-//write code for checking nil value of a parameter and add to the request
+// write code for checking nil value of a parameter and add to the request
 func (p *Parameter) writeParamCheck(prefix string) string {
 	lines := []string{}
 
@@ -310,6 +310,22 @@ type Operation struct {
 	problemCodes      []string //with ProblemDetails
 	successCode       string   //success code with a response (only one)
 	emptySuccessCodes []string //success code with empty response
+}
+
+func (o *Operation) writeMethod() string {
+	switch strings.ToLower(o.method) {
+	case "get":
+		return "http.MethodGet"
+	case "post":
+		return "http.MethodPost"
+	case "put":
+		return "http.MethodGet"
+	case "delete":
+		return "http.MethodGet"
+	case "patch":
+		return "http.MethodGet"
+	}
+	return "http.MethodGet"
 }
 
 var models map[string]DataModel
@@ -534,17 +550,19 @@ func writeApis(title string, rootPath string, operations map[string]Operation) {
 		log.Errorf("Fail to create Api directory for %s: %+v", title, err)
 		return
 	}
+	//write consumer.go
 	fc, _ := os.Create(titleDir + "/consumer.go")
 	defer fc.Close()
 	writeFileHeader(fc)
 	fmt.Fprintf(fc, "package %s\n", title)
-	fmt.Fprintf(fc, "import (\n \"%s/models\"\n\"%s\"\n)\n", sbiPackage, sbiPackage)
+	fmt.Fprintf(fc, "import (\n \"%s/models\"\n\"%s\"\n\"net/http\")\n", sbiPackage, sbiPackage)
 	fmt.Fprintf(fc, "const (\n PATH_ROOT string = \"%s\"\n)\n", getRootPath(rootPath))
 
 	for _, op := range operations {
 		writeConsumerApi(fc, &op)
 	}
 
+	//write producer.go
 	fp, _ := os.Create(titleDir + "/producer.go")
 	defer fp.Close()
 	writeFileHeader(fp)
@@ -575,9 +593,27 @@ func writeApis(title string, rootPath string, operations map[string]Operation) {
 	}
 
 	fmt.Fprintf(fp, "type Producer interface {\n%s\n}\n", strings.Join(prodMethodInfs, "\n"))
+
+	//write producer.go
 	fi, _ := os.Create(titleDir + "/impl.go")
 	defer fi.Close()
 	fmt.Fprintf(fi, "package yourpkg\n\nimport \"%s/models\"\n\n/*\n%s\n*/", sbiPackage, strings.Join(prodMethodImpls, "\n\n"))
+
+	//write routes.go
+	fr, _ := os.Create(titleDir + "/routes.go")
+	defer fr.Close()
+	writeFileHeader(fc)
+	fmt.Fprintf(fr, "package %s\n", title)
+	fmt.Fprintf(fr, "import (\n\"%s\"\n\"net/http\")\n", sbiPackage)
+
+	fmt.Fprintf(fr, "var _routes = []sbi.Route{\n")
+	blocks := []string{}
+	for _, op := range operations {
+		blocks = append(blocks, fmt.Sprintf("{\nLabel:\"%s\",\nMethod:%s,\nPath:\"%s\",\nHandler:\"On%s\",\n}", op.id, op.writeMethod(), op.path, op.id))
+	}
+	fmt.Fprint(fr, strings.Join(blocks, ",\n"))
+	fmt.Fprintf(fr, ",\n}\n\n")
+	fmt.Fprintf(fr, "func Service(p Producer) sbi.Service {\nreturn sbi.Service {\nGroup:\"%s\",\nRoutes: _routes,\nHandler:p,\n}\n}\n", title)
 }
 
 func writeFileHeader(f *os.File) {
@@ -711,7 +747,6 @@ func writeConsumerApi(f *os.File, op *Operation) {
 	fmt.Fprintf(f, "//Summary: %s\n", op.summary)
 	fmt.Fprintf(f, "//Description: %s\n", op.desc)
 	fmt.Fprintf(f, "//Path: %s\n", op.path)
-	//fmt.Fprintf(f, "//Path Template: %s\n", op.pathTmpl)
 	fmt.Fprintf(f, "//Path Params: %s\n", strings.Join(op.pathParams, ", "))
 
 	inputArgs := []string{"cli sbi.ConsumerClient"}
@@ -753,6 +788,7 @@ func writeConsumerApi(f *os.File, op *Operation) {
 
 	//write send request
 	fmt.Fprintf(f, "\nrequest := sbi.DefaultRequest()\n")
+	fmt.Fprintf(f, "\nrequest.Method = %s\n", op.writeMethod())
 
 	//write adding params to request
 	paramChecks := []string{}

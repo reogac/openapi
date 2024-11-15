@@ -1,47 +1,47 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Fri Nov 15 17:41:15 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Fri Nov 15 22:03:44 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
 package models
 
 type PduSessionContext struct {
-	PlmnId                     *PlmnId            `json:"plmnId,omitempty"`
-	PduSessionId               int                `json:"pduSessionId"`
+	HsmfSetId                  string             `json:"hsmfSetId,omitempty"`
+	VsmfSetId                  string             `json:"vsmfSetId,omitempty"`
 	VsmfServiceSetId           string             `json:"vsmfServiceSetId,omitempty"`
+	IsmfId                     string             `json:"ismfId,omitempty"`
+	NrfDiscoveryUri            string             `json:"nrfDiscoveryUri,omitempty"`
+	VsmfBindingInfo            string             `json:"vsmfBindingInfo,omitempty"`
+	AnchorSmfOauth2Required    *bool              `json:"anchorSmfOauth2Required,omitempty"`
+	PduSessionId               int                `json:"pduSessionId"`
+	VsmfBinding                SbiBindingLevel    `json:"vsmfBinding,omitempty"`
 	IsmfSetId                  string             `json:"ismfSetId,omitempty"`
-	NsInstance                 string             `json:"nsInstance,omitempty"`
-	AdditionalSnssai           *Snssai            `json:"additionalSnssai,omitempty"`
 	PgwFqdn                    string             `json:"pgwFqdn,omitempty"`
-	MaPduSession               *bool              `json:"maPduSession,omitempty"`
+	SNssai                     Snssai             `json:"sNssai"`
 	CnAssistedRanPara          *CnAssistedRanPara `json:"cnAssistedRanPara,omitempty"`
+	PgwIpAddr                  *IpAddress         `json:"pgwIpAddr,omitempty"`
+	SelectedDnn                string             `json:"selectedDnn,omitempty"`
+	AccessType                 AccessType         `json:"accessType"`
 	NrfManagementUri           string             `json:"nrfManagementUri,omitempty"`
-	NrfAccessTokenUri          string             `json:"nrfAccessTokenUri,omitempty"`
+	IsmfBindingInfo            string             `json:"ismfBindingInfo,omitempty"`
 	InterPlmnApiRoot           string             `json:"interPlmnApiRoot,omitempty"`
-	AdditionalAccessType       AccessType         `json:"additionalAccessType,omitempty"`
+	PlmnId                     *PlmnId            `json:"plmnId,omitempty"`
+	SmContextRef               string             `json:"smContextRef"`
 	AllocatedEbiList           []EbiArpMapping    `json:"allocatedEbiList,omitempty"`
 	SmfBinding                 SbiBindingLevel    `json:"smfBinding,omitempty"`
-	SmfServiceInstanceId       string             `json:"smfServiceInstanceId,omitempty"`
-	IsmfBindingInfo            string             `json:"ismfBindingInfo,omitempty"`
-	SmContextRef               string             `json:"smContextRef"`
-	AccessType                 AccessType         `json:"accessType"`
-	VsmfBinding                SbiBindingLevel    `json:"vsmfBinding,omitempty"`
-	VsmfBindingInfo            string             `json:"vsmfBindingInfo,omitempty"`
-	HsmfSetId                  string             `json:"hsmfSetId,omitempty"`
-	IsmfId                     string             `json:"ismfId,omitempty"`
-	IsmfBinding                SbiBindingLevel    `json:"ismfBinding,omitempty"`
-	HsmfServiceSetId           string             `json:"hsmfServiceSetId,omitempty"`
-	SmfBindingInfo             string             `json:"smfBindingInfo,omitempty"`
-	PgwIpAddr                  *IpAddress         `json:"pgwIpAddr,omitempty"`
-	AnchorSmfOauth2Required    *bool              `json:"anchorSmfOauth2Required,omitempty"`
-	VsmfSetId                  string             `json:"vsmfSetId,omitempty"`
-	NrfDiscoveryUri            string             `json:"nrfDiscoveryUri,omitempty"`
-	AnchorSmfSupportedFeatures string             `json:"anchorSmfSupportedFeatures,omitempty"`
-	VsmfId                     string             `json:"vsmfId,omitempty"`
 	IsmfServiceSetId           string             `json:"ismfServiceSetId,omitempty"`
-	SNssai                     Snssai             `json:"sNssai"`
-	Dnn                        string             `json:"dnn"`
-	SelectedDnn                string             `json:"selectedDnn,omitempty"`
+	SmfBindingInfo             string             `json:"smfBindingInfo,omitempty"`
 	HsmfId                     string             `json:"hsmfId,omitempty"`
+	MaPduSession               *bool              `json:"maPduSession,omitempty"`
+	AdditionalSnssai           *Snssai            `json:"additionalSnssai,omitempty"`
+	AnchorSmfSupportedFeatures string             `json:"anchorSmfSupportedFeatures,omitempty"`
+	Dnn                        string             `json:"dnn"`
+	HsmfServiceSetId           string             `json:"hsmfServiceSetId,omitempty"`
+	SmfServiceInstanceId       string             `json:"smfServiceInstanceId,omitempty"`
+	NrfAccessTokenUri          string             `json:"nrfAccessTokenUri,omitempty"`
+	AdditionalAccessType       AccessType         `json:"additionalAccessType,omitempty"`
+	VsmfId                     string             `json:"vsmfId,omitempty"`
+	IsmfBinding                SbiBindingLevel    `json:"ismfBinding,omitempty"`
+	NsInstance                 string             `json:"nsInstance,omitempty"`
 }

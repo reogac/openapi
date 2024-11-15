@@ -1,12 +1,13 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Fri Nov 15 17:41:13 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Fri Nov 15 22:03:42 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
 package NpcfUEPolicyControl
 
 import (
+	"net/http"
 	"sbi"
 	"sbi/models"
 )
@@ -22,6 +23,8 @@ const (
 func CreateIndividualUEPolicyAssociation(cli sbi.ConsumerClient, body *models.PolicyAssociationRequest) (rsp *models.PolicyAssociation, err error) {
 
 	request := sbi.DefaultRequest()
+
+	request.Method = http.MethodPost
 	if body == nil {
 		err = fmt.Errorf("body is required")
 		return
@@ -58,6 +61,8 @@ func CreateIndividualUEPolicyAssociation(cli sbi.ConsumerClient, body *models.Po
 func ReadIndividualUEPolicyAssociation(cli sbi.ConsumerClient, polAssoId string) (rsp *models.PolicyAssociation, err error) {
 
 	request := sbi.DefaultRequest()
+
+	request.Method = http.MethodGet
 	if len(polAssoId) == 0 {
 		err = fmt.Errorf("polAssoId is required")
 		return
@@ -94,6 +99,8 @@ func ReadIndividualUEPolicyAssociation(cli sbi.ConsumerClient, polAssoId string)
 func ReportObservedEventTriggersForIndividualUEPolicyAssociation(cli sbi.ConsumerClient, polAssoId string, body *models.PolicyAssociationUpdateRequest) (rsp *models.PolicyUpdate, err error) {
 
 	request := sbi.DefaultRequest()
+
+	request.Method = http.MethodPost
 	if len(polAssoId) == 0 {
 		err = fmt.Errorf("polAssoId is required")
 		return
@@ -126,3 +133,9 @@ func ReportObservedEventTriggersForIndividualUEPolicyAssociation(cli sbi.Consume
 	}
 	return
 }
+
+/*
+This file is generated with a SBI APIs generator tool developed by ETRI
+Generated at Fri Nov 15 22:03:42 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Do not modify
+*/

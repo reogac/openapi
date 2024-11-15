@@ -1,27 +1,27 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Fri Nov 15 17:41:15 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Fri Nov 15 22:03:44 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
 package models
 
 type AmfEventSubscription struct {
-	EventList                     []AmfEvent    `json:"eventList"`
-	SubsChangeNotifyCorrelationId string        `json:"subsChangeNotifyCorrelationId,omitempty"`
-	IncludeSupiList               []string      `json:"includeSupiList,omitempty"`
-	Gpsi                          string        `json:"gpsi,omitempty"`
-	AnyUE                         *bool         `json:"anyUE,omitempty"`
-	SourceNfType                  NFType        `json:"sourceNfType,omitempty"`
 	NfId                          string        `json:"nfId"`
 	SubsChangeNotifyUri           string        `json:"subsChangeNotifyUri,omitempty"`
-	Supi                          string        `json:"supi,omitempty"`
-	GroupId                       string        `json:"groupId,omitempty"`
-	Options                       *AmfEventMode `json:"options,omitempty"`
+	SubsChangeNotifyCorrelationId string        `json:"subsChangeNotifyCorrelationId,omitempty"`
+	AnyUE                         *bool         `json:"anyUE,omitempty"`
+	EventList                     []AmfEvent    `json:"eventList"`
 	EventNotifyUri                string        `json:"eventNotifyUri"`
+	Supi                          string        `json:"supi,omitempty"`
 	NotifyCorrelationId           string        `json:"notifyCorrelationId"`
-	ExcludeSupiList               []string      `json:"excludeSupiList,omitempty"`
 	ExcludeGpsiList               []string      `json:"excludeGpsiList,omitempty"`
+	IncludeSupiList               []string      `json:"includeSupiList,omitempty"`
 	IncludeGpsiList               []string      `json:"includeGpsiList,omitempty"`
+	SourceNfType                  NFType        `json:"sourceNfType,omitempty"`
+	GroupId                       string        `json:"groupId,omitempty"`
+	ExcludeSupiList               []string      `json:"excludeSupiList,omitempty"`
+	Gpsi                          string        `json:"gpsi,omitempty"`
 	Pei                           string        `json:"pei,omitempty"`
+	Options                       *AmfEventMode `json:"options,omitempty"`
 }

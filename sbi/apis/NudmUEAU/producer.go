@@ -1,6 +1,6 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Fri Nov 15 17:41:09 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Fri Nov 15 22:03:38 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
@@ -125,21 +125,6 @@ func OnGetRgAuthData(ctx sbi.RequestContext, handler any) (response sbi.Response
 	var err error
 	var params GetRgAuthDataParams
 
-	// read 'plmn-id'
-	plmnIdStr := ctx.Param("plmn-id")
-	if len(plmnIdStr) > 0 {
-		if params.PlmnId, err = models.PlmnIdFromString(plmnIdStr); err != nil {
-			response.SetBody(400, models.CreateProblemDetails(400, fmt.Sprintf("parse plmn-id failed: %+v", err)))
-			return
-		}
-	}
-
-	// read 'If-None-Match'
-	params.IfNoneMatch = ctx.Param("If-None-Match")
-
-	// read 'If-Modified-Since'
-	params.IfModifiedSince = ctx.Param("If-Modified-Since")
-
 	// read 'supiOrSuci'
 	params.SupiOrSuci = ctx.Param("supiOrSuci")
 	if len(params.SupiOrSuci) == 0 {
@@ -161,6 +146,21 @@ func OnGetRgAuthData(ctx sbi.RequestContext, handler any) (response sbi.Response
 
 	// read 'supported-features'
 	params.SupportedFeatures = ctx.Param("supported-features")
+
+	// read 'plmn-id'
+	plmnIdStr := ctx.Param("plmn-id")
+	if len(plmnIdStr) > 0 {
+		if params.PlmnId, err = models.PlmnIdFromString(plmnIdStr); err != nil {
+			response.SetBody(400, models.CreateProblemDetails(400, fmt.Sprintf("parse plmn-id failed: %+v", err)))
+			return
+		}
+	}
+
+	// read 'If-None-Match'
+	params.IfNoneMatch = ctx.Param("If-None-Match")
+
+	// read 'If-Modified-Since'
+	params.IfModifiedSince = ctx.Param("If-Modified-Since")
 
 	// call application handler
 	rsp, prob := prod.HandleGetRgAuthData(&params)
@@ -263,17 +263,17 @@ func OnDeleteAuth(ctx sbi.RequestContext, handler any) (response sbi.Response) {
 	var err error
 	var params DeleteAuthParams
 
-	// read 'supi'
-	params.Supi = ctx.Param("supi")
-	if len(params.Supi) == 0 {
-		response.SetBody(400, models.CreateProblemDetails(400, "supi is required"))
-		return
-	}
-
 	// read 'authEventId'
 	params.AuthEventId = ctx.Param("authEventId")
 	if len(params.AuthEventId) == 0 {
 		response.SetBody(400, models.CreateProblemDetails(400, "authEventId is required"))
+		return
+	}
+
+	// read 'supi'
+	params.Supi = ctx.Param("supi")
+	if len(params.Supi) == 0 {
+		response.SetBody(400, models.CreateProblemDetails(400, "supi is required"))
 		return
 	}
 
