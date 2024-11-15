@@ -613,7 +613,7 @@ func writeApis(title string, rootPath string, operations map[string]Operation) {
 	}
 	fmt.Fprint(fr, strings.Join(blocks, ",\n"))
 	fmt.Fprintf(fr, ",\n}\n\n")
-	fmt.Fprintf(fr, "func Service(p Producer) sbi.Service {\nreturn sbi.Service {\nGroup:\"%s\",\nRoutes: _routes,\nHandler:p,\n}\n}\n", title)
+	fmt.Fprintf(fr, "func Service(p Producer) sbi.Service {\nreturn sbi.Service {\nGroup:PATH_ROOT,\nRoutes: _routes,\nHandler:p,\n}\n}\n")
 }
 
 func writeFileHeader(f *os.File) {

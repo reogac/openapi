@@ -1,6 +1,6 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Fri Nov 15 22:03:40 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Fri Nov 15 22:09:24 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
@@ -15,6 +15,44 @@ import (
 const (
 	PATH_ROOT string = "npcf-am-policy-control/v1"
 )
+
+// Summary: Create individual AM policy association.
+// Description:
+// Path: /policies
+// Path Params:
+func CreateIndividualAMPolicyAssociation(cli sbi.ConsumerClient, body *models.PolicyAssociationRequest) (rsp *models.PolicyAssociation, err error) {
+
+	request := sbi.DefaultRequest()
+
+	request.Method = http.MethodPost
+	if body == nil {
+		err = fmt.Errorf("body is required")
+		return
+	}
+	request.Body = body
+
+	request.Path = fmt.Sprintf("%s/policies", PATH_ROOT)
+	var response sbi.Response
+	if response, err = cli.Send(request); err != nil {
+		return
+	}
+
+	switch response.StatusCode {
+	case 201:
+		rsp = new(PolicyAssociation)
+		response.Body = rsp
+		err = cli.DecodeResponse(response)
+	case 400, 401, 403, 404, 411, 413, 415, 429, 500, 503:
+		prob := new(ProblemDetails)
+		response.Body = prob
+		if err = cli.DecodeResponse(response); err == nil {
+			err = sbi.ErrorFromProblemDetails(prob)
+		}
+	default:
+		err = fmt.Errorf("%d, %s", response.StatusCode, response.Status)
+	}
+	return
+}
 
 // Summary: Read individual AM policy association.
 // Description:
@@ -96,46 +134,8 @@ func ReportObservedEventTriggersForIndividualAMPolicyAssociation(cli sbi.Consume
 	return
 }
 
-// Summary: Create individual AM policy association.
-// Description:
-// Path: /policies
-// Path Params:
-func CreateIndividualAMPolicyAssociation(cli sbi.ConsumerClient, body *models.PolicyAssociationRequest) (rsp *models.PolicyAssociation, err error) {
-
-	request := sbi.DefaultRequest()
-
-	request.Method = http.MethodPost
-	if body == nil {
-		err = fmt.Errorf("body is required")
-		return
-	}
-	request.Body = body
-
-	request.Path = fmt.Sprintf("%s/policies", PATH_ROOT)
-	var response sbi.Response
-	if response, err = cli.Send(request); err != nil {
-		return
-	}
-
-	switch response.StatusCode {
-	case 201:
-		rsp = new(PolicyAssociation)
-		response.Body = rsp
-		err = cli.DecodeResponse(response)
-	case 400, 401, 403, 404, 411, 413, 415, 429, 500, 503:
-		prob := new(ProblemDetails)
-		response.Body = prob
-		if err = cli.DecodeResponse(response); err == nil {
-			err = sbi.ErrorFromProblemDetails(prob)
-		}
-	default:
-		err = fmt.Errorf("%d, %s", response.StatusCode, response.Status)
-	}
-	return
-}
-
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Fri Nov 15 22:03:40 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Fri Nov 15 22:09:24 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */

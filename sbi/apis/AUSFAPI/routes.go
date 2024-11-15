@@ -7,12 +7,6 @@ import (
 
 var _routes = []sbi.Route{
 	{
-		Label:   "UeAuthenticationsDeregisterPost",
-		Method:  http.MethodPost,
-		Path:    "/ue-authentications/deregister",
-		Handler: "OnUeAuthenticationsDeregisterPost",
-	},
-	{
 		Label:   "UeAuthentications5gAkaConfirmationPut",
 		Method:  http.MethodGet,
 		Path:    "/ue-authentications/:authCtxId/5g-aka-confirmation",
@@ -48,11 +42,17 @@ var _routes = []sbi.Route{
 		Path:    "/ue-authentications",
 		Handler: "OnUeAuthenticationsPost",
 	},
+	{
+		Label:   "UeAuthenticationsDeregisterPost",
+		Method:  http.MethodPost,
+		Path:    "/ue-authentications/deregister",
+		Handler: "OnUeAuthenticationsDeregisterPost",
+	},
 }
 
 func Service(p Producer) sbi.Service {
 	return sbi.Service{
-		Group:   "AUSFAPI",
+		Group:   PATH_ROOT,
 		Routes:  _routes,
 		Handler: p,
 	}

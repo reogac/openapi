@@ -7,34 +7,10 @@ import (
 
 var _routes = []sbi.Route{
 	{
-		Label:   "RetrievePduSession",
-		Method:  http.MethodPost,
-		Path:    "/pdu-sessions/:pduSessionRef/retrieve",
-		Handler: "OnRetrievePduSession",
-	},
-	{
-		Label:   "RetrieveSmContext",
-		Method:  http.MethodPost,
-		Path:    "/sm-contexts/:smContextRef/retrieve",
-		Handler: "OnRetrieveSmContext",
-	},
-	{
-		Label:   "ReleaseSmContext",
-		Method:  http.MethodPost,
-		Path:    "/sm-contexts/:smContextRef/release",
-		Handler: "OnReleaseSmContext",
-	},
-	{
 		Label:   "SendMoData",
 		Method:  http.MethodPost,
 		Path:    "/sm-contexts/:smContextRef/send-mo-data",
 		Handler: "OnSendMoData",
-	},
-	{
-		Label:   "PostPduSessions",
-		Method:  http.MethodPost,
-		Path:    "/pdu-sessions",
-		Handler: "OnPostPduSessions",
 	},
 	{
 		Label:   "UpdatePduSession",
@@ -43,10 +19,10 @@ var _routes = []sbi.Route{
 		Handler: "OnUpdatePduSession",
 	},
 	{
-		Label:   "ReleasePduSession",
+		Label:   "TransferMoData",
 		Method:  http.MethodPost,
-		Path:    "/pdu-sessions/:pduSessionRef/release",
-		Handler: "OnReleasePduSession",
+		Path:    "/pdu-sessions/:pduSessionRef/transfer-mo-data",
+		Handler: "OnTransferMoData",
 	},
 	{
 		Label:   "PostSmContexts",
@@ -55,22 +31,46 @@ var _routes = []sbi.Route{
 		Handler: "OnPostSmContexts",
 	},
 	{
+		Label:   "RetrieveSmContext",
+		Method:  http.MethodPost,
+		Path:    "/sm-contexts/:smContextRef/retrieve",
+		Handler: "OnRetrieveSmContext",
+	},
+	{
 		Label:   "UpdateSmContext",
 		Method:  http.MethodPost,
 		Path:    "/sm-contexts/:smContextRef/modify",
 		Handler: "OnUpdateSmContext",
 	},
 	{
-		Label:   "TransferMoData",
+		Label:   "ReleaseSmContext",
 		Method:  http.MethodPost,
-		Path:    "/pdu-sessions/:pduSessionRef/transfer-mo-data",
-		Handler: "OnTransferMoData",
+		Path:    "/sm-contexts/:smContextRef/release",
+		Handler: "OnReleaseSmContext",
+	},
+	{
+		Label:   "PostPduSessions",
+		Method:  http.MethodPost,
+		Path:    "/pdu-sessions",
+		Handler: "OnPostPduSessions",
+	},
+	{
+		Label:   "ReleasePduSession",
+		Method:  http.MethodPost,
+		Path:    "/pdu-sessions/:pduSessionRef/release",
+		Handler: "OnReleasePduSession",
+	},
+	{
+		Label:   "RetrievePduSession",
+		Method:  http.MethodPost,
+		Path:    "/pdu-sessions/:pduSessionRef/retrieve",
+		Handler: "OnRetrievePduSession",
 	},
 }
 
 func Service(p Producer) sbi.Service {
 	return sbi.Service{
-		Group:   "NsmfPDUSession",
+		Group:   PATH_ROOT,
 		Routes:  _routes,
 		Handler: p,
 	}

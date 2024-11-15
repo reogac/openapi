@@ -3,14 +3,6 @@ package yourpkg
 import "sbi/models"
 
 /*
-func HandleGenerateGbaAv(supi string,body *models.GbaAuthenticationInfoRequest)(rsp *models.GbaAuthenticationInfoResult,prob *models.ProblemDetails){
-	return
-}
-
-func HandleGenerateProseAV(supiOrSuci string,body *models.ProSeAuthenticationInfoRequest)(rsp *models.ProSeAuthenticationInfoResult,prob *models.ProblemDetails){
-	return
-}
-
 func HandleGenerateAuthData(supiOrSuci string,body *models.AuthenticationInfoRequest)(rsp *models.AuthenticationInfoResult,prob *models.ProblemDetails){
 	return
 }
@@ -28,6 +20,14 @@ func HandleGenerateAv(params *NudmUEAU.GenerateAvParams,body *models.HssAuthenti
 }
 
 func HandleDeleteAuth(params *NudmUEAU.DeleteAuthParams,body *models.AuthEvent)(prob *models.ProblemDetails){
+	return
+}
+
+func HandleGenerateGbaAv(supi string,body *models.GbaAuthenticationInfoRequest)(rsp *models.GbaAuthenticationInfoResult,prob *models.ProblemDetails){
+	return
+}
+
+func HandleGenerateProseAV(supiOrSuci string,body *models.ProSeAuthenticationInfoRequest)(rsp *models.ProSeAuthenticationInfoResult,prob *models.ProblemDetails){
 	return
 }
 */

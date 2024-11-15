@@ -34,7 +34,7 @@ var _routes = []sbi.Route{
 
 func Service(p Producer) sbi.Service {
 	return sbi.Service{
-		Group:   "NpcfSMPolicyControlAPI",
+		Group:   PATH_ROOT,
 		Routes:  _routes,
 		Handler: p,
 	}

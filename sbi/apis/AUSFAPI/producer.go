@@ -1,6 +1,6 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Fri Nov 15 22:03:45 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Fri Nov 15 22:09:29 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
@@ -11,6 +11,56 @@ import (
 	"sbi"
 	"sbi/models"
 )
+
+func OnUeAuthenticationsPost(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+
+	// decode request body
+	body := new(models.AuthenticationInfo)
+	if err = ctx.DecodeRequest(body); err != nil {
+		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
+		return
+	}
+
+	// call application handler
+	rsp, prob := prod.HandleUeAuthenticationsPost(body)
+
+	// check for success response
+	if rsp != nil {
+		response.SetBody(201, rsp)
+		return
+	}
+
+	// check for problem
+	if prob != nil {
+		response.SetBody(models.ProblemDetailsCode(prob), prob)
+		return
+	}
+	return
+}
+
+func OnUeAuthenticationsDeregisterPost(ctx sbi.RequestContext, handler any) (response sbi.Response) {
+	prod := handler.(Producer)
+	var err error
+
+	// decode request body
+	body := new(models.DeregistrationInfo)
+	if err = ctx.DecodeRequest(body); err != nil {
+		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
+		return
+	}
+
+	// call application handler
+	prob := prod.HandleUeAuthenticationsDeregisterPost(body)
+
+	// check for problem
+	if prob != nil {
+		response.SetBody(models.ProblemDetailsCode(prob), prob)
+		return
+	}
+	return
+}
 
 func OnUeAuthentications5gAkaConfirmationPut(ctx sbi.RequestContext, handler any) (response sbi.Response) {
 	prod := handler.(Producer)
@@ -185,57 +235,11 @@ func OnProseAuth(ctx sbi.RequestContext, handler any) (response sbi.Response) {
 	return
 }
 
-func OnUeAuthenticationsPost(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-
-	// decode request body
-	body := new(models.AuthenticationInfo)
-	if err = ctx.DecodeRequest(body); err != nil {
-		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
-		return
-	}
-
-	// call application handler
-	rsp, prob := prod.HandleUeAuthenticationsPost(body)
-
-	// check for success response
-	if rsp != nil {
-		response.SetBody(201, rsp)
-		return
-	}
-
-	// check for problem
-	if prob != nil {
-		response.SetBody(models.ProblemDetailsCode(prob), prob)
-		return
-	}
-	return
-}
-
-func OnUeAuthenticationsDeregisterPost(ctx sbi.RequestContext, handler any) (response sbi.Response) {
-	prod := handler.(Producer)
-	var err error
-
-	// decode request body
-	body := new(models.DeregistrationInfo)
-	if err = ctx.DecodeRequest(body); err != nil {
-		response.SetBody(400, models.NewSimpleProblem(400, fmt.Sprintf("Fail to decode request body: %+v", err)))
-		return
-	}
-
-	// call application handler
-	prob := prod.HandleUeAuthenticationsDeregisterPost(body)
-
-	// check for problem
-	if prob != nil {
-		response.SetBody(models.ProblemDetailsCode(prob), prob)
-		return
-	}
-	return
-}
-
 type Producer interface {
+	HandleUeAuthenticationsPost(*models.AuthenticationInfo) (*models.UEAuthenticationCtx, *models.ProblemDetails)
+
+	HandleUeAuthenticationsDeregisterPost(*models.DeregistrationInfo) *models.ProblemDetails
+
 	HandleUeAuthentications5gAkaConfirmationPut(string, *models.ConfirmationData) (*models.ConfirmationDataResponse, *models.ProblemDetails)
 
 	HandleEapAuthMethod(string, *models.EapSession) (*models.EapAuthMethodResponse, *models.ProblemDetails)
@@ -245,8 +249,4 @@ type Producer interface {
 	HandleProseAuthenticationsPost(*models.ProSeAuthenticationInfo) (*models.ProSeAuthenticationCtx, *models.ProblemDetails)
 
 	HandleProseAuth(string, *models.ProSeEapSession) (*models.ProseAuthResponse, *models.ProblemDetails)
-
-	HandleUeAuthenticationsPost(*models.AuthenticationInfo) (*models.UEAuthenticationCtx, *models.ProblemDetails)
-
-	HandleUeAuthenticationsDeregisterPost(*models.DeregistrationInfo) *models.ProblemDetails
 }

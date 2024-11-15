@@ -1,6 +1,6 @@
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Fri Nov 15 22:03:39 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Fri Nov 15 22:09:23 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */
 
@@ -16,71 +16,21 @@ const (
 	PATH_ROOT string = "nudm-uecm/v1"
 )
 
-// Summary: get an SMF registration
+// Summary: Retrieve the IP-SM-GW registration information
 // Description:
-// Path: /:ueId/registrations/smf-registrations/:pduSessionId
-// Path Params: ueId, pduSessionId
-type RetrieveSmfRegistrationParams struct {
-	UeId         string
-	PduSessionId int
-}
-
-func RetrieveSmfRegistration(cli sbi.ConsumerClient, params RetrieveSmfRegistrationParams) (rsp *models.SmfRegistration, err error) {
-
-	request := sbi.DefaultRequest()
-
-	request.Method = http.MethodGet
-	if len(params.UeId) == 0 {
-		err = fmt.Errorf("ueId is required")
-		return
-	}
-
-	request.Path = fmt.Sprintf("%s/:ueId/registrations/smf-registrations/%s", PATH_ROOT, params.UeId, params.PduSessionId)
-	var response sbi.Response
-	if response, err = cli.Send(request); err != nil {
-		return
-	}
-
-	switch response.StatusCode {
-	case 200:
-		rsp = new(SmfRegistration)
-		response.Body = rsp
-		err = cli.DecodeResponse(response)
-	case 400, 403, 404, 500, 503:
-		prob := new(ProblemDetails)
-		response.Body = prob
-		if err = cli.DecodeResponse(response); err == nil {
-			err = sbi.ErrorFromProblemDetails(prob)
-		}
-	default:
-		err = fmt.Errorf("%d, %s", response.StatusCode, response.Status)
-	}
-	return
-}
-
-// Summary: retrieve the SMSF registration for 3GPP access information
-// Description:
-// Path: /:ueId/registrations/smsf-3gpp-access
+// Path: /:ueId/registrations/ip-sm-gw
 // Path Params: ueId
-type Get3GppSmsfRegistrationParams struct {
-	UeId              string
-	SupportedFeatures string
-}
-
-func Get3GppSmsfRegistration(cli sbi.ConsumerClient, params Get3GppSmsfRegistrationParams) (rsp *models.SmsfRegistration, err error) {
+func GetIpSmGwRegistration(cli sbi.ConsumerClient, ueId string) (rsp *models.IpSmGwRegistration, err error) {
 
 	request := sbi.DefaultRequest()
 
 	request.Method = http.MethodGet
-	if len(params.SupportedFeatures) > 0 {
-		request.AddParam("supported-features", params.SupportedFeatures)
-	}
-	if len(params.UeId) == 0 {
+	if len(ueId) == 0 {
 		err = fmt.Errorf("ueId is required")
 		return
 	}
 
-	request.Path = fmt.Sprintf("%s/%s/registrations/smsf-3gpp-access", PATH_ROOT, params.UeId)
+	request.Path = fmt.Sprintf("%s/%s/registrations/ip-sm-gw", PATH_ROOT, ueId)
 	var response sbi.Response
 	if response, err = cli.Send(request); err != nil {
 		return
@@ -88,7 +38,7 @@ func Get3GppSmsfRegistration(cli sbi.ConsumerClient, params Get3GppSmsfRegistrat
 
 	switch response.StatusCode {
 	case 200:
-		rsp = new(SmsfRegistration)
+		rsp = new(IpSmGwRegistration)
 		response.Body = rsp
 		err = cli.DecodeResponse(response)
 	case 400, 403, 404, 500, 503:
@@ -108,9 +58,9 @@ func Get3GppSmsfRegistration(cli sbi.ConsumerClient, params Get3GppSmsfRegistrat
 // Path: /:ueId/registrations/nwdaf-registrations
 // Path Params: ueId
 type GetNwdafRegistrationParams struct {
-	UeId              string
 	AnalyticsIds      []string
 	SupportedFeatures string
+	UeId              string
 }
 
 func GetNwdafRegistration(cli sbi.ConsumerClient, params GetNwdafRegistrationParams) (rsp *models.NwdafRegistration, err error) {
@@ -118,17 +68,17 @@ func GetNwdafRegistration(cli sbi.ConsumerClient, params GetNwdafRegistrationPar
 	request := sbi.DefaultRequest()
 
 	request.Method = http.MethodGet
-	if len(params.UeId) == 0 {
-		err = fmt.Errorf("ueId is required")
-		return
-	}
-
 	if len(params.AnalyticsIds) > 0 {
 		request.AddParam("analytics-ids", models.ArrayOfStringToString(params.AnalyticsIds))
 	}
 	if len(params.SupportedFeatures) > 0 {
 		request.AddParam("supported-features", params.SupportedFeatures)
 	}
+	if len(params.UeId) == 0 {
+		err = fmt.Errorf("ueId is required")
+		return
+	}
+
 	request.Path = fmt.Sprintf("%s/%s/registrations/nwdaf-registrations", PATH_ROOT, params.UeId)
 	var response sbi.Response
 	if response, err = cli.Send(request); err != nil {
@@ -140,6 +90,60 @@ func GetNwdafRegistration(cli sbi.ConsumerClient, params GetNwdafRegistrationPar
 		rsp = new(NwdafRegistration)
 		response.Body = rsp
 		err = cli.DecodeResponse(response)
+	case 400, 403, 404, 500, 503:
+		prob := new(ProblemDetails)
+		response.Body = prob
+		if err = cli.DecodeResponse(response); err == nil {
+			err = sbi.ErrorFromProblemDetails(prob)
+		}
+	default:
+		err = fmt.Errorf("%d, %s", response.StatusCode, response.Status)
+	}
+	return
+}
+
+// Summary: register as NWDAF
+// Description:
+// Path: /:ueId/registrations/nwdaf-registrations/:nwdafRegistrationId
+// Path Params: ueId, nwdafRegistrationId
+type NwdafRegistrationParams struct {
+	UeId                string
+	NwdafRegistrationId string
+}
+
+func NwdafRegistration(cli sbi.ConsumerClient, params NwdafRegistrationParams, body *models.NwdafRegistration) (rsp *models.NwdafRegistration, err error) {
+
+	request := sbi.DefaultRequest()
+
+	request.Method = http.MethodGet
+	if len(params.UeId) == 0 {
+		err = fmt.Errorf("ueId is required")
+		return
+	}
+
+	if len(params.NwdafRegistrationId) == 0 {
+		err = fmt.Errorf("nwdafRegistrationId is required")
+		return
+	}
+	if body == nil {
+		err = fmt.Errorf("body is required")
+		return
+	}
+	request.Body = body
+
+	request.Path = fmt.Sprintf("%s/:ueId/registrations/nwdaf-registrations/%s", PATH_ROOT, params.UeId, params.NwdafRegistrationId)
+	var response sbi.Response
+	if response, err = cli.Send(request); err != nil {
+		return
+	}
+
+	switch response.StatusCode {
+	case 200:
+		rsp = new(NwdafRegistration)
+		response.Body = rsp
+		err = cli.DecodeResponse(response)
+	case 204:
+		return
 	case 400, 403, 404, 500, 503:
 		prob := new(ProblemDetails)
 		response.Body = prob
@@ -211,39 +215,34 @@ func GetRegistrations(cli sbi.ConsumerClient, params GetRegistrationsParams) (rs
 	return
 }
 
-// Summary: retrieve the AMF registration for 3GPP access information
+// Summary: trigger AMF for 3GPP access deregistration
 // Description:
-// Path: /:ueId/registrations/amf-3gpp-access
+// Path: /:ueId/registrations/amf-3gpp-access/dereg-amf
 // Path Params: ueId
-type Get3GppRegistrationParams struct {
-	UeId              string
-	SupportedFeatures string
-}
-
-func Get3GppRegistration(cli sbi.ConsumerClient, params Get3GppRegistrationParams) (rsp *models.Amf3GppAccessRegistration, err error) {
+func DeregAMF(cli sbi.ConsumerClient, ueId string, body *models.AmfDeregInfo) (err error) {
 
 	request := sbi.DefaultRequest()
 
-	request.Method = http.MethodGet
-	if len(params.UeId) == 0 {
+	request.Method = http.MethodPost
+	if len(ueId) == 0 {
 		err = fmt.Errorf("ueId is required")
 		return
 	}
-
-	if len(params.SupportedFeatures) > 0 {
-		request.AddParam("supported-features", params.SupportedFeatures)
+	if body == nil {
+		err = fmt.Errorf("body is required")
+		return
 	}
-	request.Path = fmt.Sprintf("%s/%s/registrations/amf-3gpp-access", PATH_ROOT, params.UeId)
+	request.Body = body
+
+	request.Path = fmt.Sprintf("%s/%s/registrations/amf-3gpp-access/dereg-amf", PATH_ROOT, ueId)
 	var response sbi.Response
 	if response, err = cli.Send(request); err != nil {
 		return
 	}
 
 	switch response.StatusCode {
-	case 200:
-		rsp = new(Amf3GppAccessRegistration)
-		response.Body = rsp
-		err = cli.DecodeResponse(response)
+	case 204:
+		return
 	case 400, 403, 404, 500, 503:
 		prob := new(ProblemDetails)
 		response.Body = prob
@@ -341,42 +340,6 @@ func GetNon3GppRegistration(cli sbi.ConsumerClient, params GetNon3GppRegistratio
 	return
 }
 
-// Summary: Trigger the Restoration of the P-CSCF
-// Description:
-// Path: /restore-pcscf
-// Path Params:
-func TriggerPCSCFRestoration(cli sbi.ConsumerClient, body *models.TriggerRequest) (err error) {
-
-	request := sbi.DefaultRequest()
-
-	request.Method = http.MethodPost
-	if body == nil {
-		err = fmt.Errorf("body is required")
-		return
-	}
-	request.Body = body
-
-	request.Path = fmt.Sprintf("%s/restore-pcscf", PATH_ROOT)
-	var response sbi.Response
-	if response, err = cli.Send(request); err != nil {
-		return
-	}
-
-	switch response.StatusCode {
-	case 204:
-		return
-	case 400, 403, 404, 500, 501, 503:
-		prob := new(ProblemDetails)
-		response.Body = prob
-		if err = cli.DecodeResponse(response); err == nil {
-			err = sbi.ErrorFromProblemDetails(prob)
-		}
-	default:
-		err = fmt.Errorf("%d, %s", response.StatusCode, response.Status)
-	}
-	return
-}
-
 // Summary: Update the Roaming Information
 // Description:
 // Path: /:ueId/registrations/amf-3gpp-access/roaming-info-update
@@ -421,18 +384,16 @@ func UpdateRoamingInformation(cli sbi.ConsumerClient, ueId string, body *models.
 	return
 }
 
-// Summary: retrieve the SMF registration information
+// Summary: retrieve the target UE's location information
 // Description:
-// Path: /:ueId/registrations/smf-registrations
+// Path: /:ueId/registrations/location
 // Path Params: ueId
-type GetSmfRegistrationParams struct {
+type GetLocationInfoParams struct {
 	UeId              string
-	SingleNssai       *Snssai
-	Dnn               string
 	SupportedFeatures string
 }
 
-func GetSmfRegistration(cli sbi.ConsumerClient, params GetSmfRegistrationParams) (rsp *models.SmfRegistrationInfo, err error) {
+func GetLocationInfo(cli sbi.ConsumerClient, params GetLocationInfoParams) (rsp *models.LocationInfo, err error) {
 
 	request := sbi.DefaultRequest()
 
@@ -442,16 +403,10 @@ func GetSmfRegistration(cli sbi.ConsumerClient, params GetSmfRegistrationParams)
 		return
 	}
 
-	if params.SingleNssai != nil {
-		request.AddParam("single-nssai", models.SnssaiToString(*params.SingleNssai))
-	}
-	if len(params.Dnn) > 0 {
-		request.AddParam("dnn", params.Dnn)
-	}
 	if len(params.SupportedFeatures) > 0 {
 		request.AddParam("supported-features", params.SupportedFeatures)
 	}
-	request.Path = fmt.Sprintf("%s/%s/registrations/smf-registrations", PATH_ROOT, params.UeId)
+	request.Path = fmt.Sprintf("%s/%s/registrations/location", PATH_ROOT, params.UeId)
 	var response sbi.Response
 	if response, err = cli.Send(request); err != nil {
 		return
@@ -459,7 +414,7 @@ func GetSmfRegistration(cli sbi.ConsumerClient, params GetSmfRegistrationParams)
 
 	switch response.StatusCode {
 	case 200:
-		rsp = new(SmfRegistrationInfo)
+		rsp = new(LocationInfo)
 		response.Body = rsp
 		err = cli.DecodeResponse(response)
 	case 400, 403, 404, 500, 503:
@@ -474,29 +429,71 @@ func GetSmfRegistration(cli sbi.ConsumerClient, params GetSmfRegistrationParams)
 	return
 }
 
-// Summary: retrieve the SMSF registration for non-3GPP access information
+// Summary: get an SMF registration
 // Description:
-// Path: /:ueId/registrations/smsf-non-3gpp-access
-// Path Params: ueId
-type GetNon3GppSmsfRegistrationParams struct {
-	SupportedFeatures string
-	UeId              string
+// Path: /:ueId/registrations/smf-registrations/:pduSessionId
+// Path Params: ueId, pduSessionId
+type RetrieveSmfRegistrationParams struct {
+	UeId         string
+	PduSessionId int
 }
 
-func GetNon3GppSmsfRegistration(cli sbi.ConsumerClient, params GetNon3GppSmsfRegistrationParams) (rsp *models.SmsfRegistration, err error) {
+func RetrieveSmfRegistration(cli sbi.ConsumerClient, params RetrieveSmfRegistrationParams) (rsp *models.SmfRegistration, err error) {
 
 	request := sbi.DefaultRequest()
 
 	request.Method = http.MethodGet
-	if len(params.SupportedFeatures) > 0 {
-		request.AddParam("supported-features", params.SupportedFeatures)
-	}
 	if len(params.UeId) == 0 {
 		err = fmt.Errorf("ueId is required")
 		return
 	}
 
-	request.Path = fmt.Sprintf("%s/%s/registrations/smsf-non-3gpp-access", PATH_ROOT, params.UeId)
+	request.Path = fmt.Sprintf("%s/:ueId/registrations/smf-registrations/%s", PATH_ROOT, params.UeId, params.PduSessionId)
+	var response sbi.Response
+	if response, err = cli.Send(request); err != nil {
+		return
+	}
+
+	switch response.StatusCode {
+	case 200:
+		rsp = new(SmfRegistration)
+		response.Body = rsp
+		err = cli.DecodeResponse(response)
+	case 400, 403, 404, 500, 503:
+		prob := new(ProblemDetails)
+		response.Body = prob
+		if err = cli.DecodeResponse(response); err == nil {
+			err = sbi.ErrorFromProblemDetails(prob)
+		}
+	default:
+		err = fmt.Errorf("%d, %s", response.StatusCode, response.Status)
+	}
+	return
+}
+
+// Summary: retrieve the SMSF registration for 3GPP access information
+// Description:
+// Path: /:ueId/registrations/smsf-3gpp-access
+// Path Params: ueId
+type Get3GppSmsfRegistrationParams struct {
+	UeId              string
+	SupportedFeatures string
+}
+
+func Get3GppSmsfRegistration(cli sbi.ConsumerClient, params Get3GppSmsfRegistrationParams) (rsp *models.SmsfRegistration, err error) {
+
+	request := sbi.DefaultRequest()
+
+	request.Method = http.MethodGet
+	if len(params.UeId) == 0 {
+		err = fmt.Errorf("ueId is required")
+		return
+	}
+
+	if len(params.SupportedFeatures) > 0 {
+		request.AddParam("supported-features", params.SupportedFeatures)
+	}
+	request.Path = fmt.Sprintf("%s/%s/registrations/smsf-3gpp-access", PATH_ROOT, params.UeId)
 	var response sbi.Response
 	if response, err = cli.Send(request); err != nil {
 		return
@@ -519,49 +516,31 @@ func GetNon3GppSmsfRegistration(cli sbi.ConsumerClient, params GetNon3GppSmsfReg
 	return
 }
 
-// Summary: register as NWDAF
+// Summary: Trigger the Restoration of the P-CSCF
 // Description:
-// Path: /:ueId/registrations/nwdaf-registrations/:nwdafRegistrationId
-// Path Params: ueId, nwdafRegistrationId
-type NwdafRegistrationParams struct {
-	UeId                string
-	NwdafRegistrationId string
-}
-
-func NwdafRegistration(cli sbi.ConsumerClient, params NwdafRegistrationParams, body *models.NwdafRegistration) (rsp *models.NwdafRegistration, err error) {
+// Path: /restore-pcscf
+// Path Params:
+func TriggerPCSCFRestoration(cli sbi.ConsumerClient, body *models.TriggerRequest) (err error) {
 
 	request := sbi.DefaultRequest()
 
-	request.Method = http.MethodGet
-	if len(params.UeId) == 0 {
-		err = fmt.Errorf("ueId is required")
-		return
-	}
-
-	if len(params.NwdafRegistrationId) == 0 {
-		err = fmt.Errorf("nwdafRegistrationId is required")
-		return
-	}
+	request.Method = http.MethodPost
 	if body == nil {
 		err = fmt.Errorf("body is required")
 		return
 	}
 	request.Body = body
 
-	request.Path = fmt.Sprintf("%s/:ueId/registrations/nwdaf-registrations/%s", PATH_ROOT, params.UeId, params.NwdafRegistrationId)
+	request.Path = fmt.Sprintf("%s/restore-pcscf", PATH_ROOT)
 	var response sbi.Response
 	if response, err = cli.Send(request); err != nil {
 		return
 	}
 
 	switch response.StatusCode {
-	case 200:
-		rsp = new(NwdafRegistration)
-		response.Body = rsp
-		err = cli.DecodeResponse(response)
 	case 204:
 		return
-	case 400, 403, 404, 500, 503:
+	case 400, 403, 404, 500, 501, 503:
 		prob := new(ProblemDetails)
 		response.Body = prob
 		if err = cli.DecodeResponse(response); err == nil {
@@ -615,61 +594,29 @@ func SendRoutingInfoSm(cli sbi.ConsumerClient, ueId string, body *models.Routing
 	return
 }
 
-// Summary: trigger AMF for 3GPP access deregistration
+// Summary: retrieve the AMF registration for 3GPP access information
 // Description:
-// Path: /:ueId/registrations/amf-3gpp-access/dereg-amf
+// Path: /:ueId/registrations/amf-3gpp-access
 // Path Params: ueId
-func DeregAMF(cli sbi.ConsumerClient, ueId string, body *models.AmfDeregInfo) (err error) {
-
-	request := sbi.DefaultRequest()
-
-	request.Method = http.MethodPost
-	if len(ueId) == 0 {
-		err = fmt.Errorf("ueId is required")
-		return
-	}
-	if body == nil {
-		err = fmt.Errorf("body is required")
-		return
-	}
-	request.Body = body
-
-	request.Path = fmt.Sprintf("%s/%s/registrations/amf-3gpp-access/dereg-amf", PATH_ROOT, ueId)
-	var response sbi.Response
-	if response, err = cli.Send(request); err != nil {
-		return
-	}
-
-	switch response.StatusCode {
-	case 204:
-		return
-	case 400, 403, 404, 500, 503:
-		prob := new(ProblemDetails)
-		response.Body = prob
-		if err = cli.DecodeResponse(response); err == nil {
-			err = sbi.ErrorFromProblemDetails(prob)
-		}
-	default:
-		err = fmt.Errorf("%d, %s", response.StatusCode, response.Status)
-	}
-	return
+type Get3GppRegistrationParams struct {
+	SupportedFeatures string
+	UeId              string
 }
 
-// Summary: Retrieve the IP-SM-GW registration information
-// Description:
-// Path: /:ueId/registrations/ip-sm-gw
-// Path Params: ueId
-func GetIpSmGwRegistration(cli sbi.ConsumerClient, ueId string) (rsp *models.IpSmGwRegistration, err error) {
+func Get3GppRegistration(cli sbi.ConsumerClient, params Get3GppRegistrationParams) (rsp *models.Amf3GppAccessRegistration, err error) {
 
 	request := sbi.DefaultRequest()
 
 	request.Method = http.MethodGet
-	if len(ueId) == 0 {
+	if len(params.SupportedFeatures) > 0 {
+		request.AddParam("supported-features", params.SupportedFeatures)
+	}
+	if len(params.UeId) == 0 {
 		err = fmt.Errorf("ueId is required")
 		return
 	}
 
-	request.Path = fmt.Sprintf("%s/%s/registrations/ip-sm-gw", PATH_ROOT, ueId)
+	request.Path = fmt.Sprintf("%s/%s/registrations/amf-3gpp-access", PATH_ROOT, params.UeId)
 	var response sbi.Response
 	if response, err = cli.Send(request); err != nil {
 		return
@@ -677,7 +624,7 @@ func GetIpSmGwRegistration(cli sbi.ConsumerClient, ueId string) (rsp *models.IpS
 
 	switch response.StatusCode {
 	case 200:
-		rsp = new(IpSmGwRegistration)
+		rsp = new(Amf3GppAccessRegistration)
 		response.Body = rsp
 		err = cli.DecodeResponse(response)
 	case 400, 403, 404, 500, 503:
@@ -692,16 +639,69 @@ func GetIpSmGwRegistration(cli sbi.ConsumerClient, ueId string) (rsp *models.IpS
 	return
 }
 
-// Summary: retrieve the target UE's location information
+// Summary: retrieve the SMF registration information
 // Description:
-// Path: /:ueId/registrations/location
+// Path: /:ueId/registrations/smf-registrations
 // Path Params: ueId
-type GetLocationInfoParams struct {
+type GetSmfRegistrationParams struct {
 	SupportedFeatures string
 	UeId              string
+	SingleNssai       *Snssai
+	Dnn               string
 }
 
-func GetLocationInfo(cli sbi.ConsumerClient, params GetLocationInfoParams) (rsp *models.LocationInfo, err error) {
+func GetSmfRegistration(cli sbi.ConsumerClient, params GetSmfRegistrationParams) (rsp *models.SmfRegistrationInfo, err error) {
+
+	request := sbi.DefaultRequest()
+
+	request.Method = http.MethodGet
+	if len(params.UeId) == 0 {
+		err = fmt.Errorf("ueId is required")
+		return
+	}
+
+	if params.SingleNssai != nil {
+		request.AddParam("single-nssai", models.SnssaiToString(*params.SingleNssai))
+	}
+	if len(params.Dnn) > 0 {
+		request.AddParam("dnn", params.Dnn)
+	}
+	if len(params.SupportedFeatures) > 0 {
+		request.AddParam("supported-features", params.SupportedFeatures)
+	}
+	request.Path = fmt.Sprintf("%s/%s/registrations/smf-registrations", PATH_ROOT, params.UeId)
+	var response sbi.Response
+	if response, err = cli.Send(request); err != nil {
+		return
+	}
+
+	switch response.StatusCode {
+	case 200:
+		rsp = new(SmfRegistrationInfo)
+		response.Body = rsp
+		err = cli.DecodeResponse(response)
+	case 400, 403, 404, 500, 503:
+		prob := new(ProblemDetails)
+		response.Body = prob
+		if err = cli.DecodeResponse(response); err == nil {
+			err = sbi.ErrorFromProblemDetails(prob)
+		}
+	default:
+		err = fmt.Errorf("%d, %s", response.StatusCode, response.Status)
+	}
+	return
+}
+
+// Summary: retrieve the SMSF registration for non-3GPP access information
+// Description:
+// Path: /:ueId/registrations/smsf-non-3gpp-access
+// Path Params: ueId
+type GetNon3GppSmsfRegistrationParams struct {
+	UeId              string
+	SupportedFeatures string
+}
+
+func GetNon3GppSmsfRegistration(cli sbi.ConsumerClient, params GetNon3GppSmsfRegistrationParams) (rsp *models.SmsfRegistration, err error) {
 
 	request := sbi.DefaultRequest()
 
@@ -714,7 +714,7 @@ func GetLocationInfo(cli sbi.ConsumerClient, params GetLocationInfoParams) (rsp 
 	if len(params.SupportedFeatures) > 0 {
 		request.AddParam("supported-features", params.SupportedFeatures)
 	}
-	request.Path = fmt.Sprintf("%s/%s/registrations/location", PATH_ROOT, params.UeId)
+	request.Path = fmt.Sprintf("%s/%s/registrations/smsf-non-3gpp-access", PATH_ROOT, params.UeId)
 	var response sbi.Response
 	if response, err = cli.Send(request); err != nil {
 		return
@@ -722,7 +722,7 @@ func GetLocationInfo(cli sbi.ConsumerClient, params GetLocationInfoParams) (rsp 
 
 	switch response.StatusCode {
 	case 200:
-		rsp = new(LocationInfo)
+		rsp = new(SmsfRegistration)
 		response.Body = rsp
 		err = cli.DecodeResponse(response)
 	case 400, 403, 404, 500, 503:
@@ -739,6 +739,6 @@ func GetLocationInfo(cli sbi.ConsumerClient, params GetLocationInfoParams) (rsp 
 
 /*
 This file is generated with a SBI APIs generator tool developed by ETRI
-Generated at Fri Nov 15 22:03:39 KST 2024 by TungTQ<tqtung@etri.re.kr>
+Generated at Fri Nov 15 22:09:23 KST 2024 by TungTQ<tqtung@etri.re.kr>
 Do not modify
 */

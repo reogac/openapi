@@ -7,12 +7,6 @@ import (
 
 var _routes = []sbi.Route{
 	{
-		Label:   "ReportObservedEventTriggersForIndividualAMPolicyAssociation",
-		Method:  http.MethodPost,
-		Path:    "/policies/:polAssoId/update",
-		Handler: "OnReportObservedEventTriggersForIndividualAMPolicyAssociation",
-	},
-	{
 		Label:   "CreateIndividualAMPolicyAssociation",
 		Method:  http.MethodPost,
 		Path:    "/policies",
@@ -24,11 +18,17 @@ var _routes = []sbi.Route{
 		Path:    "/policies/:polAssoId",
 		Handler: "OnReadIndividualAMPolicyAssociation",
 	},
+	{
+		Label:   "ReportObservedEventTriggersForIndividualAMPolicyAssociation",
+		Method:  http.MethodPost,
+		Path:    "/policies/:polAssoId/update",
+		Handler: "OnReportObservedEventTriggersForIndividualAMPolicyAssociation",
+	},
 }
 
 func Service(p Producer) sbi.Service {
 	return sbi.Service{
-		Group:   "NpcfAMPolicyControl",
+		Group:   PATH_ROOT,
 		Routes:  _routes,
 		Handler: p,
 	}

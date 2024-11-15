@@ -7,12 +7,6 @@ import (
 
 var _routes = []sbi.Route{
 	{
-		Label:   "ConfirmAuth",
-		Method:  http.MethodPost,
-		Path:    "/:supi/auth-events",
-		Handler: "OnConfirmAuth",
-	},
-	{
 		Label:   "GenerateAv",
 		Method:  http.MethodPost,
 		Path:    "/:supi/hss-security-information/:hssAuthType/generate-av",
@@ -48,11 +42,17 @@ var _routes = []sbi.Route{
 		Path:    "/:supiOrSuci/security-information-rg",
 		Handler: "OnGetRgAuthData",
 	},
+	{
+		Label:   "ConfirmAuth",
+		Method:  http.MethodPost,
+		Path:    "/:supi/auth-events",
+		Handler: "OnConfirmAuth",
+	},
 }
 
 func Service(p Producer) sbi.Service {
 	return sbi.Service{
-		Group:   "NudmUEAU",
+		Group:   PATH_ROOT,
 		Routes:  _routes,
 		Handler: p,
 	}
